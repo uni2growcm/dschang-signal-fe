@@ -1,11 +1,11 @@
 # Dschang's Signal — Frontend
 
 > Citizen issue reporting platform for the city of Dschang.  
-> Built with **React 18 · Vite · Tailwind CSS**
+> Built with **React 19 · Vite · Tailwind CSS**
 
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)](https://vitejs.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 
 **Repository:** https://github.com/uni2growcm/dschang-signal-fe  
 **API counterpart:** https://github.com/uni2growcm/dschang-signal-api
