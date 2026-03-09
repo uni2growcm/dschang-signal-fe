@@ -1,7 +1,25 @@
+// src/App.tsx
+import React from "react";
 import "./App.css";
+import Button from "@mui/material/Button";
+import AlarmIcon from "@mui/icons-material/Alarm";
 
 function App() {
-  return <div className="text-4xl bg-gray-500">Dschang's Signal</div>;
+  return (
+    <div style={{ padding: "2rem", textAlign: "center" }}>
+      <h1>Dschang's Signal</h1>
+
+      {/* Bouton MUI avec icône */}
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<AlarmIcon />}
+        style={{ marginTop: "1rem" }}
+      >
+        Test MUI
+      </Button>
+    </div>
+  );
 }
 
 export default App;
