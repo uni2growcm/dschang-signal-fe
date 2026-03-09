@@ -1,7 +1,28 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
+function Home() {
+  return <h1 className="text-4xl">Home Page</h1>;
+}
+
+function Report() {
+  return <h1 className="text-4xl">Report a Problem</h1>;
+}
+
+function Login() {
+  return <h1 className="text-4xl">Login Page</h1>;
+}
+
 function App() {
-  return <div className="text-4xl bg-gray-500">Dschang's Signal</div>;
+  return (
+    <div className="p-10">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/report" element={<Report />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;
