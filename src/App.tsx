@@ -1,3 +1,5 @@
+import AlarmIcon from "@mui/icons-material/Alarm";
+import Button from "@mui/material/Button";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
@@ -15,7 +17,18 @@ function Login() {
 
 function App() {
   return (
-    <div className="p-10">
+    <div className="p-10" style={{ textAlign: "center" }}>
+      <h1>Dschang's Signal</h1>
+
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<AlarmIcon />}
+        style={{ marginTop: "1rem" }}
+      >
+        Test MUI
+      </Button>
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/report" element={<Report />} />
