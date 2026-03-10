@@ -1,3 +1,4 @@
+import UsersPage from './features/UsersPage'
 import AlarmIcon from "@mui/icons-material/Alarm";
 import Button from "@mui/material/Button";
 import { Route, Routes } from "react-router-dom";
@@ -33,6 +34,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/report" element={<Report />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/users" element={<UsersPage />} />
       </Routes>
     </div>
   );
