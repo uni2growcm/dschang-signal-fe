@@ -1,15 +1,34 @@
 import AlarmIcon from "@mui/icons-material/Alarm";
 import Button from "@mui/material/Button";
 import { Route, Routes } from "react-router-dom";
+import { ReportCard } from "./components/reportCard/ReportCard";
 import "./App.css";
 
 function Home() {
   return <h1 className="text-4xl">Home Page</h1>;
 }
-
 function Report() {
-  return <h1 className="text-4xl">Report a Problem</h1>;
+  const report = {
+    id: 1,
+    description: "Broken traffic light near the university",
+    photoUrl: "https://via.placeholder.com/300",
+    reportStatus: "PENDING",
+    author: {
+      name: "Gloria",
+      email: "gloria@email.com",
+    },
+  };
+  console.log("ReportCard loaded", report);
+  return (
+    <div>
+      <h1 className="text-4xl">Report a Problem</h1>
+      <ReportCard report={report} />
+    </div>
+  );
 }
+// function Report() {
+//   return <h1 className="text-4xl">Report a Problem</h1>;
+// }
 
 function Login() {
   return <h1 className="text-4xl">Login Page</h1>;
@@ -33,6 +52,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/report" element={<Report />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/report" element={<Report />} />
       </Routes>
     </div>
   );

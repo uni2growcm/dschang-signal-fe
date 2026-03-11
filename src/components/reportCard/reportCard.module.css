@@ -1,0 +1,26 @@
+.reportCard {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+.userInfo {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.description {
+  margin-bottom: 10px;
+}
+
+.image {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.status {
+  margin-top: 10px;
+  font-weight: bold;
+}
