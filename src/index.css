@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #7C4DFF;
+  --color-secondary: #90EE90;
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+}

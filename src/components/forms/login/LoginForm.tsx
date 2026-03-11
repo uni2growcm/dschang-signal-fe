@@ -8,8 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
-import googleIcon from "../../../assets/google-icon.png";
-import { loginValidationSchema } from "../../../validation/loginValidation";
+import { FcGoogle } from "react-icons/fc";
+import { loginValidationSchema } from "./schema";
 import styles from "./LoginForm.module.css";
 
 interface LoginFormValues {
@@ -26,8 +26,8 @@ export default function LoginForm() {
   return (
     <Formik
       initialValues={{
-        email: "alex.jordan@gmail.com",
-        password: "password123",
+        email: "",
+        password: "",
         remember: false,
       }}
       validationSchema={loginValidationSchema}
@@ -62,7 +62,7 @@ export default function LoginForm() {
 
             <div className={styles.loginInputs}>
               <TextField
-                placeholder="alex.jordan@gmail.com"
+                label="Email"
                 name="email"
                 type="email"
                 fullWidth
@@ -94,7 +94,7 @@ export default function LoginForm() {
               />
 
               <TextField
-                placeholder="password123"
+                label="Password"
                 name="password"
                 type="password"
                 fullWidth
@@ -129,6 +129,8 @@ export default function LoginForm() {
             <div className={styles.loginOptions}>
               <span className={styles.forgotPassword}>Forgot password?</span>
               <FormControlLabel
+                label="Remember sign in details"
+                labelPlacement="start"
                 control={
                   <Switch
                     name="remember"
@@ -149,12 +151,14 @@ export default function LoginForm() {
                     }}
                   />
                 }
-                label="Remember sign in details"
                 sx={{
-                  "& .MuiFormControlLabel-label": {
-                    fontSize: "14px",
-                  },
                   m: 0,
+                  gap: 1,
+                  "& .MuiFormControlLabel-label": {
+                    fontSize: 15,
+                    color: "#555",
+                    opacity: 0.8,
+                  },
                 }}
               />
             </div>
@@ -206,12 +210,8 @@ export default function LoginForm() {
                 },
               }}
             >
-              <img
-                src={googleIcon}
-                alt="google"
-                className={styles.googleIcon}
-              />
-              Continue with Google
+              <FcGoogle size={25} />
+              <span className="text-inherit font-medium text-lg">Continue with Google</span>
             </Button>
 
             <div className={styles.signupText}>

@@ -1,5 +1,6 @@
-import Login from "./components/login/Login";
+import { RouterProvider } from "react-router";
+import { clientsRoutes } from "./routes/routes";
 
-export default function LoginPage() {
-  return <Login />;
+export default function App() {
+  return <RouterProvider router={clientsRoutes} />;
 }
