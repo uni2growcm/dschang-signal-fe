@@ -1,0 +1,19 @@
+.leftSection {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  color: white;
+  padding: 32px;
+}
+
+.leftSection > div {
+  width: 100%;
+}
+
+.quoteContainer {
+  transform: rotate(-1deg);
+  transform-origin: left center;
+  margin-bottom: 8px;
+}
