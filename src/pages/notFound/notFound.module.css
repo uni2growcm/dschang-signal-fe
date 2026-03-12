@@ -1,0 +1,82 @@
+
+.container {
+  height: 100vh; /* occupe tout l'écran */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a, #1e293b); /* fond sombre dégradé */
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.code {
+  font-size: 120px;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(45deg, #38bdf8, #6366f1); /* texte gradient */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: bounce 1.5s infinite; /* animation bounce sur le 404 */
+}
+
+.title {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.text {
+  opacity: 0.8;
+  margin-bottom: 25px;
+  font-size: 18px;
+  max-width: 400px;
+}
+
+.button {
+  background: #6366f1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.button:hover {
+  background: #4f46e5;
+  transform: scale(1.05);
+}
+
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-15px);
+  }
+  60% {
+    transform: translateY(-8px);
+  }
+}
+
+
+@media (max-width: 480px) {
+  .code {
+    font-size: 80px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .text {
+    font-size: 16px;
+  }
+  .button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
