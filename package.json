@@ -2,8 +2,10 @@
   "name": "dschang-signal-fe",
   "private": true,
   "version": "0.0.0",
+  "description": "Dschang's Signal is a web application where citizens report urban problems (broken traffic lights, potholes, fallen trees, etc.) and city administrators review, accept, and track their resolution. This repository contains the React SPA frontend",
   "type": "module",
   "scripts": {
+    "generate-api": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o src/api",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -14,6 +16,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
+    "@openapitools/openapi-generator-cli": "^2.30.2",
     "@tailwindcss/vite": "^4.2.1",
     "formik": "^2.4.9",
     "react": "^19.2.0",
