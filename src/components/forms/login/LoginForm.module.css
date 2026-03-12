@@ -1,0 +1,72 @@
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.loginHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.loginInputs :global(.MuiTextField-root) {
+  width: 100%;
+}
+
+.loginOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.forgotPassword {
+  color: #7c4dff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgotPassword:hover {
+  color: #6b3edb;
+  text-decoration: underline;
+}
+
+.googleIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.signupText {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.signupLink {
+  color: #7c4dff;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.signupLink:hover {
+  color: #6b3edb;
+  text-decoration: underline;
+}
