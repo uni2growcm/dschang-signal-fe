@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Grow, Typography } from "@mui/material";
 import styles from "./register.module.css"; 
 import Logo from "../../components/logo/Logo"; 
 import RegisterForm from "../../components/register/RegisterForm"; 
@@ -8,6 +8,7 @@ export default function RegisterPage() {
   return (
     <Box className={styles.registerContainer}>
       <Logo className="absolute top-5 left-5" />
+      <Grow  in timeout={1000}>
       <Box
         sx={{
           backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${registerImage})`,
@@ -33,6 +34,7 @@ export default function RegisterPage() {
           </Typography>
         </Box>
       </Box>
+      </Grow>
       <Box className={styles.rightSection}>
         <Box className={styles.formWrapper}>
           <RegisterForm />

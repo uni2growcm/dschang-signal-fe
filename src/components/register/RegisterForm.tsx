@@ -9,6 +9,8 @@ import { Form, Formik } from "formik";
 import { FcGoogle } from "react-icons/fc";
 import styles from "./RegisterForm.module.css"; 
 import { registerValidationSchema } from "./registerValidationSchema";
+import { PATHS } from "../../routes/PATHS";
+import { useNavigate } from "react-router";
 
 interface RegisterFormValues {
   email: string;
@@ -17,6 +19,7 @@ interface RegisterFormValues {
 }
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
   const handleSubmit = (values: RegisterFormValues) => {
     console.log("Register attempt:", values);
   };
@@ -193,7 +196,7 @@ export default function RegisterForm() {
 
             <div className={styles.loginText}>
               Already have an account?{" "}
-              <span className={styles.loginLink}>Log in</span>
+              <button type="button" className={styles.loginLink} onClick={() => navigate(PATHS.LOGIN)}>Log in</button>
             </div>
           </div>
         </Form>

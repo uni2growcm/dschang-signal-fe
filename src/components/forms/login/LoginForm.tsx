@@ -11,6 +11,8 @@ import { Form, Formik } from "formik";
 import { FcGoogle } from "react-icons/fc";
 import { loginValidationSchema } from "./schema";
 import styles from "./LoginForm.module.css";
+import { PATHS } from "../../../routes/PATHS";
+import { useNavigate } from "react-router";
 
 interface LoginFormValues {
   email: string;
@@ -19,6 +21,8 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
+  const navigate = useNavigate()
+
   const handleSubmit = (values: LoginFormValues) => {
     console.log("Login attempt:", values);
   };
@@ -216,7 +220,7 @@ export default function LoginForm() {
 
             <div className={styles.signupText}>
               Don't have an account?{" "}
-              <span className={styles.signupLink}>Sign up</span>
+              <button type="button" className={styles.signupLink} onClick={() => navigate(PATHS.REGISTER)}>Sign up</button>
             </div>
           </div>
         </Form>
