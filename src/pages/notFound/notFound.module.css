@@ -1,11 +1,11 @@
 
 .container {
-  height: 100vh; /* occupe tout l'écran */
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #0f172a, #1e293b); /* fond sombre dégradé */
+  background: linear-gradient(135deg, #0f172a, #1e293b); 
   color: white;
   text-align: center;
   padding: 20px;
@@ -15,11 +15,11 @@
   font-size: 120px;
   font-weight: 800;
   margin: 0;
-  background: linear-gradient(45deg, #38bdf8, #6366f1); /* texte gradient */
+  background: linear-gradient(45deg, #38bdf8, #6366f1); 
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: bounce 1.5s infinite; /* animation bounce sur le 404 */
+  animation: bounce 1.5s infinite;
 }
 
 .title {
@@ -40,7 +40,7 @@
   border-radius: 8px;
   border: none;
   color: white;
-  font-weight: 600;
+  font-weight: 600; 
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
