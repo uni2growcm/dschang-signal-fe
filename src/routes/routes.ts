@@ -1,6 +1,7 @@
 
 import { createBrowserRouter } from "react-router";
 import LoginPage from "../pages/login/LoginPage";
+import NotFound from "../pages/notFound/NotFound";
 
 export const clientsRoutes = createBrowserRouter([
     {
@@ -11,4 +12,8 @@ export const clientsRoutes = createBrowserRouter([
         path: "/login",
         Component: LoginPage,
     },
+    {
+        path: "*",
+        Component: NotFound 
+    }
 ]);
