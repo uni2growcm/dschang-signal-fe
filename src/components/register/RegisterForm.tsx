@@ -2,45 +2,42 @@ import {
   Box,
   Button,
   Divider,
-  FormControlLabel,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import { FcGoogle } from "react-icons/fc";
-import { loginValidationSchema } from "./schema";
-import styles from "./LoginForm.module.css";
-import { PATHS } from "../../../routes/PATHS";
+import styles from "./RegisterForm.module.css"; 
+import { registerValidationSchema } from "./registerValidationSchema";
+import { PATHS } from "../../routes/PATHS";
 import { useNavigate } from "react-router";
 
-interface LoginFormValues {
+interface RegisterFormValues {
   email: string;
+  fullName: string;
   password: string;
-  remember: boolean;
 }
 
-export default function LoginForm() {
-  const navigate = useNavigate()
-
-  const handleSubmit = (values: LoginFormValues) => {
-    console.log("Login attempt:", values);
+export default function RegisterForm() {
+  const navigate = useNavigate();
+  const handleSubmit = (values: RegisterFormValues) => {
+    console.log("Register attempt:", values);
   };
 
   return (
     <Formik
       initialValues={{
         email: "",
+        fullName: "",
         password: "",
-        remember: false,
       }}
-      validationSchema={loginValidationSchema}
+      validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (
         <Form>
-          <div className={styles.loginForm}>
-            <div className={styles.loginHeader}>
+          <div className={styles.registerForm}>
+            <div className={styles.registerHeader}>
               <Typography
                 sx={{
                   fontSize: 28,
@@ -49,7 +46,7 @@ export default function LoginForm() {
                   letterSpacing: -0.5,
                 }}
               >
-                Welcome back
+                Create your account
               </Typography>
               <Typography
                 sx={{
@@ -59,12 +56,38 @@ export default function LoginForm() {
                   textAlign: "center",
                 }}
               >
-                Report and track signals in your community with Dschang's
-                Signal.
+                Join Dschang's Signal and start reporting issues in your community.
               </Typography>
             </div>
 
-            <div className={styles.loginInputs}>
+            <div className={styles.registerInputs}>
+              <TextField
+                label="Full Name"
+                name="fullName"
+                type="text"
+                fullWidth
+                variant="outlined"
+                size="small"
+                value={values.fullName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.fullName && Boolean(errors.fullName)}
+                helperText={touched.fullName && errors.fullName}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#7c4dff",
+                    },
+                    "&.Mui-focused": {
+                      "& fieldset": {
+                        borderColor: "#7c4dff",
+                      },
+                    },
+                  },
+                }}
+              />
+
               <TextField
                 label="Email"
                 name="email"
@@ -87,11 +110,6 @@ export default function LoginForm() {
                       "& fieldset": {
                         borderColor: "#7c4dff",
                       },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
                     },
                   },
                 }}
@@ -121,48 +139,6 @@ export default function LoginForm() {
                       },
                     },
                   },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
-                  },
-                }}
-              />
-            </div>
-
-            <div className={styles.loginOptions}>
-              <span className={styles.forgotPassword}>Forgot password?</span>
-              <FormControlLabel
-                label="Remember sign in details"
-                labelPlacement="start"
-                control={
-                  <Switch
-                    name="remember"
-                    checked={values.remember}
-                    onChange={handleChange}
-                    size="small"
-                    sx={{
-                      "& .MuiSwitch-switchBase.Mui-checked": {
-                        color: "#7c4dff",
-                        "&:hover": {
-                          backgroundColor: "rgba(124, 77, 255, 0.08)",
-                        },
-                      },
-                      "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                        {
-                          backgroundColor: "#7c4dff",
-                        },
-                    }}
-                  />
-                }
-                sx={{
-                  m: 0,
-                  gap: 1,
-                  "& .MuiFormControlLabel-label": {
-                    fontSize: 15,
-                    color: "#555",
-                    opacity: 0.8,
-                  },
                 }}
               />
             </div>
@@ -186,7 +162,7 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              Log in
+              Register
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -218,9 +194,9 @@ export default function LoginForm() {
               <span className="text-inherit font-medium text-lg">Continue with Google</span>
             </Button>
 
-            <div className={styles.signupText}>
-              Don't have an account?{" "}
-              <button type="button" className={styles.signupLink} onClick={() => navigate(PATHS.REGISTER)}>Sign up</button>
+            <div className={styles.loginText}>
+              Already have an account?{" "}
+              <button type="button" className={styles.loginLink} onClick={() => navigate(PATHS.LOGIN)}>Log in</button>
             </div>
           </div>
         </Form>
