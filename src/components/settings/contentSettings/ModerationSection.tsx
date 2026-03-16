@@ -51,7 +51,7 @@ export const ModerationSection = () => {
                     size='small'
                     sx={{
                       '&.Mui-checked': {
-                        color: '#9A5ACD',
+                        color: '#7C4DFF',
                       },
                     }}
                   />
@@ -69,7 +69,7 @@ export const ModerationSection = () => {
                     size='small'
                     sx={{
                       '&.Mui-checked': {
-                        color: '#9A5ACD',
+                        color: '#7C4DFF',
                       },
                     }}
                   />
@@ -87,7 +87,7 @@ export const ModerationSection = () => {
                     size='small'
                     sx={{
                       '&.Mui-checked': {
-                        color: '#9A5ACD',
+                        color: '#7C4DFF',
                       },
                     }}
                   />
@@ -115,7 +115,7 @@ export const ModerationSection = () => {
                   size='small'
                   sx={{
                     '&.Mui-checked': {
-                      color: '#9A5ACD',
+                      color: '#7C4DFF',
                     },
                   }}
                   checked={filters.profanity}
@@ -134,7 +134,7 @@ export const ModerationSection = () => {
                   size='small'
                   sx={{
                     '&.Mui-checked': {
-                      color: '#9A5ACD',
+                      color: '#7C4DFF',
                     },
                   }}
                   checked={filters.spam}
@@ -153,7 +153,7 @@ export const ModerationSection = () => {
                   size='small'
                   sx={{
                     '&.Mui-checked': {
-                      color: '#9A5ACD',
+                      color: '#7C4DFF',
                     },
                   }}
                   checked={filters.imageRequired}
@@ -172,7 +172,7 @@ export const ModerationSection = () => {
                   size='small'
                   sx={{
                     '&.Mui-checked': {
-                      color: '#9A5ACD',
+                      color: '#7C4DFF',
                     },
                   }}
                   checked={filters.locationTagging}

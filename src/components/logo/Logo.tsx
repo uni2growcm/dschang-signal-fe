@@ -8,7 +8,7 @@ export default function Logo({hideText = false, className = ""}: Readonly<{hideT
         <MdOutlineWifiTethering size={32} className="text-white" />
       </div>
       {!hideText && (
-        <span className="text-white text-2xl font-bold tracking-wide">
+        <span className="text-black text-2xl font-bold tracking-wide">
           Dschang's Signal
         </span>
       )}

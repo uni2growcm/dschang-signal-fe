@@ -27,9 +27,9 @@ export const SwitchRow = ({
       defaultChecked={defaultChecked}
       sx={{
         '& .MuiSwitch-switchBase.Mui-checked': {
-          color: '#9A5ACD',
+          color: '#7C4DFF',
           '& + .MuiSwitch-track': {
-            backgroundColor: '#9A5ACD',
+            backgroundColor: '#7C4DFF',
           },
         },
       }}

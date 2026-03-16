@@ -3,11 +3,16 @@ import { NotificationsSection } from '../../components/settings/contentSettings/
 import { ModerationSection } from '../../components/settings/contentSettings/ModerationSection'
 import { PrivacySection } from '../../components/settings/contentSettings/PrivacySection'
 import { DangerZoneSection } from '../../components/settings/contentSettings/DangerZoneSection'
-import { Box, Typography, Stack } from '@mui/material'
+import { Box, Typography, Stack, Toolbar } from '@mui/material'
+import TopNavBar from '../../components/topNavBar/TopNavBar'
 
 export const Settings = () => {
   return (
-    <Box p={4}>
+    <>  
+    <TopNavBar />
+    <Toolbar />
+
+    <Box p={4} sx={{ backgroundColor: '#FAFAFA' }}>
       <Box mb={4}>
         <Typography variant='h5' fontWeight='bold' gutterBottom>
           Settings
@@ -25,5 +30,6 @@ export const Settings = () => {
         <DangerZoneSection />
       </Stack>
     </Box>
+  </>
   )
 }

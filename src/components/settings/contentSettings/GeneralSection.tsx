@@ -154,10 +154,10 @@ export const GeneralSection = () => {
           <Button
             variant='contained'
             sx={{
-              backgroundColor: '#9A5ACD',
+              backgroundColor: '#7C4DFF',
               color: '#fff',
               '&:hover': {
-                backgroundColor: '#7A4ACD',
+                backgroundColor: '#7C4DFF',
               },
             }}
             size='small'
