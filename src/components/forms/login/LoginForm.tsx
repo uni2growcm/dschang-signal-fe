@@ -13,6 +13,13 @@ import { loginValidationSchema } from "./schema";
 import styles from "./LoginForm.module.css";
 import { PATHS } from "../../../routes/PATHS";
 import { useNavigate } from "react-router";
+import { authApi } from "../../../services";
+import { useState } from "react";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
+import LinearProgressBar from "../../progressBar/LinearProgress";
+import SnackBar from "../../snackBar/SnackBar";
+import type { ResponseError } from "../../../api";
+import { useMutation } from "@tanstack/react-query";
 
 interface LoginFormValues {
   email: string;
@@ -21,11 +28,47 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
-  const navigate = useNavigate()
+  const [success, setSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (values: LoginFormValues) => {
-    console.log("Login attempt:", values);
-  };
+  const loginMutation = useMutation({
+    mutationFn: async (values: LoginFormValues) => {
+      const response = await authApi.login({
+        loginRequest: {
+          email: values.email,
+          password: values.password,
+        },
+      });
+      return response;
+    },
+    onSuccess: (response) => {
+      if (response.token) {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
+        setSuccess(true);
+        setErrorMessage("");
+        setTimeout(() => {
+          navigate(PATHS.INDEX);
+        }, 2000);
+      }
+    },
+    onError: (error: unknown) => {
+      const err = error as ResponseError;
+      const message =
+        err.response.status == 400
+          ? "Invalid credentials"
+          : "Login failed, please check your credentials.";
+      setErrorMessage(message);
+      setIsError(true);
+    },
+    onSettled: () => {
+      setTimeout(() => {
+        setIsError(false);
+        setSuccess(false);
+      }, 1500);
+    },
+  });
 
   return (
     <Formik
@@ -35,7 +78,7 @@ export default function LoginForm() {
         remember: false,
       }}
       validationSchema={loginValidationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={loginMutation.mutate}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (
         <Form>
@@ -128,6 +171,9 @@ export default function LoginForm() {
                   },
                 }}
               />
+              {errorMessage && (
+                <p className="text-error -mt-2 text-center">{errorMessage}</p>
+              )}
             </div>
 
             <div className={styles.loginOptions}>
@@ -168,6 +214,7 @@ export default function LoginForm() {
             </div>
 
             <Button
+              disabled={loginMutation.isPending}
               type="submit"
               fullWidth
               sx={{
@@ -186,7 +233,7 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              Log in
+              {loginMutation.isPending ? <LinearProgressBar /> : "Log in"}
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -215,14 +262,34 @@ export default function LoginForm() {
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">Continue with Google</span>
+              <span className="text-inherit font-medium text-lg">
+                Continue with Google
+              </span>
             </Button>
 
             <div className={styles.signupText}>
               Don't have an account?{" "}
-              <button type="button" className={styles.signupLink} onClick={() => navigate(PATHS.REGISTER)}>Sign up</button>
+              <button
+                type="button"
+                className={styles.signupLink}
+                onClick={() => navigate(PATHS.REGISTER)}
+              >
+                Sign up
+              </button>
             </div>
           </div>
+          <SnackBar
+            open={isError}
+            message={errorMessage}
+            severity="error"
+            position="bottom-right"
+          />
+          <SnackBar
+            open={success}
+            message="Login Successful"
+            severity="success"
+            position="bottom-right"
+          />
         </Form>
       )}
     </Formik>

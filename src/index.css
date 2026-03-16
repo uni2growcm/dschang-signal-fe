@@ -3,5 +3,6 @@
 @theme {
   --color-primary: #7C4DFF;
   --color-secondary: #90EE90;
+  --color-error: #FF2C2C;
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
 }
