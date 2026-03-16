@@ -19,6 +19,7 @@ import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
 import LinearProgressBar from "../../progressBar/LinearProgress";
 import SnackBar from "../../snackBar/SnackBar";
 import type { ResponseError } from "../../../api";
+import { useMutation } from "@tanstack/react-query";
 
 interface LoginFormValues {
   email: string;
@@ -27,23 +28,22 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (values: LoginFormValues) => {
-    setLoading(true);
-
-    try {
+  const loginMutation = useMutation({
+    mutationFn: async (values: LoginFormValues) => {
       const response = await authApi.login({
         loginRequest: {
           email: values.email,
           password: values.password,
         },
       });
-
+      return response;
+    },
+    onSuccess: (response) => {
       if (response.token) {
         localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
         setSuccess(true);
@@ -52,20 +52,23 @@ export default function LoginForm() {
           navigate(PATHS.INDEX);
         }, 2000);
       }
-    } catch (error: unknown) {
+    },
+    onError: (error: unknown) => {
       const err = error as ResponseError;
       const message =
-        err.response.status == 400 ? "Invalid credentials" : "Login failed";
+        err.response.status == 400
+          ? "Invalid credentials"
+          : "Login failed, please check your credentials.";
       setErrorMessage(message);
       setIsError(true);
-    } finally {
+    },
+    onSettled: () => {
       setTimeout(() => {
-        setLoading(false);
         setIsError(false);
         setSuccess(false);
       }, 1500);
-    }
-  };
+    },
+  });
 
   return (
     <Formik
@@ -75,7 +78,7 @@ export default function LoginForm() {
         remember: false,
       }}
       validationSchema={loginValidationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={loginMutation.mutate}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (
         <Form>
@@ -211,7 +214,7 @@ export default function LoginForm() {
             </div>
 
             <Button
-              disabled={loading}
+              disabled={loginMutation.isPending}
               type="submit"
               fullWidth
               sx={{
@@ -230,7 +233,7 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              {loading ? <LinearProgressBar /> : "Log in"}
+              {loginMutation.isPending ? <LinearProgressBar /> : "Log in"}
             </Button>
 
             <Box sx={{ my: 2 }}>
