@@ -13,6 +13,12 @@ import { loginValidationSchema } from "./schema";
 import styles from "./LoginForm.module.css";
 import { PATHS } from "../../../routes/PATHS";
 import { useNavigate } from "react-router";
+import { authApi } from "../../../services";
+import { useState } from "react";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
+import LinearProgressBar from "../../progressBar/LinearProgress";
+import SnackBar from "../../snackBar/SnackBar";
+import type { ResponseError } from "../../../api";
 
 interface LoginFormValues {
   email: string;
@@ -21,10 +27,44 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (values: LoginFormValues) => {
-    console.log("Login attempt:", values);
+  const handleSubmit = async (values: LoginFormValues) => {
+    setLoading(true);
+
+    try {
+      const response = await authApi.login({
+        loginRequest: {
+          email: values.email,
+          password: values.password,
+        },
+      });
+
+      if (response.token) {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
+        setSuccess(true);
+        setErrorMessage("");
+        setTimeout(() => {
+          navigate(PATHS.INDEX);
+        }, 2000);
+      }
+    } catch (error: unknown) {
+      const err = error as ResponseError;
+      const message =
+        err.response.status == 400 ? "Invalid credentials" : "Login failed";
+      setErrorMessage(message);
+      setIsError(true);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+        setIsError(false);
+        setSuccess(false);
+      }, 1500);
+    }
   };
 
   return (
@@ -128,6 +168,9 @@ export default function LoginForm() {
                   },
                 }}
               />
+              {errorMessage && (
+                <p className="text-error -mt-2 text-center">{errorMessage}</p>
+              )}
             </div>
 
             <div className={styles.loginOptions}>
@@ -168,6 +211,7 @@ export default function LoginForm() {
             </div>
 
             <Button
+              disabled={loading}
               type="submit"
               fullWidth
               sx={{
@@ -186,7 +230,7 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              Log in
+              {loading ? <LinearProgressBar /> : "Log in"}
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -215,14 +259,34 @@ export default function LoginForm() {
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">Continue with Google</span>
+              <span className="text-inherit font-medium text-lg">
+                Continue with Google
+              </span>
             </Button>
 
             <div className={styles.signupText}>
               Don't have an account?{" "}
-              <button type="button" className={styles.signupLink} onClick={() => navigate(PATHS.REGISTER)}>Sign up</button>
+              <button
+                type="button"
+                className={styles.signupLink}
+                onClick={() => navigate(PATHS.REGISTER)}
+              >
+                Sign up
+              </button>
             </div>
           </div>
+          <SnackBar
+            open={isError}
+            message={errorMessage}
+            severity="error"
+            position="bottom-right"
+          />
+          <SnackBar
+            open={success}
+            message="Login Successful"
+            severity="success"
+            position="bottom-right"
+          />
         </Form>
       )}
     </Formik>
