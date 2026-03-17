@@ -4,22 +4,24 @@ import {
   Divider,
   FormControlLabel,
   Switch,
+  TextField,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
-import { FcGoogle } from "react-icons/fc";
-import { loginValidationSchema } from "./schema";
-import styles from "./LoginForm.module.css";
-import { PATHS } from "../../../routes/PATHS";
-import { useNavigate } from "react-router";
-import { authApi } from "../../../services";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router";
+import { ResponseError } from "../../../api";
+import { PATHS } from "../../../routes/PATHS";
+import { authApi } from "../../../services";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
 import SnackBar from "../../snackBar/SnackBar";
-import { ResponseError } from "../../../api";
-import { useMutation } from "@tanstack/react-query";
-import SuccessFade from "../shared/SuccessFade";
 import FormTextField from "../shared/FormTextField";
+import SuccessFade from "../shared/SuccessFade";
+import styles from "./LoginForm.module.css";
+import { loginValidationSchema } from "./schema";
 
 interface LoginFormValues {
   email: string;
@@ -28,6 +30,7 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
+  const { t } = useTranslation();
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -85,14 +88,24 @@ export default function LoginForm() {
           <div className={styles.loginForm}>
             <div className={styles.loginHeader}>
               <Typography
-                sx={{ fontSize: 28, fontWeight: 700, color: "#1a1a1a", letterSpacing: -0.5 }}
+                sx={{
+                  fontSize: 28,
+                  fontWeight: 700,
+                  color: "#1a1a1a",
+                  letterSpacing: -0.5,
+                }}
               >
-                Welcome back
+                {t("login.welcomeBack")}
               </Typography>
               <Typography
-                sx={{ color: "#757575", fontSize: 14, lineHeight: 1.5, textAlign: "center" }}
+                sx={{
+                  color: "#757575",
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                  textAlign: "center",
+                }}
               >
-                Report and track signals in your community with Dschang's Signal.
+                {t("login.description")}
               </Typography>
             </div>
 
@@ -110,8 +123,14 @@ export default function LoginForm() {
                 transition: "all 0.4s ease",
               }}
             >
+              <SuccessFade
+                show={success}
+                message={t("login.success")}
+                redirectText={t("login.redirecting")}
+              />
+
               <FormTextField
-                label="Email"
+                label={t("login.email")}
                 name="email"
                 type="email"
                 value={values.email}
@@ -120,8 +139,9 @@ export default function LoginForm() {
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
               />
-              <FormTextField
-                label="Password"
+
+              <TextField
+                label={t("login.password")}
                 name="password"
                 type="password"
                 value={values.password}
@@ -136,9 +156,11 @@ export default function LoginForm() {
             </div>
 
             <div className={styles.loginOptions}>
-              <span className={styles.forgotPassword}>Forgot password?</span>
+              <span className={styles.forgotPassword}>
+                {t("login.forgotPassword")}
+              </span>
               <FormControlLabel
-                label="Remember sign in details"
+                label={t("login.rememberMe")}
                 labelPlacement="start"
                 control={
                   <Switch
@@ -149,18 +171,25 @@ export default function LoginForm() {
                     sx={{
                       "& .MuiSwitch-switchBase.Mui-checked": {
                         color: "#7c4dff",
-                        "&:hover": { backgroundColor: "rgba(124, 77, 255, 0.08)" },
+                        "&:hover": {
+                          backgroundColor: "rgba(124, 77, 255, 0.08)",
+                        },
                       },
-                      "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                        backgroundColor: "#7c4dff",
-                      },
+                      "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                        {
+                          backgroundColor: "#7c4dff",
+                        },
                     }}
                   />
                 }
                 sx={{
                   m: 0,
                   gap: 1,
-                  "& .MuiFormControlLabel-label": { fontSize: 15, color: "#555", opacity: 0.8 },
+                  "& .MuiFormControlLabel-label": {
+                    fontSize: 15,
+                    color: "#555",
+                    opacity: 0.8,
+                  },
                 }}
               />
             </div>
@@ -186,11 +215,17 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              {success ? "Redirecting..." : loginMutation.isPending ? "Logging in..." : "Log in"}
+              {success
+                ? t("login.redirecting")
+                : loginMutation.isPending
+                  ? t("login.loading")
+                  : t("login.submit")}
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>OR</Divider>
+              <Divider sx={{ fontSize: "14px", color: "#999" }}>
+                {t("login.or")}
+              </Divider>
             </Box>
 
             <Button
@@ -216,23 +251,30 @@ export default function LoginForm() {
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">Continue with Google</span>
+              <span className="text-inherit font-medium text-lg">
+                {t("login.continueGoogle")}
+              </span>
             </Button>
 
             <div className={styles.signupText}>
-              Don't have an account?{" "}
+              {t("login.noAccount")}{" "}
               <button
                 type="button"
                 className={styles.signupLink}
                 onClick={() => navigate(PATHS.REGISTER)}
                 disabled={success}
               >
-                Sign up
+                {t("login.registerLink")}
               </button>
             </div>
           </div>
 
-          <SnackBar open={isError} message={errorMessage} severity="error" position="bottom-right" />
+          <SnackBar
+            open={isError}
+            message={errorMessage}
+            severity="error"
+            position="bottom-right"
+          />
         </Form>
       )}
     </Formik>

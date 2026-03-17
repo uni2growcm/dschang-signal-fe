@@ -1,19 +1,16 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import axios from "axios";
 import { Form, Formik } from "formik";
-import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router";
+import { PATHS } from "../../routes/PATHS";
+import { authApi } from "../../services";
+import FormTextField from "../forms/shared/FormTextField";
+import SuccessFade from "../forms/shared/SuccessFade";
 import styles from "./RegisterForm.module.css";
 import { registerValidationSchema } from "./registerValidationSchema";
-import { PATHS } from "../../routes/PATHS";
-import { useNavigate } from "react-router";
-import { authApi } from "../../services";
-import SuccessFade from "../forms/shared/SuccessFade";
-import FormTextField from "../forms/shared/FormTextField";
 
 interface RegisterFormValues {
   email: string;
@@ -22,6 +19,7 @@ interface RegisterFormValues {
 }
 
 export default function RegisterForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -38,9 +36,15 @@ export default function RegisterForm() {
       setTimeout(() => {
         navigate(PATHS.LOGIN);
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Register error:", error);
-      const message = error?.response?.data?.message || "Registration failed";
+
+      let message = t("register.error");
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || message;
+      }
+
       alert(message);
     }
   };
@@ -51,26 +55,44 @@ export default function RegisterForm() {
       validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
+      {({
+        values,
+        handleChange,
+        handleBlur,
+        errors,
+        touched,
+        isSubmitting,
+      }) => (
         <Form>
           <div className={styles.registerForm}>
             <div className={styles.registerHeader}>
               <Typography
-                sx={{ fontSize: 28, fontWeight: 700, color: "#1a1a1a", letterSpacing: -0.5 }}
+                sx={{
+                  fontSize: 28,
+                  fontWeight: 700,
+                  color: "#1a1a1a",
+                  letterSpacing: -0.5,
+                }}
               >
-                Create your account
+                {t("register.title")}
               </Typography>
+
               <Typography
-                sx={{ color: "#757575", fontSize: 14, lineHeight: 1.5, textAlign: "center" }}
+                sx={{
+                  color: "#757575",
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                  textAlign: "center",
+                }}
               >
-                Join Dschang's Signal and start reporting issues in your community.
+                {t("register.description")}
               </Typography>
             </div>
 
             <SuccessFade
               show={isSuccess}
-              message="Account created successfully"
-              redirectText="Redirecting to login..."
+              message={t("register.success")}
+              redirectText={t("register.redirect")}
             />
 
             <div
@@ -82,7 +104,7 @@ export default function RegisterForm() {
               }}
             >
               <FormTextField
-                label="Full Name"
+                label={t("register.fullName")}
                 name="fullName"
                 value={values.fullName}
                 onChange={handleChange}
@@ -90,8 +112,9 @@ export default function RegisterForm() {
                 error={touched.fullName && Boolean(errors.fullName)}
                 helperText={touched.fullName && errors.fullName}
               />
-              <FormTextField
-                label="Email"
+
+              <TextField
+                label={t("register.email")}
                 name="email"
                 type="email"
                 value={values.email}
@@ -100,8 +123,9 @@ export default function RegisterForm() {
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
               />
-              <FormTextField
-                label="Password"
+
+              <TextField
+                label={t("register.password")}
                 name="password"
                 type="password"
                 value={values.password}
@@ -129,11 +153,17 @@ export default function RegisterForm() {
                 "&:hover": { backgroundColor: "#6b3edb" },
               }}
             >
-              {isSuccess ? "Redirecting..." : isSubmitting ? "Registering..." : "Register"}
+              {isSuccess
+                ? t("register.redirecting")
+                : isSubmitting
+                  ? t("register.loading")
+                  : t("register.submit")}
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider>OR</Divider>
+              <Divider sx={{ fontSize: "14px", color: "#999" }}>
+                {t("register.or")}
+              </Divider>
             </Box>
 
             <Button
@@ -153,18 +183,20 @@ export default function RegisterForm() {
               }}
             >
               <FcGoogle size={25} />
-              Continue with Google
+              <span className="text-inherit font-medium text-lg">
+                {t("register.continueGoogle")}
+              </span>
             </Button>
 
             <div className={styles.loginText}>
-              Already have an account?{" "}
+              {t("register.haveAccount")}{" "}
               <button
                 type="button"
                 className={styles.loginLink}
                 onClick={() => navigate(PATHS.LOGIN)}
                 disabled={isSuccess}
               >
-                Log in
+                {t("register.loginLink")}
               </button>
             </div>
           </div>

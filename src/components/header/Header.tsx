@@ -1,16 +1,18 @@
-import { Link } from "react-router";
-import Logo from "../logo/Logo";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { Avatar, Button, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { Link } from "react-router";
+import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
+import Logo from "../logo/Logo";
 
 export default function Header() {
+  const { t } = useTranslation();
   const token = localStorage.getItem("token");
 
   function stringToColor(string: string) {
     let hash = 0;
     let i;
 
-    /* eslint-disable no-bitwise */
     for (i = 0; i < string.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -21,7 +23,6 @@ export default function Header() {
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
     }
-    /* eslint-enable no-bitwise */
 
     return color;
   }
@@ -41,6 +42,7 @@ export default function Header() {
       <Logo className="text-black" textcolor="black" />
       {token ? (
         <nav className="flex items-center lg:gap-4">
+          <LanguageSwitcher />
           <Button
             variant="text"
             startIcon={
@@ -70,14 +72,15 @@ export default function Header() {
           </IconButton>
         </nav>
       ) : (
-        <nav>
+        <nav className="flex items-center gap-5">
+          <LanguageSwitcher />
           <ul className="flex space-x-5">
             <li>
               <Link
                 to="/"
                 className="text-xl text-gray-700 transition-all duration-300 ease-in-out hover:text-primary hover:underline hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary active:text-primary font-semibold"
               >
-                Home
+                {t("common.home")}
               </Link>
             </li>
             <li>
@@ -85,7 +88,7 @@ export default function Header() {
                 to="/login"
                 className="text-xl text-gray-700 transition-all duration-300 ease-in-out hover:text-primary hover:underline hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary active:text-primary font-semibold"
               >
-                Login
+                {t("login.title")}
               </Link>
             </li>
             <li>
@@ -93,7 +96,7 @@ export default function Header() {
                 to="/register"
                 className="text-xl text-gray-700 transition-all duration-300 ease-in-out hover:text-primary hover:underline hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary active:text-primary font-semibold"
               >
-                Register
+                {t("register.title")}
               </Link>
             </li>
           </ul>
