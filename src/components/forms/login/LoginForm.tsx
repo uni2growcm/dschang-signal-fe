@@ -18,7 +18,7 @@ import { useState } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
 import LinearProgressBar from "../../progressBar/LinearProgress";
 import SnackBar from "../../snackBar/SnackBar";
-import type { ResponseError } from "../../../api";
+import { ResponseError } from "../../../api";
 import { useMutation } from "@tanstack/react-query";
 
 interface LoginFormValues {
@@ -56,9 +56,14 @@ export default function LoginForm() {
     onError: (error: unknown) => {
       const err = error as ResponseError;
       const message =
-        err.response.status == 400
+        err.response?.status == 400
           ? "Invalid credentials"
           : "Login failed, please check your credentials.";
+      if (!(error instanceof ResponseError)) {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+        setIsError(true);
+        return;
+      }
       setErrorMessage(message);
       setIsError(true);
     },

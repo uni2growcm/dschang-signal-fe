@@ -3,11 +3,12 @@ import LoginPage from "../pages/login/LoginPage";
 import NotFound from "../pages/notFound/NotFound";
 import RegisterPage from "../pages/register/RegisterPage";
 import { PATHS } from "./PATHS";
+import Home from "../pages/home/Home";
 
 export const clientsRoutes = createBrowserRouter([
   {
     index: true,
-    Component: LoginPage,
+    Component: Home,
   },
   {
     path: PATHS.LOGIN,
