@@ -7,19 +7,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
-import { FcGoogle } from "react-icons/fc";
-import { loginValidationSchema } from "./schema";
-import styles from "./LoginForm.module.css";
-import { PATHS } from "../../../routes/PATHS";
-import { useNavigate } from "react-router";
-import { authApi } from "../../../services";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router";
+import { ResponseError } from "../../../api";
+import { PATHS } from "../../../routes/PATHS";
+import { authApi } from "../../../services";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
 import LinearProgressBar from "../../progressBar/LinearProgress";
 import SnackBar from "../../snackBar/SnackBar";
-import { ResponseError } from "../../../api";
-import { useMutation } from "@tanstack/react-query";
+import styles from "./LoginForm.module.css";
+import { loginValidationSchema } from "./schema";
 
 interface LoginFormValues {
   email: string;
@@ -28,6 +29,7 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
+  const { t } = useTranslation();
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -97,7 +99,7 @@ export default function LoginForm() {
                   letterSpacing: -0.5,
                 }}
               >
-                Welcome back
+                {t("login.welcomeBack")}
               </Typography>
               <Typography
                 sx={{
@@ -107,14 +109,13 @@ export default function LoginForm() {
                   textAlign: "center",
                 }}
               >
-                Report and track signals in your community with Dschang's
-                Signal.
+                {t("login.description")}
               </Typography>
             </div>
 
             <div className={styles.loginInputs}>
               <TextField
-                label="Email"
+                label={t("login.email")}
                 name="email"
                 type="email"
                 fullWidth
@@ -146,7 +147,7 @@ export default function LoginForm() {
               />
 
               <TextField
-                label="Password"
+                label={t("login.password")}
                 name="password"
                 type="password"
                 fullWidth
@@ -182,9 +183,11 @@ export default function LoginForm() {
             </div>
 
             <div className={styles.loginOptions}>
-              <span className={styles.forgotPassword}>Forgot password?</span>
+              <span className={styles.forgotPassword}>
+                {t("login.forgotPassword")}
+              </span>
               <FormControlLabel
-                label="Remember sign in details"
+                label={t("login.rememberMe")}
                 labelPlacement="start"
                 control={
                   <Switch
@@ -238,11 +241,17 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              {loginMutation.isPending ? <LinearProgressBar /> : "Log in"}
+              {loginMutation.isPending ? (
+                <LinearProgressBar />
+              ) : (
+                t("login.submit")
+              )}
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>OR</Divider>
+              <Divider sx={{ fontSize: "14px", color: "#999" }}>
+                {t("login.or")}
+              </Divider>
             </Box>
 
             <Button
@@ -268,18 +277,18 @@ export default function LoginForm() {
             >
               <FcGoogle size={25} />
               <span className="text-inherit font-medium text-lg">
-                Continue with Google
+                {t("login.continueGoogle")}
               </span>
             </Button>
 
             <div className={styles.signupText}>
-              Don't have an account?{" "}
+              {t("login.noAccount")}{" "}
               <button
                 type="button"
                 className={styles.signupLink}
                 onClick={() => navigate(PATHS.REGISTER)}
               >
-                Sign up
+                {t("login.registerLink")}
               </button>
             </div>
           </div>

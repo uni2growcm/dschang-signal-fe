@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "Dschang's Signal",
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "home": "Home",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "login": {
+    "title": "Sign In",
+    "welcomeBack": "Welcome back",
+    "description": "Report and track signals in your community with Dschang's Signal.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log in",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Register here",
+    "invalidEmail": "Invalid email address",
+    "passwordRequired": "Password is required",
+    "quote": "A simple way to report and track issues in our community.",
+    "quoter": "Marie Nguemo",
+    "quoterTitle": "Community Leader, Dschang",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember sign in details",
+    "continueGoogle": "Continue with Google",
+    "or": "OR"
+  },
+  "register": {
+    "title": "Create Account",
+    "description": "Join Dschang's Signal and start reporting issues in your community.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Register",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Log in",
+    "continueGoogle": "Continue with Google",
+    "or": "OR",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMatch": "Passwords do not match",
+    "fullNameMin": "Full name must be at least 2 characters",
+    "fullNameMax": "Full name must be less than 50 characters",
+    "fullNameRequired": "Full name is required"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "message": "Sorry, the page you're looking for doesn't exist or has been moved.",
+    "backHome": "Go back to Home"
+  },
+  "reports": {
+    "title": "Reports",
+    "newReport": "New Report",
+    "category": "Category",
+    "status": "Status",
+    "date": "Date",
+    "actions": "Actions",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "noReports": "No reports yet"
+  },
+  "categories": {
+    "pothole": "Pothole",
+    "trafficLight": "Traffic Light",
+    "tree": "Fallen Tree",
+    "streetLight": "Street Light",
+    "other": "Other"
+  },
+  "registerPage": {
+    "quote": "Join us to make a difference in your community.",
+    "author": "Marie Nguemo",
+    "role": "Community Leader, Dschang"
+  }
+}

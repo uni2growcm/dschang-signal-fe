@@ -1,16 +1,11 @@
-import {
-  Box,
-  Button,
-  Divider,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { FcGoogle } from "react-icons/fc";
-import styles from "./RegisterForm.module.css"; 
-import { registerValidationSchema } from "./registerValidationSchema";
-import { PATHS } from "../../routes/PATHS";
 import { useNavigate } from "react-router";
+import { PATHS } from "../../routes/PATHS";
+import styles from "./RegisterForm.module.css";
+import { registerValidationSchema } from "./registerValidationSchema";
 
 interface RegisterFormValues {
   email: string;
@@ -19,6 +14,7 @@ interface RegisterFormValues {
 }
 
 export default function RegisterForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const handleSubmit = (values: RegisterFormValues) => {
     console.log("Register attempt:", values);
@@ -46,7 +42,7 @@ export default function RegisterForm() {
                   letterSpacing: -0.5,
                 }}
               >
-                Create your account
+                {t("register.title")}
               </Typography>
               <Typography
                 sx={{
@@ -56,13 +52,13 @@ export default function RegisterForm() {
                   textAlign: "center",
                 }}
               >
-                Join Dschang's Signal and start reporting issues in your community.
+                {t("register.description")}
               </Typography>
             </div>
 
             <div className={styles.registerInputs}>
               <TextField
-                label="Full Name"
+                label={t("register.fullName")}
                 name="fullName"
                 type="text"
                 fullWidth
@@ -89,7 +85,7 @@ export default function RegisterForm() {
               />
 
               <TextField
-                label="Email"
+                label={t("register.email")}
                 name="email"
                 type="email"
                 fullWidth
@@ -116,7 +112,7 @@ export default function RegisterForm() {
               />
 
               <TextField
-                label="Password"
+                label={t("register.password")}
                 name="password"
                 type="password"
                 fullWidth
@@ -162,11 +158,13 @@ export default function RegisterForm() {
                 marginTop: "8px",
               }}
             >
-              Register
+              {t("register.submit")}
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>OR</Divider>
+              <Divider sx={{ fontSize: "14px", color: "#999" }}>
+                {t("register.or")}
+              </Divider>
             </Box>
 
             <Button
@@ -191,12 +189,20 @@ export default function RegisterForm() {
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">Continue with Google</span>
+              <span className="text-inherit font-medium text-lg">
+                {t("register.continueGoogle")}
+              </span>
             </Button>
 
             <div className={styles.loginText}>
-              Already have an account?{" "}
-              <button type="button" className={styles.loginLink} onClick={() => navigate(PATHS.LOGIN)}>Log in</button>
+              {t("register.haveAccount")}{" "}
+              <button
+                type="button"
+                className={styles.loginLink}
+                onClick={() => navigate(PATHS.LOGIN)}
+              >
+                {t("register.loginLink")}
+              </button>
             </div>
           </div>
         </Form>

@@ -1,0 +1,84 @@
+{
+  "common": {
+    "appName": "Segnale di Dschang",
+    "welcome": "Benvenuto",
+    "logout": "Esci",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "success": "Successo",
+    "home": "Home",
+    "profile": "Profilo",
+    "settings": "Impostazioni"
+  },
+  "login": {
+    "title": "Accedi",
+    "welcomeBack": "Bentornato",
+    "description": "Segnala e traccia i problemi nella tua comunità con Segnale di Dschang.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Accedi",
+    "noAccount": "Non hai un account?",
+    "registerLink": "Registrati qui",
+    "invalidEmail": "Indirizzo email non valido",
+    "passwordRequired": "La password è richiesta",
+    "quote": "Un modo semplice per segnalare e tracciare i problemi nella nostra comunità.",
+    "quoter": "Marie Nguemo",
+    "quoterTitle": "Leader della comunità, Dschang",
+    "forgotPassword": "Password dimenticata?",
+    "rememberMe": "Ricordami",
+    "continueGoogle": "Continua con Google",
+    "or": "O"
+  },
+  "register": {
+    "title": "Crea Account",
+    "description": "Unisciti a Segnale di Dschang e inizia a segnalare i problemi della tua comunità.",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "fullName": "Nome completo",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Conferma Password",
+    "submit": "Registrati",
+    "haveAccount": "Hai già un account?",
+    "loginLink": "Accedi",
+    "continueGoogle": "Continua con Google",
+    "or": "O",
+    "firstNameRequired": "Il nome è richiesto",
+    "lastNameRequired": "Il cognome è richiesto",
+    "emailRequired": "L'email è richiesta",
+    "invalidEmail": "Indirizzo email non valido",
+    "passwordRequired": "La password è richiesta",
+    "passwordMin": "La password deve contenere almeno 8 caratteri",
+    "passwordMatch": "Le password non corrispondono"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Pagina non trovata",
+    "message": "Scusa, la pagina che stai cercando non esiste o è stata spostata.",
+    "backHome": "Torna alla home"
+  },
+  "reports": {
+    "title": "Rapporti",
+    "newReport": "Nuovo rapporto",
+    "category": "Categoria",
+    "status": "Stato",
+    "date": "Data",
+    "actions": "Azioni",
+    "view": "Visualizza",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "noReports": "Nessun rapporto al momento"
+  },
+  "categories": {
+    "pothole": "Buca",
+    "trafficLight": "Semaforo",
+    "tree": "Albero caduto",
+    "streetLight": "Lampione stradale",
+    "other": "Altro"
+  },
+  "registerPage": {
+    "quote": "Unisciti a noi per fare la differenza nella tua comunità.",
+    "author": "Marie Nguemo",
+    "role": "Leader della comunità, Dschang"
+  }
+}

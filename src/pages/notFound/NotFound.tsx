@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { useNavigate } from "react-router";
 import styles from "./notFound.module.css";
 
@@ -8,13 +9,11 @@ function NotFound() {
   };
   return (
     <div className={styles.container}>
-      <h1 className={styles.code}>404</h1>
-      <h2 className={styles.title}>Page not found</h2>
-      <p className={styles.text}>
-        Sorry, the page you're looking for doesn't exist or has been moved.
-      </p>
+      <h1 className={styles.code}>{t("notFound.code")}</h1>
+      <h2 className={styles.title}>{t("notFound.title")}</h2>
+      <p className={styles.text}>{t("notFound.text")}</p>
       <button className={styles.button} onClick={handleGoBack}>
-        Go back to Home
+        {t("notFound.button")}
       </button>
     </div>
   );
