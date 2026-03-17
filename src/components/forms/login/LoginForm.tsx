@@ -2,10 +2,8 @@ import {
   Box,
   Button,
   Divider,
-  Fade,
   FormControlLabel,
   Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -17,10 +15,11 @@ import { useNavigate } from "react-router";
 import { authApi } from "../../../services";
 import { useState } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
-import CircularProgressBar from "../../progressBar/CircularProgressBar";
 import SnackBar from "../../snackBar/SnackBar";
 import { ResponseError } from "../../../api";
 import { useMutation } from "@tanstack/react-query";
+import SuccessFade from "../shared/SuccessFade";
+import FormTextField from "../shared/FormTextField";
 
 interface LoginFormValues {
   email: string;
@@ -77,11 +76,7 @@ export default function LoginForm() {
 
   return (
     <Formik
-      initialValues={{
-        email: "",
-        password: "",
-        remember: false,
-      }}
+      initialValues={{ email: "", password: "", remember: false }}
       validationSchema={loginValidationSchema}
       onSubmit={loginMutation.mutate}
     >
@@ -90,59 +85,23 @@ export default function LoginForm() {
           <div className={styles.loginForm}>
             <div className={styles.loginHeader}>
               <Typography
-                sx={{
-                  fontSize: 28,
-                  fontWeight: 700,
-                  color: "#1a1a1a",
-                  letterSpacing: -0.5,
-                }}
+                sx={{ fontSize: 28, fontWeight: 700, color: "#1a1a1a", letterSpacing: -0.5 }}
               >
                 Welcome back
               </Typography>
               <Typography
-                sx={{
-                  color: "#757575",
-                  fontSize: 14,
-                  lineHeight: 1.5,
-                  textAlign: "center",
-                }}
+                sx={{ color: "#757575", fontSize: 14, lineHeight: 1.5, textAlign: "center" }}
               >
-                Report and track signals in your community with Dschang's
-                Signal.
+                Report and track signals in your community with Dschang's Signal.
               </Typography>
             </div>
 
-            <Fade in={success} timeout={600}>
-              <Box
-                sx={{
-                  textAlign: "center",
-                  mb: success ? 2 : 0,
-                  transform: success ? "scale(1)" : "scale(0.95)",
-                  transition: "all 0.4s ease",
-                }}
-              >
-                {success && (
-                  <>
-                    <CircularProgressBar />
-                    <Typography
-                      sx={{
-                        mt: 1,
-                        fontWeight: 600,
-                        color: "#4caf50",
-                        fontSize: 14,
-                      }}
-                    >
-                      Login successful
-                    </Typography>
-                    <Typography sx={{ fontSize: 12, color: "#888" }}>
-                      Redirecting...
-                    </Typography>
-                  </>
-                )}
-              </Box>
-            </Fade>
+            <SuccessFade
+              show={success}
+              message="Login successful"
+              redirectText="Redirecting..."
+            />
 
-            {/* Inputs grisés après succès */}
             <div
               className={styles.loginInputs}
               style={{
@@ -151,44 +110,25 @@ export default function LoginForm() {
                 transition: "all 0.4s ease",
               }}
             >
-              <TextField
+              <FormTextField
                 label="Email"
                 name="email"
                 type="email"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": { borderColor: "#7c4dff" },
-                  },
-                }}
               />
-
-              <TextField
+              <FormTextField
                 label="Password"
                 name="password"
                 type="password"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": { borderColor: "#7c4dff" },
-                  },
-                }}
               />
               {errorMessage && (
                 <p className="text-error -mt-2 text-center">{errorMessage}</p>
@@ -209,9 +149,7 @@ export default function LoginForm() {
                     sx={{
                       "& .MuiSwitch-switchBase.Mui-checked": {
                         color: "#7c4dff",
-                        "&:hover": {
-                          backgroundColor: "rgba(124, 77, 255, 0.08)",
-                        },
+                        "&:hover": { backgroundColor: "rgba(124, 77, 255, 0.08)" },
                       },
                       "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
                         backgroundColor: "#7c4dff",
@@ -222,11 +160,7 @@ export default function LoginForm() {
                 sx={{
                   m: 0,
                   gap: 1,
-                  "& .MuiFormControlLabel-label": {
-                    fontSize: 15,
-                    color: "#555",
-                    opacity: 0.8,
-                  },
+                  "& .MuiFormControlLabel-label": { fontSize: 15, color: "#555", opacity: 0.8 },
                 }}
               />
             </div>
@@ -252,11 +186,7 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              {success
-                ? "Redirecting..."
-                : loginMutation.isPending
-                ? "Logging in..."
-                : "Log in"}
+              {success ? "Redirecting..." : loginMutation.isPending ? "Logging in..." : "Log in"}
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -286,9 +216,7 @@ export default function LoginForm() {
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">
-                Continue with Google
-              </span>
+              <span className="text-inherit font-medium text-lg">Continue with Google</span>
             </Button>
 
             <div className={styles.signupText}>
@@ -304,12 +232,7 @@ export default function LoginForm() {
             </div>
           </div>
 
-          <SnackBar
-            open={isError}
-            message={errorMessage}
-            severity="error"
-            position="bottom-right"
-          />
+          <SnackBar open={isError} message={errorMessage} severity="error" position="bottom-right" />
         </Form>
       )}
     </Formik>

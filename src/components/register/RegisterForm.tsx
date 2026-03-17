@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   Divider,
-  TextField,
   Typography,
-  Fade,
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import { FcGoogle } from "react-icons/fc";
@@ -14,7 +12,9 @@ import { registerValidationSchema } from "./registerValidationSchema";
 import { PATHS } from "../../routes/PATHS";
 import { useNavigate } from "react-router";
 import { authApi } from "../../services";
-import CircularProgressBar from "../progressBar/CircularProgressBar";
+import SuccessFade from "../forms/shared/SuccessFade";
+import FormTextField from "../forms/shared/FormTextField";
+
 interface RegisterFormValues {
   email: string;
   fullName: string;
@@ -34,95 +34,44 @@ export default function RegisterForm() {
           password: values.password,
         },
       });
-
       setIsSuccess(true);
       setTimeout(() => {
         navigate(PATHS.LOGIN);
       }, 2000);
-
     } catch (error: any) {
       console.error("Register error:", error);
-
-      const message =
-        error?.response?.data?.message ||
-        "Registration failed";
-
+      const message = error?.response?.data?.message || "Registration failed";
       alert(message);
     }
   };
 
   return (
     <Formik
-      initialValues={{
-        email: "",
-        fullName: "",
-        password: "",
-      }}
+      initialValues={{ email: "", fullName: "", password: "" }}
       validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <div className={styles.registerForm}>
-
             <div className={styles.registerHeader}>
               <Typography
-                sx={{
-                  fontSize: 28,
-                  fontWeight: 700,
-                  color: "#1a1a1a",
-                  letterSpacing: -0.5,
-                }}
+                sx={{ fontSize: 28, fontWeight: 700, color: "#1a1a1a", letterSpacing: -0.5 }}
               >
                 Create your account
               </Typography>
-
               <Typography
-                sx={{
-                  color: "#757575",
-                  fontSize: 14,
-                  lineHeight: 1.5,
-                  textAlign: "center",
-                }}
+                sx={{ color: "#757575", fontSize: 14, lineHeight: 1.5, textAlign: "center" }}
               >
                 Join Dschang's Signal and start reporting issues in your community.
               </Typography>
             </div>
 
-            <Fade in={isSuccess} timeout={600}>
-              <Box
-                sx={{
-                  textAlign: "center",
-                  mb: isSuccess ? 2 : 0,
-                  transform: isSuccess ? "scale(1)" : "scale(0.95)",
-                  transition: "all 0.4s ease",
-                }}
-              >
-                {isSuccess && (
-                  <>
-                    <CircularProgressBar />
-                    <Typography
-                      sx={{
-                        mt: 1,
-                        fontWeight: 600,
-                        color: "#4caf50",
-                        fontSize: 14,
-                      }}
-                    >
-                      Account created successfully
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: 12,
-                        color: "#888",
-                      }}
-                    >
-                      Redirecting to login...
-                    </Typography>
-                  </>
-                )}
-              </Box>
-            </Fade>
+            <SuccessFade
+              show={isSuccess}
+              message="Account created successfully"
+              redirectText="Redirecting to login..."
+            />
 
             <div
               className={styles.registerInputs}
@@ -132,37 +81,29 @@ export default function RegisterForm() {
                 transition: "all 0.4s ease",
               }}
             >
-              <TextField
+              <FormTextField
                 label="Full Name"
                 name="fullName"
-                fullWidth
-                size="small"
                 value={values.fullName}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.fullName && Boolean(errors.fullName)}
                 helperText={touched.fullName && errors.fullName}
               />
-
-              <TextField
+              <FormTextField
                 label="Email"
                 name="email"
                 type="email"
-                fullWidth
-                size="small"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
               />
-
-              <TextField
+              <FormTextField
                 label="Password"
                 name="password"
                 type="password"
-                fullWidth
-                size="small"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -185,16 +126,10 @@ export default function RegisterForm() {
                 textTransform: "none",
                 marginTop: "8px",
                 transition: "all 0.3s ease",
-                "&:hover": {
-                  backgroundColor: "#6b3edb",
-                },
+                "&:hover": { backgroundColor: "#6b3edb" },
               }}
             >
-              {isSuccess
-                ? "Redirecting..."
-                : isSubmitting
-                ? "Registering..."
-                : "Register"}
+              {isSuccess ? "Redirecting..." : isSubmitting ? "Registering..." : "Register"}
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -232,7 +167,6 @@ export default function RegisterForm() {
                 Log in
               </button>
             </div>
-
           </div>
         </Form>
       )}
