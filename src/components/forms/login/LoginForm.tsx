@@ -17,8 +17,9 @@ import { ResponseError } from "../../../api";
 import { PATHS } from "../../../routes/PATHS";
 import { authApi } from "../../../services";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
-import LinearProgressBar from "../../progressBar/LinearProgress";
 import SnackBar from "../../snackBar/SnackBar";
+import FormTextField from "../shared/FormTextField";
+import SuccessFade from "../shared/SuccessFade";
 import styles from "./LoginForm.module.css";
 import { loginValidationSchema } from "./schema";
 
@@ -72,18 +73,13 @@ export default function LoginForm() {
     onSettled: () => {
       setTimeout(() => {
         setIsError(false);
-        setSuccess(false);
       }, 1500);
     },
   });
 
   return (
     <Formik
-      initialValues={{
-        email: "",
-        password: "",
-        remember: false,
-      }}
+      initialValues={{ email: "", password: "", remember: false }}
       validationSchema={loginValidationSchema}
       onSubmit={loginMutation.mutate}
     >
@@ -113,69 +109,46 @@ export default function LoginForm() {
               </Typography>
             </div>
 
-            <div className={styles.loginInputs}>
-              <TextField
+            <SuccessFade
+              show={success}
+              message="Login successful"
+              redirectText="Redirecting..."
+            />
+
+            <div
+              className={styles.loginInputs}
+              style={{
+                opacity: success ? 0.5 : 1,
+                pointerEvents: success ? "none" : "auto",
+                transition: "all 0.4s ease",
+              }}
+            >
+              <SuccessFade
+                show={success}
+                message={t("login.success")}
+                redirectText={t("login.redirecting")}
+              />
+
+              <FormTextField
                 label={t("login.email")}
                 name="email"
                 type="email"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
-                  },
-                }}
               />
 
               <TextField
                 label={t("login.password")}
                 name="password"
                 type="password"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
-                  },
-                }}
               />
               {errorMessage && (
                 <p className="text-error -mt-2 text-center">{errorMessage}</p>
@@ -222,7 +195,7 @@ export default function LoginForm() {
             </div>
 
             <Button
-              disabled={loginMutation.isPending}
+              disabled={loginMutation.isPending || success}
               type="submit"
               fullWidth
               sx={{
@@ -234,6 +207,7 @@ export default function LoginForm() {
                 fontSize: "15px",
                 textTransform: "none",
                 boxShadow: "0 4px 12px rgba(124, 77, 255, 0.3)",
+                transition: "all 0.3s ease",
                 "&:hover": {
                   backgroundColor: "#6b3edb",
                   boxShadow: "0 6px 16px rgba(124, 77, 255, 0.4)",
@@ -241,11 +215,11 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              {loginMutation.isPending ? (
-                <LinearProgressBar />
-              ) : (
-                t("login.submit")
-              )}
+              {success
+                ? t("login.redirecting")
+                : loginMutation.isPending
+                  ? t("login.loading")
+                  : t("login.submit")}
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -257,6 +231,7 @@ export default function LoginForm() {
             <Button
               variant="outlined"
               fullWidth
+              disabled={success}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -287,21 +262,17 @@ export default function LoginForm() {
                 type="button"
                 className={styles.signupLink}
                 onClick={() => navigate(PATHS.REGISTER)}
+                disabled={success}
               >
                 {t("login.registerLink")}
               </button>
             </div>
           </div>
+
           <SnackBar
             open={isError}
             message={errorMessage}
             severity="error"
-            position="bottom-right"
-          />
-          <SnackBar
-            open={success}
-            message="Login Successful"
-            severity="success"
             position="bottom-right"
           />
         </Form>
