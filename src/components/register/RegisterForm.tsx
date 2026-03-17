@@ -2,15 +2,18 @@ import {
   Box,
   Button,
   Divider,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import { FcGoogle } from "react-icons/fc";
-import styles from "./RegisterForm.module.css"; 
+import { useState } from "react";
+import styles from "./RegisterForm.module.css";
 import { registerValidationSchema } from "./registerValidationSchema";
 import { PATHS } from "../../routes/PATHS";
 import { useNavigate } from "react-router";
+import { authApi } from "../../services";
+import SuccessFade from "../forms/shared/SuccessFade";
+import FormTextField from "../forms/shared/FormTextField";
 
 interface RegisterFormValues {
   email: string;
@@ -20,132 +23,99 @@ interface RegisterFormValues {
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const handleSubmit = (values: RegisterFormValues) => {
-    console.log("Register attempt:", values);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = async (values: RegisterFormValues) => {
+    try {
+      await authApi.register({
+        registerRequest: {
+          fullName: values.fullName,
+          email: values.email,
+          password: values.password,
+        },
+      });
+      setIsSuccess(true);
+      setTimeout(() => {
+        navigate(PATHS.LOGIN);
+      }, 2000);
+    } catch (error: any) {
+      console.error("Register error:", error);
+      const message = error?.response?.data?.message || "Registration failed";
+      alert(message);
+    }
   };
 
   return (
     <Formik
-      initialValues={{
-        email: "",
-        fullName: "",
-        password: "",
-      }}
+      initialValues={{ email: "", fullName: "", password: "" }}
       validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values, handleChange, handleBlur, errors, touched }) => (
+      {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <div className={styles.registerForm}>
             <div className={styles.registerHeader}>
               <Typography
-                sx={{
-                  fontSize: 28,
-                  fontWeight: 700,
-                  color: "#1a1a1a",
-                  letterSpacing: -0.5,
-                }}
+                sx={{ fontSize: 28, fontWeight: 700, color: "#1a1a1a", letterSpacing: -0.5 }}
               >
                 Create your account
               </Typography>
               <Typography
-                sx={{
-                  color: "#757575",
-                  fontSize: 14,
-                  lineHeight: 1.5,
-                  textAlign: "center",
-                }}
+                sx={{ color: "#757575", fontSize: 14, lineHeight: 1.5, textAlign: "center" }}
               >
                 Join Dschang's Signal and start reporting issues in your community.
               </Typography>
             </div>
 
-            <div className={styles.registerInputs}>
-              <TextField
+            <SuccessFade
+              show={isSuccess}
+              message="Account created successfully"
+              redirectText="Redirecting to login..."
+            />
+
+            <div
+              className={styles.registerInputs}
+              style={{
+                opacity: isSuccess ? 0.5 : 1,
+                pointerEvents: isSuccess ? "none" : "auto",
+                transition: "all 0.4s ease",
+              }}
+            >
+              <FormTextField
                 label="Full Name"
                 name="fullName"
-                type="text"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.fullName}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.fullName && Boolean(errors.fullName)}
                 helperText={touched.fullName && errors.fullName}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                }}
               />
-
-              <TextField
+              <FormTextField
                 label="Email"
                 name="email"
                 type="email"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                }}
               />
-
-              <TextField
+              <FormTextField
                 label="Password"
                 name="password"
                 type="password"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                }}
               />
             </div>
 
             <Button
               type="submit"
               fullWidth
+              disabled={isSubmitting || isSuccess}
               sx={{
                 backgroundColor: "#7c4dff",
                 color: "white",
@@ -154,24 +124,22 @@ export default function RegisterForm() {
                 fontWeight: 600,
                 fontSize: "15px",
                 textTransform: "none",
-                boxShadow: "0 4px 12px rgba(124, 77, 255, 0.3)",
-                "&:hover": {
-                  backgroundColor: "#6b3edb",
-                  boxShadow: "0 6px 16px rgba(124, 77, 255, 0.4)",
-                },
                 marginTop: "8px",
+                transition: "all 0.3s ease",
+                "&:hover": { backgroundColor: "#6b3edb" },
               }}
             >
-              Register
+              {isSuccess ? "Redirecting..." : isSubmitting ? "Registering..." : "Register"}
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>OR</Divider>
+              <Divider>OR</Divider>
             </Box>
 
             <Button
               variant="outlined"
               fullWidth
+              disabled={isSuccess}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -182,21 +150,22 @@ export default function RegisterForm() {
                 border: "1px solid #ddd",
                 color: "#333",
                 textTransform: "none",
-                fontSize: "15px",
-                fontWeight: 500,
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.02)",
-                  border: "1px solid #bbb",
-                },
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">Continue with Google</span>
+              Continue with Google
             </Button>
 
             <div className={styles.loginText}>
               Already have an account?{" "}
-              <button type="button" className={styles.loginLink} onClick={() => navigate(PATHS.LOGIN)}>Log in</button>
+              <button
+                type="button"
+                className={styles.loginLink}
+                onClick={() => navigate(PATHS.LOGIN)}
+                disabled={isSuccess}
+              >
+                Log in
+              </button>
             </div>
           </div>
         </Form>
