@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Divider,
+  Fade,
   FormControlLabel,
   Switch,
   TextField,
@@ -16,7 +17,7 @@ import { useNavigate } from "react-router";
 import { authApi } from "../../../services";
 import { useState } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
-import LinearProgressBar from "../../progressBar/LinearProgress";
+import CircularProgressBar from "../../progressBar/CircularProgressBar";
 import SnackBar from "../../snackBar/SnackBar";
 import { ResponseError } from "../../../api";
 import { useMutation } from "@tanstack/react-query";
@@ -70,7 +71,6 @@ export default function LoginForm() {
     onSettled: () => {
       setTimeout(() => {
         setIsError(false);
-        setSuccess(false);
       }, 1500);
     },
   });
@@ -112,7 +112,45 @@ export default function LoginForm() {
               </Typography>
             </div>
 
-            <div className={styles.loginInputs}>
+            <Fade in={success} timeout={600}>
+              <Box
+                sx={{
+                  textAlign: "center",
+                  mb: success ? 2 : 0,
+                  transform: success ? "scale(1)" : "scale(0.95)",
+                  transition: "all 0.4s ease",
+                }}
+              >
+                {success && (
+                  <>
+                    <CircularProgressBar />
+                    <Typography
+                      sx={{
+                        mt: 1,
+                        fontWeight: 600,
+                        color: "#4caf50",
+                        fontSize: 14,
+                      }}
+                    >
+                      Login successful
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, color: "#888" }}>
+                      Redirecting...
+                    </Typography>
+                  </>
+                )}
+              </Box>
+            </Fade>
+
+            {/* Inputs grisés après succès */}
+            <div
+              className={styles.loginInputs}
+              style={{
+                opacity: success ? 0.5 : 1,
+                pointerEvents: success ? "none" : "auto",
+                transition: "all 0.4s ease",
+              }}
+            >
               <TextField
                 label="Email"
                 name="email"
@@ -128,19 +166,7 @@ export default function LoginForm() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
+                    "&.Mui-focused fieldset": { borderColor: "#7c4dff" },
                   },
                 }}
               />
@@ -160,19 +186,7 @@ export default function LoginForm() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
+                    "&.Mui-focused fieldset": { borderColor: "#7c4dff" },
                   },
                 }}
               />
@@ -199,10 +213,9 @@ export default function LoginForm() {
                           backgroundColor: "rgba(124, 77, 255, 0.08)",
                         },
                       },
-                      "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                        {
-                          backgroundColor: "#7c4dff",
-                        },
+                      "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                        backgroundColor: "#7c4dff",
+                      },
                     }}
                   />
                 }
@@ -219,7 +232,7 @@ export default function LoginForm() {
             </div>
 
             <Button
-              disabled={loginMutation.isPending}
+              disabled={loginMutation.isPending || success}
               type="submit"
               fullWidth
               sx={{
@@ -231,6 +244,7 @@ export default function LoginForm() {
                 fontSize: "15px",
                 textTransform: "none",
                 boxShadow: "0 4px 12px rgba(124, 77, 255, 0.3)",
+                transition: "all 0.3s ease",
                 "&:hover": {
                   backgroundColor: "#6b3edb",
                   boxShadow: "0 6px 16px rgba(124, 77, 255, 0.4)",
@@ -238,7 +252,11 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              {loginMutation.isPending ? <LinearProgressBar /> : "Log in"}
+              {success
+                ? "Redirecting..."
+                : loginMutation.isPending
+                ? "Logging in..."
+                : "Log in"}
             </Button>
 
             <Box sx={{ my: 2 }}>
@@ -248,6 +266,7 @@ export default function LoginForm() {
             <Button
               variant="outlined"
               fullWidth
+              disabled={success}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -278,21 +297,17 @@ export default function LoginForm() {
                 type="button"
                 className={styles.signupLink}
                 onClick={() => navigate(PATHS.REGISTER)}
+                disabled={success}
               >
                 Sign up
               </button>
             </div>
           </div>
+
           <SnackBar
             open={isError}
             message={errorMessage}
             severity="error"
-            position="bottom-right"
-          />
-          <SnackBar
-            open={success}
-            message="Login Successful"
-            severity="success"
             position="bottom-right"
           />
         </Form>
