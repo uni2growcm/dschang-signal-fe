@@ -59,7 +59,8 @@
     "invalidEmail": "Email non valida",
     "passwordRequired": "La password è obbligatoria",
     "passwordMin": "La password deve contenere almeno 6 caratteri",
-    "passwordMatch": "Le password non corrispondono"
+    "passwordMatch": "Le password non corrispondono",
+    "emailExists": "Questa email è già registrata"
   },
   "notFound": {
     "code": "404",

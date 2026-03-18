@@ -1,16 +1,16 @@
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import axios from "axios";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../routes/PATHS";
-import { authApi } from "../../services";
+import { authApi } from "../../api/auth-api";
 import FormTextField from "../forms/shared/FormTextField";
 import SuccessFade from "../forms/shared/SuccessFade";
 import styles from "./RegisterForm.module.css";
 import { registerValidationSchema } from "./registerValidationSchema";
+import type { ApiError } from "../../api/types/auth.types";
 
 interface RegisterFormValues {
   email: string;
@@ -18,34 +18,61 @@ interface RegisterFormValues {
   password: string;
 }
 
+interface ErrorDetail {
+  detail?: string;
+  title?: string;
+  message?: string;
+  status?: number;
+  instance?: string;
+}
+
 export default function RegisterForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
+      setErrorMessage(null);
+      setFieldErrors({});
+      
       await authApi.register({
-        registerRequest: {
-          fullName: values.fullName,
-          email: values.email,
-          password: values.password,
-        },
+        fullName: values.fullName,
+        email: values.email,
+        password: values.password,
       });
+      
       setIsSuccess(true);
       setTimeout(() => {
         navigate(PATHS.LOGIN);
       }, 2000);
-    } catch (error: unknown) {
-      console.error("Register error:", error);
-
+    } catch (error) {
+      const apiError = error as ApiError;
       let message = t("register.error");
-
-      if (axios.isAxiosError(error)) {
-        message = error.response?.data?.message || message;
+      
+      try {
+        if (apiError.message && typeof apiError.message === 'string') {
+          if (apiError.message.startsWith('{')) {
+            const errorData = JSON.parse(apiError.message) as ErrorDetail;
+            message = errorData.detail || errorData.title || errorData.message || message;
+          } else {
+            message = apiError.message;
+          }
+        }
+      } catch (e) {
+        console.log("Unable to parse API error:", e);
       }
-
-      alert(message);
+      
+      if (apiError.status === 409) {
+        message = t("register.emailExists");
+        setFieldErrors({ email: message });
+      } else if (apiError.status === 500) {
+        message = "Server error. Please try again later.";
+      }
+      
+      setErrorMessage(message);
     }
   };
 
@@ -95,6 +122,22 @@ export default function RegisterForm() {
               redirectText={t("register.redirect")}
             />
 
+            {errorMessage && !isSuccess && (
+              <Typography
+                sx={{
+                  color: "#d32f2f",
+                  fontSize: 14,
+                  textAlign: "center",
+                  backgroundColor: "#ffebee",
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  marginBottom: "16px",
+                }}
+              >
+                {errorMessage}
+              </Typography>
+            )}
+
             <div
               className={styles.registerInputs}
               style={{
@@ -109,8 +152,8 @@ export default function RegisterForm() {
                 value={values.fullName}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.fullName && Boolean(errors.fullName)}
-                helperText={touched.fullName && errors.fullName}
+                error={touched.fullName && (Boolean(errors.fullName) || Boolean(fieldErrors.fullName))}
+                helperText={touched.fullName && (errors.fullName || fieldErrors.fullName)}
               />
 
               <TextField
@@ -120,8 +163,8 @@ export default function RegisterForm() {
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.email && Boolean(errors.email)}
-                helperText={touched.email && errors.email}
+                error={touched.email && (Boolean(errors.email) || Boolean(fieldErrors.email))}
+                helperText={touched.email && (errors.email || fieldErrors.email)}
               />
 
               <TextField
@@ -131,8 +174,8 @@ export default function RegisterForm() {
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.password && Boolean(errors.password)}
-                helperText={touched.password && errors.password}
+                error={touched.password && (Boolean(errors.password) || Boolean(fieldErrors.password))}
+                helperText={touched.password && (errors.password || fieldErrors.password)}
               />
             </div>
 
@@ -205,3 +248,4 @@ export default function RegisterForm() {
     </Formik>
   );
 }
+

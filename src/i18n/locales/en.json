@@ -59,7 +59,8 @@
     "invalidEmail": "Invalid email address",
     "passwordRequired": "Password is required",
     "passwordMin": "Password must be at least 6 characters",
-    "passwordMatch": "Passwords do not match"
+    "passwordMatch": "Passwords do not match",
+    "emailExists": "This email is already registered"
   },
   "notFound": {
     "code": "404",
