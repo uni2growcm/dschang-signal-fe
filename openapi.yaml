@@ -177,7 +177,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
+  /users/me:
+    get:
+      operationId: getCurrentUser
+      tags: [ User ]
+      summary: Get the currently authenticated user
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Authenticated user found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /reports/public:
     get:
       operationId: getPublicReports
@@ -209,6 +228,41 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Report'
+
+  /reports/my-reports:
+    get:
+      operationId: getMyReports
+      tags: [ Report ]
+      summary: Get authenticated user reports
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: createdAt
+      responses:
+        '200':
+          description: List of authenticated user reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+        '401':
+          description: Unauthorized
 
   /reports/{id}:
     get:
@@ -243,8 +297,200 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /reports:
+    post:
+      operationId: createReport
+      tags: [ Report ]
+      summary: Create a new report
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      responses:
+        '201':
+          description: Report created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+        operationId: deleteReport
+        tags:
+          - Report
+        summary: Delete a report
+        description: >
+          Only the author of the report can delete it, and only if the report status is PENDING.
+        security:
+          - bearerAuth: [ ]
+        parameters:
+          - name: id
+            in: path
+            required: true
+            description: ID of the report to delete
+            schema:
+              type: integer
+              format: int64
+        responses:
+          '204':
+            description: Report deleted successfully
+          '400':
+            description: Report cannot be deleted because its status is not PENDING
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+          '403':
+            description: Forbidden - only the author can delete this report
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+          '404':
+            description: Report not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+
+  /reports/{id}/moderation-status:
+    patch:
+      operationId: updateModerationStatus
+      tags: [ Report ]
+      summary: Update report moderation status (Admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the report
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateModerationStatusRequest'
+      responses:
+        '200':
+          description: Report status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '400':
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Admin only
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Report not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /reports/{id}/report-status:
+    patch:
+      operationId: updateReportStatus
+      tags: [ Report ]
+      summary: Update report status (Admin only)
+      description: Update the progression status (PENDING, IN_PROGRESS, RESOLVED) of a specific report.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the report
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReportStatusRequest'
+      responses:
+        '200':
+          description: Report status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '400':
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Missing or invalid JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - User does not have ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Report not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /categories:
+
+    get:
+        operationId: getAllCategories
+        tags:
+          - Category
+        summary: Get all categories
+        security:
+          - bearerAuth: [ ]
+        responses:
+          '200':
+            description: List of categories
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CategoryResponse'
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
     post:
       tags:
         - Category
@@ -284,12 +530,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /categories/{id}:
+    delete:
+      operationId: deleteCategory
+      tags: [ Category ]
+      summary: Delete a category
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Category deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - not the creator
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /media:
+  /reports/{reportId}/media:
     post:
       operationId: uploadMedia
       tags: [ Media ]
-      summary: Upload a media file
+      summary: Upload a media file for a report
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -310,7 +599,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaResponse'
+        '404':
+          description: Report not found
 
+  /media:
     get:
       operationId: getAllMedia
       tags: [ Media ]
@@ -339,6 +631,27 @@ paths:
         responses:
           '204':
             description: Media deleted successfully
+      get:
+        operationId: getMediaById
+        tags: [ Media ]
+        summary: Get a media file by id
+        security: [ ]
+        parameters:
+          - name: mediaId
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: Media file
+            content:
+              application/octet-stream:
+                schema:
+                  type: string
+                  format: binary
+          '404':
+            description: Media not found
 
 
   /reports/admin:
@@ -381,7 +694,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ PENDING_REVIEW, RESOLVED, REJECTED ]
+            enum: [ PENDING_REVIEW, ACCEPTED, REJECTED ]
         - name: reportStatus
           in: query
           description: Filter by report status
@@ -498,6 +811,31 @@ components:
         default: 'fullName'
 
   schemas:
+    ReportRequest:
+      type: object
+      required:
+        - title
+        - description
+        - locationText
+      properties:
+        title:
+          type: string
+          example: "Pothole on Kennedy Avenue"
+          minLength: 3
+          maxLength: 150
+        description:
+          type: string
+          example: "Large dangerous pothole on the roadway"
+          minLength: 10
+        locationText:
+          type: string
+          example: "Kennedy Avenue, in front of the university"
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1, 2 ]
     LoginRequest:
       type: object
       required:
@@ -547,6 +885,30 @@ components:
           type: string
           enum: [ ADMIN, CITIZEN ]
           example: CITIZEN
+
+    UpdateModerationStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [ PENDING_REVIEW, ACCEPTED, REJECTED ]
+          example: ACCEPTED
+        rejectionReason:
+          type: string
+          example: "Reporting outside area of jurisdiction"
+          description: Required if status is REJECTED
+
+    UpdateReportStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [ PENDING, IN_PROGRESS, RESOLVED ]
+          example: IN_PROGRESS
 
     User:
       type: object
@@ -600,7 +962,7 @@ components:
           example: "Kennedy Avenue, in front of the university"
         moderationStatus:
           type: string
-          enum: [ PENDING_REVIEW, RESOLVED, REJECTED ]
+          enum: [ PENDING_REVIEW, ACCEPTED, REJECTED ]
           example: "PENDING_REVIEW"
         reportStatus:
           type: string
@@ -632,7 +994,6 @@ components:
     CategoryRequest:
       required:
         - name
-        - createdBy
       type: object
       properties:
         name:
@@ -645,8 +1006,6 @@ components:
           example: "#FFD700"
           pattern: '^#[0-9A-Fa-f]{6}$'
           description: Hex color code (optional, random if not provided)
-        createdBy:
-          $ref: '#/components/schemas/User'
 
     CategoryResponse:
       type: object

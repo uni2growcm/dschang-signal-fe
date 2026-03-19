@@ -1,4 +1,4 @@
-import { AuthApi, Configuration, type Middleware } from "./api";
+import { AuthApi, Configuration, ReportApi, UserApi, type Middleware } from "./api";
 import { API_URL } from "./utils/env";
 import { LOCAL_STORAGE_KEYS } from "./utils/localStorage";
 
@@ -20,3 +20,7 @@ const apiConfig = new Configuration({
 })
 
 export const authApi = new AuthApi(apiConfig);
+
+export const userApi = new UserApi(apiConfig);
+
+export const reportApi = new ReportApi(apiConfig);
