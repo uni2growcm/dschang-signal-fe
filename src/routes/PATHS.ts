@@ -1,6 +1,7 @@
 export const PATHS = {
-    INDEX: "/",
-    LOGIN: "/login",
-    REGISTER: "/register",
-    NOT_FOUND: "*"
-}
+  INDEX: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  REPORT_DETAILS: "/reports/:id",
+  NOT_FOUND: "/not-found",
+};

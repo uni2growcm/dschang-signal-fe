@@ -1,4 +1,5 @@
 import Header from "../../components/header/Header";
+import { Link } from "react-router-dom";
 
 const data = [
     {
@@ -79,21 +80,50 @@ export default function Home() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
             <Header />
+
             <div className="container font-bold flex flex-col gap-5 my-10">
                 {data.map((report) => (
                     <div key={report.id} className="bg-white p-5 rounded-lg shadow-md w-full">
+
                         <div className="flex justify-between items-center mb-2">
                             <div className="flex flex-col items-start">
                                 <span className="text-lg font-bold">{report.reporter}</span>
-                                <span className="text-sm text-gray-500 ml-2">{report.dateReported}</span>
+                                <span className="text-sm text-gray-500 ml-2">
+                                    {report.dateReported}
+                                </span>
                             </div>
-                            <span className={`text-sm font-semibold px-2 py-1 rounded-full border ${report.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' : report.status === 'IN_PROGRESS' ? 'bg-blue-200 text-blue-800' : 'bg-green-200 text-green-800'}`}>
+
+                            <span
+                                className={`text-sm font-semibold px-2 py-1 rounded-full border ${
+                                    report.status === "PENDING"
+                                        ? "bg-yellow-200 text-yellow-800"
+                                        : report.status === "IN_PROGRESS"
+                                        ? "bg-blue-200 text-blue-800"
+                                        : "bg-green-200 text-green-800"
+                                }`}
+                            >
                                 {report.status}
                             </span>
                         </div>
-                        <h2 className="text-xl font-semibold mb-2">{report.title}</h2>
-                        <p className="text-gray-700 mb-4">{report.description}</p>
-                        <p className="text-sm text-gray-500">Location: {report.location}</p>
+
+                        <h2 className="text-xl font-semibold mb-2">
+                            {report.title}
+                        </h2>
+
+                        <p className="text-gray-700 mb-4">
+                            {report.description}
+                        </p>
+
+                        <p className="text-sm text-gray-500">
+                            Location: {report.location}
+                        </p>
+                        <Link
+                            to={`/reports/${report.id}`}
+                            className="text-purple-600 font-semibold mt-3 inline-block hover:underline"
+                        >
+                            View Details →
+                        </Link>
+
                     </div>
                 ))}
             </div>
