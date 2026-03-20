@@ -1,38 +1,58 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Grow, Typography } from "@mui/material";
+<<<<<<< Updated upstream
+import { useTranslation } from "react-i18next";
+=======
 import styles from "./login.module.css";
+>>>>>>> Stashed changes
 import loginImage from "../../assets/login-image.jpg";
 import LoginForm from "../../components/forms/login/LoginForm";
 import Logo from "../../components/logo/Logo";
+import styles from "./login.module.css";
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   return (
     <Box className={styles.loginContainer}>
       <Logo className="absolute top-5 left-5" />
-      <Box
-        sx={{
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${loginImage})`,
-        }}
-        className={styles.leftSection}
-      >
-        <Box>
-          <div className={styles.quoteContainer}>
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 600, fontSize: 30, lineHeight: 1.4 }}
-            >
-              "A simple way to report and track issues in our community."
+      <Grow in timeout={1000}>
+        <Box
+          sx={{
+            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${loginImage})`,
+          }}
+          className={styles.leftSection}
+        >
+          <Box>
+            <div className={styles.quoteContainer}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 600, fontSize: 30, lineHeight: 1.4 }}
+              >
+<<<<<<< Updated upstream
+                "{t("login.quote")}"
+=======
+                "A simple way to report and track issues in our community."
+>>>>>>> Stashed changes
+              </Typography>
+            </div>
+
+            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 20 }}>
+<<<<<<< Updated upstream
+              {t("login.quoter")}
             </Typography>
-          </div>
 
-          <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 20 }}>
-            Marie Nguemo
-          </Typography>
+            <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
+              {t("login.quoterTitle")}
+=======
+              Marie Nguemo
+            </Typography>
 
-          <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
-            Community Leader, Dschang
-          </Typography>
+            <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
+              Community Leader, Dschang
+>>>>>>> Stashed changes
+            </Typography>
+          </Box>
         </Box>
-      </Box>
+      </Grow>
       <Box className={styles.rightSection}>
         <Box className={styles.formWrapper}>
           <LoginForm />

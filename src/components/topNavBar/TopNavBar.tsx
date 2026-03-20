@@ -6,96 +6,109 @@ import {
   Avatar,
   Chip,
   Badge,
-} from '@mui/material'
-import { NotificationsOutlined, SettingsOutlined } from '@mui/icons-material'
-import { useNavigate } from 'react-router'
-import Logo from '../logo/Logo'
+} from '@mui/material';
+import { NotificationsOutlined } from '@mui/icons-material';
+// import { useNavigate } from 'react-router';
+import Logo from '../logo/Logo';
+import { useQuery } from '@tanstack/react-query';
+import { userApi } from '../../services';
 
-
-
-const mockUser = {
-  fullName: 'Rivaldo SN',
-  avatarUrl: null as string | null,
-}
-
-const UNREAD_NOTIFICATIONS = 3
+const UNREAD_NOTIFICATIONS = 3;
 
 export default function TopNavBar() {
-  const navigate = useNavigate()
+  // const navigate = useNavigate();
 
-  // Initiales de l'avatar à partir du nom
-  const initials = mockUser.fullName
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => userApi.getCurrentUser(),
+  });
+
+  const fullName = currentUser?.fullName ?? '';
+
+  const initials = fullName
     .split(' ')
+    .filter(Boolean)
     .map((n) => n[0])
     .join('')
-    .toUpperCase()
+    .toUpperCase();
 
   return (
     <AppBar
-      position='fixed'
+      position="fixed"
       elevation={0}
       sx={{
-        bgcolor: '#ffff',
+        bgcolor: '#ffffff',
         borderBottom: '1px solid',
         borderColor: 'divider',
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
-
-       
+      <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 1.5, sm: 3 } }}>
         <Logo hideText={false} />
 
-       
-<Box display='flex' alignItems='center' gap={1}>
+        <Box display="flex" alignItems="center" gap={{ xs: 0.5, sm: 1 }}>
+          <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
+            <Chip
+              avatar={
+                <Avatar
+                  sx={{
+                    bgcolor: 'primary.main',
+                    fontSize: 40,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {initials}
+                </Avatar>
+              }
+              label={fullName || '...'}
+              size="medium"
+              sx={{
+                bgcolor: 'rgba(103, 58, 183, 0.08)',
+                color: 'text.primary',
+                fontWeight: 'bold',
+                fontSize: 18,
+                border: '1px solid',
+                borderColor: 'divider',
+                height: 32,
+                '& .MuiChip-avatar': {
+                  marginLeft: '0',
+                  width: 32,
+                  height: 32,
+                  fontSize: 22,
+                  fontWeight: 'bold',
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                },
+              }}
+            />
+          </Box>
 
-        <Chip
-        avatar={
+          <Box sx={{ display: { xs: 'flex', sm: 'none' } }}>
             <Avatar
-            src={mockUser.avatarUrl ?? undefined}
-            sx={{
+              sx={{
+                width: 32,
+                height: 32,
                 bgcolor: 'primary.main',
                 fontSize: 13,
                 fontWeight: 'bold',
-            }}
+                cursor: 'pointer',
+              }}
             >
-            {!mockUser.avatarUrl && initials}
+              {initials}
             </Avatar>
-        }
-        label={mockUser.fullName}
-        size='medium'
-        sx={{
-            bgcolor: 'rgba(103, 58, 183, 0.08)',
-            color: 'text.primary',
-            fontWeight: 'bold',
-            fontSize: 12,
-            border: '1px',
-            borderColor: 'divider',
-            width: 118,
-            height: 32,                        
-            '& .MuiChip-avatar': {
-            width: 32,                       
-            height: 32,                      
-            fontSize: 13,
-            fontWeight: 'bold',
-            bgcolor: 'primary.main',
-            color: 'white',
-            },
-        }}
-        />
+          </Box>
 
-  <IconButton size='small'>
-    <Badge badgeContent={UNREAD_NOTIFICATIONS} color='error'>
-      <NotificationsOutlined sx={{ color: 'text.secondary' }} />
-    </Badge>
-  </IconButton>
+          <IconButton size="small">
+            <Badge badgeContent={UNREAD_NOTIFICATIONS} color="error">
+              <NotificationsOutlined sx={{ color: 'text.secondary' }} />
+            </Badge>
+          </IconButton>
 
-  <IconButton size='small' onClick={() => navigate('/settings')}>
-    <SettingsOutlined sx={{ color: 'text.secondary' }} />
-  </IconButton>
-
-</Box>
+          {/* <IconButton size="small" onClick={() => navigate('/settings')}>
+            <SettingsOutlined sx={{ color: 'text.secondary' }} />
+          </IconButton> */}
+        </Box>
       </Toolbar>
     </AppBar>
-  )
+  );
 }

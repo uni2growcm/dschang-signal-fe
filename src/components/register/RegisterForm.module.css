@@ -1,0 +1,53 @@
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.registerHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.registerInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.registerInputs :global(.MuiTextField-root) {
+  width: 100%;
+}
+
+.loginText {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.loginLink {
+  color: #7c4dff;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.loginLink:hover {
+  color: #6b3edb;
+  text-decoration: underline;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

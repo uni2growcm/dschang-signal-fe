@@ -1,0 +1,27 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.contentWrapper {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (max-width: 640px) {
+  .pageContainer {
+    padding: 20px 12px;
+  }
+}

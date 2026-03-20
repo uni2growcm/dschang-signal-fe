@@ -7,10 +7,33 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FcGoogle } from "react-icons/fc";
-import { loginValidationSchema } from "./schema";
+import { useNavigate } from "react-router";
+import { ResponseError } from "../../../api";
+import { PATHS } from "../../../routes/PATHS";
+import { authApi } from "../../../services";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
+import SnackBar from "../../snackBar/SnackBar";
+import FormTextField from "../shared/FormTextField";
+import SuccessFade from "../shared/SuccessFade";
 import styles from "./LoginForm.module.css";
+<<<<<<< Updated upstream
+import { loginValidationSchema } from "./schema";
+=======
+import { PATHS } from "../../../routes/PATHS";
+import { useNavigate } from "react-router";
+import { authApi } from "../../../services";
+import { useState } from "react";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorage";
+import LinearProgressBar from "../../progressBar/LinearProgress";
+import SnackBar from "../../snackBar/SnackBar";
+import { ResponseError } from "../../../api";
+import { useMutation } from "@tanstack/react-query";
+>>>>>>> Stashed changes
 
 interface LoginFormValues {
   email: string;
@@ -19,19 +42,69 @@ interface LoginFormValues {
 }
 
 export default function LoginForm() {
-  const handleSubmit = (values: LoginFormValues) => {
-    console.log("Login attempt:", values);
-  };
+<<<<<<< Updated upstream
+  const { t } = useTranslation();
+=======
+>>>>>>> Stashed changes
+  const [success, setSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  const loginMutation = useMutation({
+    mutationFn: async (values: LoginFormValues) => {
+      const response = await authApi.login({
+        loginRequest: {
+          email: values.email,
+          password: values.password,
+        },
+      });
+      return response;
+    },
+    onSuccess: (response) => {
+      if (response.token) {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
+        setSuccess(true);
+        setErrorMessage("");
+<<<<<<< Updated upstream
+        navigate(PATHS.INDEX);
+=======
+        setTimeout(() => {
+          navigate(PATHS.INDEX);
+        }, 2000);
+>>>>>>> Stashed changes
+      }
+    },
+    onError: (error: unknown) => {
+      const err = error as ResponseError;
+      const message =
+        err.response?.status == 400
+          ? "Invalid credentials"
+          : "Login failed, please check your credentials.";
+      if (!(error instanceof ResponseError)) {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+        setIsError(true);
+        return;
+      }
+      setErrorMessage(message);
+      setIsError(true);
+    },
+    onSettled: () => {
+      setTimeout(() => {
+        setIsError(false);
+<<<<<<< Updated upstream
+=======
+        setSuccess(false);
+>>>>>>> Stashed changes
+      }, 1500);
+    },
+  });
 
   return (
     <Formik
-      initialValues={{
-        email: "",
-        password: "",
-        remember: false,
-      }}
+      initialValues={{ email: "", password: "", remember: false }}
       validationSchema={loginValidationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={loginMutation.mutate}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (
         <Form>
@@ -45,7 +118,7 @@ export default function LoginForm() {
                   letterSpacing: -0.5,
                 }}
               >
-                Welcome back
+                {t("login.welcomeBack")}
               </Typography>
               <Typography
                 sx={{
@@ -55,81 +128,62 @@ export default function LoginForm() {
                   textAlign: "center",
                 }}
               >
-                Report and track signals in your community with Dschang's
-                Signal.
+                {t("login.description")}
               </Typography>
             </div>
 
-            <div className={styles.loginInputs}>
-              <TextField
-                label="Email"
+            <SuccessFade
+              show={success}
+              message="Login successful"
+              redirectText="Redirecting..."
+            />
+
+            <div
+              className={styles.loginInputs}
+              style={{
+                opacity: success ? 0.5 : 1,
+                pointerEvents: success ? "none" : "auto",
+                transition: "all 0.4s ease",
+              }}
+            >
+              <SuccessFade
+                show={success}
+                message={t("login.success")}
+                redirectText={t("login.redirecting")}
+              />
+
+              <FormTextField
+                label={t("login.email")}
                 name="email"
                 type="email"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
-                  },
-                }}
               />
 
               <TextField
-                label="Password"
+                label={t("login.password")}
                 name="password"
                 type="password"
-                fullWidth
-                variant="outlined"
-                size="small"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#7c4dff",
-                    },
-                    "&.Mui-focused": {
-                      "& fieldset": {
-                        borderColor: "#7c4dff",
-                      },
-                    },
-                  },
-                  "& .MuiOutlinedInput-input": {
-                    "&::placeholder": {
-                      opacity: 1,
-                    },
-                  },
-                }}
               />
+              {errorMessage && (
+                <p className="text-error -mt-2 text-center">{errorMessage}</p>
+              )}
             </div>
 
             <div className={styles.loginOptions}>
-              <span className={styles.forgotPassword}>Forgot password?</span>
+              <span className={styles.forgotPassword}>
+                {t("login.forgotPassword")}
+              </span>
               <FormControlLabel
-                label="Remember sign in details"
+                label={t("login.rememberMe")}
                 labelPlacement="start"
                 control={
                   <Switch
@@ -164,6 +218,11 @@ export default function LoginForm() {
             </div>
 
             <Button
+<<<<<<< Updated upstream
+              disabled={loginMutation.isPending || success}
+=======
+              disabled={loginMutation.isPending}
+>>>>>>> Stashed changes
               type="submit"
               fullWidth
               sx={{
@@ -175,6 +234,7 @@ export default function LoginForm() {
                 fontSize: "15px",
                 textTransform: "none",
                 boxShadow: "0 4px 12px rgba(124, 77, 255, 0.3)",
+                transition: "all 0.3s ease",
                 "&:hover": {
                   backgroundColor: "#6b3edb",
                   boxShadow: "0 6px 16px rgba(124, 77, 255, 0.4)",
@@ -182,16 +242,27 @@ export default function LoginForm() {
                 marginTop: "8px",
               }}
             >
-              Log in
+<<<<<<< Updated upstream
+              {success
+                ? t("login.redirecting")
+                : loginMutation.isPending
+                  ? t("login.loading")
+                  : t("login.submit")}
+=======
+              {loginMutation.isPending ? <LinearProgressBar /> : "Log in"}
+>>>>>>> Stashed changes
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>OR</Divider>
+              <Divider sx={{ fontSize: "14px", color: "#999" }}>
+                {t("login.or")}
+              </Divider>
             </Box>
 
             <Button
               variant="outlined"
               fullWidth
+              disabled={success}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -211,14 +282,55 @@ export default function LoginForm() {
               }}
             >
               <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">Continue with Google</span>
+              <span className="text-inherit font-medium text-lg">
+<<<<<<< Updated upstream
+                {t("login.continueGoogle")}
+=======
+                Continue with Google
+>>>>>>> Stashed changes
+              </span>
             </Button>
 
             <div className={styles.signupText}>
+<<<<<<< Updated upstream
+              {t("login.noAccount")}{" "}
+=======
               Don't have an account?{" "}
-              <span className={styles.signupLink}>Sign up</span>
+>>>>>>> Stashed changes
+              <button
+                type="button"
+                className={styles.signupLink}
+                onClick={() => navigate(PATHS.REGISTER)}
+<<<<<<< Updated upstream
+                disabled={success}
+              >
+                {t("login.registerLink")}
+              </button>
             </div>
           </div>
+
+=======
+              >
+                Sign up
+              </button>
+            </div>
+          </div>
+>>>>>>> Stashed changes
+          <SnackBar
+            open={isError}
+            message={errorMessage}
+            severity="error"
+            position="bottom-right"
+          />
+<<<<<<< Updated upstream
+=======
+          <SnackBar
+            open={success}
+            message="Login Successful"
+            severity="success"
+            position="bottom-right"
+          />
+>>>>>>> Stashed changes
         </Form>
       )}
     </Formik>
