@@ -51,9 +51,7 @@ export default function LoginForm() {
         localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
         setSuccess(true);
         setErrorMessage("");
-        setTimeout(() => {
-          navigate(PATHS.INDEX);
-        }, 2000);
+        navigate(PATHS.INDEX);
       }
     },
     onError: (error: unknown) => {
