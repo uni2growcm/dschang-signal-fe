@@ -4,14 +4,16 @@ interface ISnackBar {
   open: boolean;
   message: string;
   severity: "success" | "error" | "warning" | "info";
-  position?: "bottom-left" | "bottom-right"; 
+  position?: "bottom-left" | "bottom-right";
+  onClose?: () => void;
 }
 
 export default function SnackBar({
   open,
   message,
   severity,
-  position = "bottom-left", 
+  position = "bottom-left",
+  onClose,
 }: ISnackBar) {
   return (
     <Snackbar
@@ -21,7 +23,7 @@ export default function SnackBar({
       }}
       open={open}
       autoHideDuration={5000}
-      onClose={() => {}}
+      onClose={onClose}
     >
       <Alert severity={severity}>{message}</Alert>
     </Snackbar>
