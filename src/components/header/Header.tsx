@@ -21,8 +21,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "../../services";
 import SnackBar from "../snackBar/SnackBar";
 import { useMe } from "../../services/user";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
 
 export default function Header() {
+  const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,9 +47,7 @@ export default function Header() {
     },
     onSuccess: () => {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['me', 'getAuthenticatedUserReports'] });
-      }, 1000);
+      window.location.href = PATHS.INDEX;
     },
     onError: (error) => {
       console.error("Logout failed:", error);
@@ -95,18 +96,13 @@ export default function Header() {
       {!token && isMenuOpen && (
         <div className="absolute top-16 left-0 right-0 bg-white shadow-lg p-5 sm:hidden">
           <ul className="flex flex-col space-y-4 items-end px-2">
-            <li>
-              <HeaderLink name="Home" to={PATHS.INDEX} />
-            </li>
-            <li>
-              <HeaderLink name="Login" to={PATHS.LOGIN} />
-            </li>
-            <li>
-              <HeaderLink name="Register" to={PATHS.REGISTER} />
-            </li>
+            <li><HeaderLink name="Home" to={PATHS.INDEX} /></li>
+            <li><HeaderLink name="Login" to={PATHS.LOGIN} /></li>
+            <li><HeaderLink name="Register" to={PATHS.REGISTER} /></li>
           </ul>
         </div>
       )}
+
       <Backdrop
         open={waiting}
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -116,6 +112,7 @@ export default function Header() {
           <span>Logging out...</span>
         </div>
       </Backdrop>
+
       <Backdrop
         open={logoutMutation.isError}
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -125,13 +122,16 @@ export default function Header() {
           <span>Logout failed. Please try again.</span>
         </div>
       </Backdrop>
+
       <SnackBar
         open={logoutMutation.isSuccess && waiting}
         message="Logged out successfully!"
         severity="success"
       />
+
       {token ? (
         <nav className="sm:flex items-center lg:gap-4">
+          <LanguageSwitcher />
           <Button
             variant="text"
             id="basic-button"
@@ -142,12 +142,8 @@ export default function Header() {
             startIcon={
               <Avatar
                 {...stringAvatar(user?.fullName || "")}
-                className="font-semibold! "
-                sx={{
-                  width: 30,
-                  height: 30,
-                  fontSize: "14px !important",
-                }}
+                className="font-semibold!"
+                sx={{ width: 30, height: 30, fontSize: "14px !important" }}
               />
             }
             className="capitalize! flex items-center space-x-3 text-gray-700 bg-gray-200! transition-all duration-300 ease-in-out rounded-[20px]! px-2! py-1!"
@@ -162,23 +158,15 @@ export default function Header() {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            slotProps={{
-              list: {
-                "aria-labelledby": "basic-button",
-              },
-            }}
+            slotProps={{ list: { "aria-labelledby": "basic-button" } }}
           >
             <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <IoMdSettings />
-              </ListItemIcon>
+              <ListItemIcon><IoMdSettings /></ListItemIcon>
               <ListItemText>Settings</ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem onClick={() => logoutMutation.mutate()}>
-              <ListItemIcon>
-                <MdLogout />
-              </ListItemIcon>
+              <ListItemIcon><MdLogout /></ListItemIcon>
               <ListItemText>Logout</ListItemText>
             </MenuItem>
           </Menu>
@@ -188,17 +176,12 @@ export default function Header() {
           </IconButton>
         </nav>
       ) : (
-        <nav className="hidden sm:flex">
+        <nav className="hidden sm:flex items-center gap-5">
+          <LanguageSwitcher />
           <ul className="flex space-x-5">
-            <li>
-              <HeaderLink name="Home" to={PATHS.INDEX} />
-            </li>
-            <li>
-              <HeaderLink name="Login" to={PATHS.LOGIN} />
-            </li>
-            <li>
-              <HeaderLink name="Register" to={PATHS.REGISTER} />
-            </li>
+            <li><HeaderLink name={t("common.home")} to={PATHS.INDEX} /></li>
+            <li><HeaderLink name={t("login.title")} to={PATHS.LOGIN} /></li>
+            <li><HeaderLink name={t("register.title")} to={PATHS.REGISTER} /></li>
           </ul>
         </nav>
       )}
