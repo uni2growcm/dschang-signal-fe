@@ -109,3 +109,14 @@ export const checkCategoryExists = async (name: string): Promise<boolean> => {
 export const deleteReport = async (id: number): Promise<void> => {
   await reportApi.deleteReport({ id });
 };
+export const updateReport = async (id: number, data: {
+  title: string;
+  description: string;
+  locationText: string;
+  categoryIds: number[];
+}): Promise<void> => {
+  await reportApi.updateReport({
+    id,
+    reportRequest: data,
+  });
+};

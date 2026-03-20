@@ -179,7 +179,7 @@ paths:
         - bearerAuth: []
       responses:
         '200':
-          description: Authenticated user found
+          description: Authenticated user
           content:
             application/json:
               schema:
@@ -263,7 +263,6 @@ paths:
       operationId: getAllReports
       tags: [ Report ]
       summary: Get all reports (Admin only)
-      description: Retrieve all reports in the system with pagination and filtering.
       security:
         - bearerAuth: []
       parameters:
@@ -421,14 +420,13 @@ paths:
       operationId: deleteReport
       tags: [ Report ]
       summary: Delete a report
-      description: Only the author of the report can delete it, and only if the report status is PENDING.
+      description: Only the author can delete it, and only if status is PENDING.
       security:
         - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
-          description: ID of the report to delete
           schema:
             type: integer
             format: int64
@@ -436,13 +434,13 @@ paths:
         '204':
           description: Report deleted successfully
         '400':
-          description: Report cannot be deleted because its status is not PENDING
+          description: Report status is not PENDING
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
-          description: Forbidden - only the author can delete this report
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -453,7 +451,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
+    patch:
+      operationId: updateReport
+      tags: [ Report ]
+      summary: Update a report
+      description: >
+        Only the author can update it, and only if moderationStatus is PENDING_REVIEW
+        and reportStatus is PENDING.
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      responses:
+        '200':
+          description: Report updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '400':
+          description: Report cannot be updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - not the author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Report not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /reports/{id}/moderation-status:
     patch:
       operationId: updateModerationStatus
@@ -463,11 +507,9 @@ paths:
         - name: id
           in: path
           required: true
-          description: Unique identifier of the report
           schema:
             type: integer
             format: int64
-            example: 1
       requestBody:
         required: true
         content:
@@ -476,19 +518,19 @@ paths:
               $ref: '#/components/schemas/UpdateModerationStatusRequest'
       responses:
         '200':
-          description: Report status updated successfully
+          description: Status updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Report'
         '400':
-          description: Bad request - Invalid input
+          description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
-          description: Forbidden - Admin only
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -505,16 +547,13 @@ paths:
       operationId: updateReportStatus
       tags: [ Report ]
       summary: Update report status (Admin only)
-      description: Update the progression status (PENDING, IN_PROGRESS, RESOLVED) of a specific report.
       parameters:
         - name: id
           in: path
           required: true
-          description: Unique identifier of the report
           schema:
             type: integer
             format: int64
-            example: 1
       requestBody:
         required: true
         content:
@@ -523,25 +562,25 @@ paths:
               $ref: '#/components/schemas/UpdateReportStatusRequest'
       responses:
         '200':
-          description: Report status updated successfully
+          description: Status updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Report'
         '400':
-          description: Bad request - Invalid input
+          description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
-          description: Unauthorized - Missing or invalid JWT
+          description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
-          description: Forbidden - User does not have ADMIN role
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -751,7 +790,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
-          description: Forbidden - not the creator
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -875,7 +914,6 @@ components:
         rejectionReason:
           type: string
           example: "Reporting outside area of jurisdiction"
-          description: Required if status is REJECTED
 
     UpdateReportStatusRequest:
       type: object
@@ -891,7 +929,6 @@ components:
       type: object
       required:
         - title
-        - description
         - locationText
       properties:
         title:
@@ -1008,7 +1045,6 @@ components:
           type: string
           example: "#FFD700"
           pattern: '^#[0-9A-Fa-f]{6}$'
-          description: Hex color code (optional, random if not provided)
 
     CategoryResponse:
       type: object

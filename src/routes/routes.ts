@@ -7,6 +7,7 @@ import Home from "../pages/home/Home";
 import CreateReportPage from "../pages/report/CreateReportPage";
 import ReportDetailsPage from "../pages/report/ReportDetailsPage";
 import { LOCAL_STORAGE_KEYS } from "../utils/localStorage";
+import EditReportPage from "../pages/report/EditReportPage";
 
 const isAuthenticated: boolean = !!localStorage.getItem(
   LOCAL_STORAGE_KEYS.TOKEN,
@@ -39,6 +40,10 @@ export const clientsRoutes = createBrowserRouter([
     path: PATHS.REPORT_DETAILS,
     Component: ReportDetailsPage,
   },
+  {
+  path: PATHS.EDIT_REPORT,
+  Component: EditReportPage,
+},
   {
     path: PATHS.NOT_FOUND,
     Component: NotFound,
