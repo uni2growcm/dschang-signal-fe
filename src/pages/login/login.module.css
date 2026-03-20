@@ -24,7 +24,6 @@
   margin-bottom: 8px;
 }
 
-
 .rightSection {
   flex: 1;
   display: flex;
@@ -34,24 +33,7 @@
   padding: 1rem;
   background-color: #f8f8f8;
   min-height: 100vh;
-}
-
-@media (max-width: 640px) {
-  .rightSection {
-    padding: 0.5rem;
-  }
-}
-
-@media (min-width: 641px) and (max-width: 768px) {
-  .rightSection {
-    padding: 0.75rem;
-  }
-}
-
-@media (min-width: 769px) {
-  .rightSection {
-    padding: 1rem;
-  }
+  overflow-y: auto;
 }
 
 .formWrapper {
@@ -61,4 +43,64 @@
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+
+@media (max-width: 768px) {
+  .loginContainer {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .leftSection {
+    display: none;
+  }
+
+  .rightSection {
+    flex: none;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: flex-start;
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .formWrapper {
+    padding: 24px 20px;
+    border-radius: 16px;
+    box-shadow: none;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .rightSection {
+    padding: 1.5rem 0.75rem;
+    background-color: white;
+  }
+
+  .formWrapper {
+    padding: 20px 16px;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: 100%;
+  }
+}
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .leftSection {
+    flex: 0.8;
+  }
+
+  .rightSection {
+    flex: 1.2;
+    padding: 1.5rem;
+  }
+
+  .formWrapper {
+    padding: 28px 24px;
+  }
 }

@@ -21,12 +21,21 @@ function stringToColor(string: string) {
 }
 
 export const stringAvatar = (name: string) => {
+  const parts = name.trim().split(" ").filter(Boolean);
+  let initials = "";
+  if (parts.length === 0) {
+    initials = "?";
+  } else if (parts.length === 1) {
+    initials = parts[0][0].toUpperCase();
+  } else {
+    initials = `${parts[0][0].toUpperCase()}${parts[1][0].toUpperCase()}`;
+  }
   return {
     sx: {
       bgcolor: stringToColor(name),
       size: 30,
     },
-    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    children: initials,
   };
 };
 

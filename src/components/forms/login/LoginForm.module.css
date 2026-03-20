@@ -70,3 +70,25 @@
   color: #6b3edb;
   text-decoration: underline;
 }
+
+
+@media (max-width: 480px) {
+  .loginForm {
+    gap: 16px;
+  }
+
+  .loginHeader {
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+
+  .loginOptions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .signupText {
+    font-size: 13px;
+  }
+}

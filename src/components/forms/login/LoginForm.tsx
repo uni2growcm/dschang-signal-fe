@@ -87,7 +87,7 @@ export default function LoginForm() {
             <div className={styles.loginHeader}>
               <Typography
                 sx={{
-                  fontSize: 28,
+                  fontSize: { xs: 22, sm: 26, md: 28 },
                   fontWeight: 700,
                   color: "#1a1a1a",
                   letterSpacing: -0.5,
@@ -98,7 +98,7 @@ export default function LoginForm() {
               <Typography
                 sx={{
                   color: "#757575",
-                  fontSize: 14,
+                  fontSize: { xs: 13, sm: 14 },
                   lineHeight: 1.5,
                   textAlign: "center",
                 }}
@@ -184,7 +184,7 @@ export default function LoginForm() {
                   m: 0,
                   gap: 1,
                   "& .MuiFormControlLabel-label": {
-                    fontSize: 15,
+                    fontSize: { xs: 13, sm: 15 },
                     color: "#555",
                     opacity: 0.8,
                   },
@@ -199,10 +199,10 @@ export default function LoginForm() {
               sx={{
                 backgroundColor: "#7c4dff",
                 color: "white",
-                padding: "12px",
+                padding: { xs: "10px", sm: "12px" },
                 borderRadius: "24px",
                 fontWeight: 600,
-                fontSize: "15px",
+                fontSize: { xs: "14px", sm: "15px" },
                 textTransform: "none",
                 boxShadow: "0 4px 12px rgba(124, 77, 255, 0.3)",
                 transition: "all 0.3s ease",
@@ -235,12 +235,12 @@ export default function LoginForm() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "10px",
-                padding: "12px",
+                padding: { xs: "10px", sm: "12px" },
                 borderRadius: "24px",
                 border: "1px solid #ddd",
                 color: "#333",
                 textTransform: "none",
-                fontSize: "15px",
+                fontSize: { xs: "14px", sm: "15px" },
                 fontWeight: 500,
                 "&:hover": {
                   backgroundColor: "rgba(0, 0, 0, 0.02)",
@@ -248,7 +248,7 @@ export default function LoginForm() {
                 },
               }}
             >
-              <FcGoogle size={25} />
+              <FcGoogle size={22} />
               <span className="text-inherit font-medium text-lg">
                 {t("login.continueGoogle")}
               </span>
