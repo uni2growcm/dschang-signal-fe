@@ -105,3 +105,25 @@ export const checkCategoryExists = async (name: string): Promise<boolean> => {
     (cat: any) => cat.name.toLowerCase() === name.toLowerCase(),
   );
 };
+
+export const deleteReport = async (id: number): Promise<void> => {
+  await reportApi.deleteReport({ id });
+};
+
+export const deleteMedia = async (mediaId: number): Promise<void> => {
+  await mediaApi.deleteMedia({ mediaId });
+};
+export const updateReport = async (
+  id: number,
+  data: {
+    title: string;
+    description: string;
+    locationText: string;
+    categoryIds: number[];
+  },
+): Promise<void> => {
+  await reportApi.updateReport({
+    id,
+    reportRequest: data,
+  });
+};
