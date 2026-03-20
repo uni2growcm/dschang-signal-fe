@@ -1,17 +1,26 @@
 import { useParams, Navigate, useNavigate } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CircularProgress } from "@mui/material";
 import { getReportById, deleteReport } from "../../services";
 import { useMe } from "../../services/user";
 import Header from "../../components/header/Header";
 import { Link } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import styles from "./ReportDetailsPage.module.css";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  CircularProgress
+} from "@mui/material";
 
 export default function ReportDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const {
     data: report,
@@ -39,9 +48,10 @@ export default function ReportDetailsPage() {
   const isOwner = currentUser?.id === report?.createdBy?.id;
   const isPending = report?.reportStatus === "PENDING";
   const canDelete = isOwner && isPending;
-  const canEdit = isOwner
-  && report?.moderationStatus === "PENDING_REVIEW"
-  && report?.reportStatus === "PENDING";
+  const canEdit =
+    isOwner &&
+    report?.moderationStatus === "PENDING_REVIEW" &&
+    report?.reportStatus === "PENDING";
 
   if (isLoading) {
     return (
@@ -62,7 +72,7 @@ export default function ReportDetailsPage() {
     <div className={styles.pageContainer}>
       <Header />
       <div className={styles.contentWrapper}>
-        {/* Navigation buttons */}
+      
         <div className="flex justify-between items-center">
           <Link
             to={PATHS.INDEX}
@@ -77,23 +87,55 @@ export default function ReportDetailsPage() {
                 to={PATHS.EDIT_REPORT.replace(":id", String(report.id))}
                 className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
               >
-                ✏️ Edit Report
+                Edit Report
               </Link>
             )}
 
             {canDelete && (
               <button
-                onClick={() => deleteMutation.mutate()}
-                disabled={deleteMutation.isPending}
-                className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
+                onClick={() => setDeleteDialogOpen(true)}
+                className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
               >
-                {deleteMutation.isPending ? "Deleting..." : "🗑 Delete Report"}
+                 Delete Report
               </button>
             )}
+
+           
+            <Dialog
+              open={deleteDialogOpen}
+              onClose={() => setDeleteDialogOpen(false)}
+            >
+              <DialogTitle>Delete Report</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to delete this report? This action
+                  cannot be undone.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+
+                <button
+                  onClick={() => setDeleteDialogOpen(false)}
+                  className="px-4 py-2 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-100 transition-all"
+                >
+                  No
+                </button>
+                <button
+                  onClick={() => {
+                    setDeleteDialogOpen(false);
+                    deleteMutation.mutate();
+                  }}
+                  disabled={deleteMutation.isPending}
+                  className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
+                >
+                  Yes, Delete
+                </button>
+              </DialogActions>
+            </Dialog>
           </div>
         </div>
 
-        {/* Error message */}
+      
         {deleteMutation.isError && (
           <p className="text-red-500 text-sm text-center">
             {(deleteMutation.error as Error)?.message ||
