@@ -2,13 +2,17 @@
   min-height: 100vh;
   background-color: #f8f8f8;
   display: flex;
-  justify-content: center;
-  padding: 40px 20px;
+  flex-direction: column;
 }
 
 .contentWrapper {
   width: 100%;
   max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .card {

@@ -42,10 +42,10 @@ const validationSchema = Yup.object({
     .min(3, "Title must be at least 3 characters")
     .max(150, "Title must be at most 150 characters")
     .required("Title is required"),
-  description: Yup.string().min(
-    10,
-    "Description must be at least 10 characters"
-  ),
+  description: Yup.string()
+  .min(10, "Description must be at least 10 characters")
+  .required("Description is required"),
+  
   locationText: Yup.string().required("Location is required"),
   newCategoryName: Yup.string()
     .min(2, "Category name must be at least 2 characters")
@@ -234,7 +234,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Description"
+                  label="Description *"
                   name="description"
                   value={values.description}
                   onChange={handleChange}

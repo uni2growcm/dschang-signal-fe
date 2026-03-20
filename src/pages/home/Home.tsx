@@ -1,5 +1,6 @@
 import { Backdrop, CircularProgress, Grow } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router";
 import Header from "../../components/header/Header";
 import ReportCard from "../../components/report/ReportCard";
 import { isAuth } from "../../utils/utils";
@@ -8,6 +9,7 @@ import {
   usePublicReports,
 } from "../../services/report";
 import SnackBar from "../../components/snackBar/SnackBar";
+import { PATHS } from "../../routes/PATHS";
 
 type FilterType = "public" | "mine";
 
@@ -71,27 +73,35 @@ export default function Home() {
       <Grow in timeout={1000}>
         <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
           {isAuth() && (
-            <div className="flex gap-2 self-start bg-white rounded-full shadow-sm p-1 border border-gray-200">
-              <button
-                onClick={() => setFilter("public")}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  filter === "public"
-                    ? "bg-primary text-white shadow"
-                    : "text-gray-500 hover:text-gray-800"
-                }`}
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 bg-white rounded-full shadow-sm p-1 border border-gray-200">
+                <button
+                  onClick={() => setFilter("public")}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filter === "public"
+                      ? "bg-primary text-white shadow"
+                      : "text-gray-500 hover:text-gray-800"
+                  }`}
+                >
+                  Public
+                </button>
+                <button
+                  onClick={() => setFilter("mine")}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filter === "mine"
+                      ? "bg-primary text-white shadow"
+                      : "text-gray-500 hover:text-gray-800"
+                  }`}
+                >
+                  Mes signalements
+                </button>
+              </div>
+              <Link
+                to={PATHS.CREATE_REPORT}
+                className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
               >
-                Public
-              </button>
-              <button
-                onClick={() => setFilter("mine")}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  filter === "mine"
-                    ? "bg-primary text-white shadow"
-                    : "text-gray-500 hover:text-gray-800"
-                }`}
-              >
-                Mes signalements
-              </button>
+                 + Create a Report
+              </Link>
             </div>
           )}
           {displayedReports.length > 0 ? (
