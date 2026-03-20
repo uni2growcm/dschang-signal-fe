@@ -8,14 +8,14 @@ import styles from "./login.module.css";
 export default function LoginPage() {
   const { t } = useTranslation();
   return (
-    <Box className={styles.loginContainer}>
-      <Logo className="absolute top-5 left-5" />
+    <Box className={`${styles.loginContainer} max-sm:flex-col`}>
+      <Logo col className="absolute max-sm:relative top-5 sm:left-5 max-sm:self-center" />
       <Grow in timeout={1000}>
         <Box
           sx={{
             backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${loginImage})`,
           }}
-          className={styles.leftSection}
+          className={`${styles.leftSection} max-sm:hidden!`}
         >
           <Box>
             <div className={styles.quoteContainer}>
@@ -37,7 +37,7 @@ export default function LoginPage() {
           </Box>
         </Box>
       </Grow>
-      <Box className={styles.rightSection}>
+      <Box className={`${styles.rightSection} max-sm:bg-white!`}>
         <Box className={styles.formWrapper}>
           <LoginForm />
         </Box>
