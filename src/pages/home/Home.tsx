@@ -9,8 +9,12 @@ import {
 } from "../../services/report";
 import SnackBar from "../../components/snackBar/SnackBar";
 
+type FilterType = "public" | "mine";
+
 export default function Home() {
   const [showError, setShowError] = useState(false);
+  const [filter, setFilter] = useState<FilterType>("public");
+
   const {
     data: myReports = [],
     isLoading: privateLoading,
@@ -24,16 +28,12 @@ export default function Home() {
   } = usePublicReports();
 
   const isLoading = privateLoading || publicLoading;
-
   const hasError = privateError || publicError;
 
-  const allReports = useMemo(() => {
-    if (isAuth()) {
-      return [...myReports, ...publicReports];
-    } else {
-      return publicReports;
-    }
-  }, [myReports, publicReports]);
+  const displayedReports = useMemo(() => {
+    if (!isAuth()) return publicReports;
+    return filter === "mine" ? myReports : publicReports;
+  }, [filter, myReports, publicReports]);
 
   useEffect(() => {
     if (hasError) {
@@ -63,7 +63,6 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
       <Header />
-
       <SnackBar
         open={showError}
         severity="error"
@@ -72,8 +71,35 @@ export default function Home() {
 
       <Grow in timeout={1000}>
         <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
-          {allReports.length > 0 ? (
-            allReports.map((report) => (
+
+          {/* Toggle filtre — visible seulement si connecté */}
+          {isAuth() && (
+            <div className="flex gap-2 self-start bg-white rounded-full shadow-sm p-1 border border-gray-200">
+              <button
+                onClick={() => setFilter("public")}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  filter === "public"
+                    ? "bg-primary text-white shadow"
+                    : "text-gray-500 hover:text-gray-800"
+                }`}
+              >
+                Public
+              </button>
+              <button
+                onClick={() => setFilter("mine")}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  filter === "mine"
+                    ? "bg-primary text-white shadow"
+                    : "text-gray-500 hover:text-gray-800"
+                }`}
+              >
+                Mes signalements
+              </button>
+            </div>
+          )}
+
+          {displayedReports.length > 0 ? (
+            displayedReports.map((report) => (
               <ReportCard key={report.id} report={report} />
             ))
           ) : (
