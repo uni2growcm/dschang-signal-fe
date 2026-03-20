@@ -3,6 +3,7 @@ import {
   ReportApi,
   CategoryApi,
   MediaApi,
+  UserApi,
   Configuration,
   type Middleware,
 } from "./api";
@@ -27,6 +28,7 @@ const apiConfig = new Configuration({
 });
 
 export const authApi = new AuthApi(apiConfig);
+export const userApi = new UserApi(apiConfig);
 export const reportApi = new ReportApi(apiConfig);
 export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
@@ -78,7 +80,6 @@ export const createCategory = async (name: string) => {
   const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
   const normalizedName =
     name.trim().charAt(0).toUpperCase() + name.trim().slice(1).toLowerCase();
-
   const response = await fetch(`${API_URL.dev}/categories`, {
     method: "POST",
     headers: {
