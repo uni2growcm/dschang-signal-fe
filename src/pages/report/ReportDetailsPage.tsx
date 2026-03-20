@@ -1,7 +1,8 @@
 import { useParams, Navigate, useNavigate } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
-import { getReportById } from "../../services";
+import { getReportById, deleteReport } from "../../services";
+import { useMe } from "../../services/user";
 import Header from "../../components/header/Header";
 import { Link } from "react-router";
 import { PATHS } from "../../routes/PATHS";
@@ -10,12 +11,28 @@ import styles from "./ReportDetailsPage.module.css";
 export default function ReportDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: report, isLoading, isError } = useQuery({
     queryKey: ["report", id],
     queryFn: () => getReportById(Number(id)),
     enabled: !!id,
   });
+
+  const { data: currentUser } = useMe();
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteReport(Number(id)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAuthenticatedUserReports"] });
+      queryClient.invalidateQueries({ queryKey: ["getPublicReports"] });
+      navigate(PATHS.INDEX);
+    },
+  });
+
+  const isOwner = currentUser?.id === report?.createdBy?.id;
+  const isPending = report?.reportStatus === "PENDING";
+  const canDelete = isOwner && isPending;
 
   if (isLoading) {
     return (
@@ -36,12 +53,34 @@ export default function ReportDetailsPage() {
     <div className={styles.pageContainer}>
       <Header />
       <div className={styles.contentWrapper}>
-        <Link
-          to={PATHS.INDEX}
-          className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
-        >
-          ← Back to Home
-        </Link>
+
+        {/* Navigation buttons */}
+        <div className="flex justify-between items-center">
+          <Link
+            to={PATHS.INDEX}
+            className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
+          >
+            ← Back to Home
+          </Link>
+
+          {canDelete && (
+            <button
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+              className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "🗑 Delete Report"}
+            </button>
+          )}
+        </div>
+
+        {/* Error message */}
+        {deleteMutation.isError && (
+          <p className="text-red-500 text-sm text-center">
+            {(deleteMutation.error as Error)?.message || "Failed to delete report"}
+          </p>
+        )}
+
         <div className={styles.card}>
           <div className={styles.header}>
             <div>
@@ -74,6 +113,7 @@ export default function ReportDetailsPage() {
             )}
           </div>
         </div>
+
         <div className={styles.mediaContainer}>
           {report.medias?.length ? (
             report.medias.map((media: any) => {

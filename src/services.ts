@@ -105,3 +105,7 @@ export const checkCategoryExists = async (name: string): Promise<boolean> => {
     (cat: any) => cat.name.toLowerCase() === name.toLowerCase(),
   );
 };
+
+export const deleteReport = async (id: number): Promise<void> => {
+  await reportApi.deleteReport({ id });
+};
