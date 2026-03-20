@@ -12,9 +12,10 @@ export const useAuthenticatedUserReports = () => {
     })
 }
 
-export const usePublicReports = () => {
+export const usePublicReports = (page: number = 0, size: number = 10) => {
     return useQuery({
-        queryKey: ['getPublicReports'],
-        queryFn: async () => await reportApi.getPublicReports(),
-    })
+        queryKey: ['getPublicReports', page, size],
+        queryFn: async () => await reportApi.getPublicReports({ page, size }),
+        keepPreviousData: true,
+    });
 }

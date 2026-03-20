@@ -1,5 +1,3 @@
-import Logo from "../logo/Logo";
-import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
 import {
   Avatar,
   Backdrop,
@@ -11,18 +9,20 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
 import { MdClose, MdLogout, MdMenu } from "react-icons/md";
+import { PATHS } from "../../routes/PATHS";
+import { authApi } from "../../services";
+import { useMe } from "../../services/user";
 import { LOCAL_STORAGE_KEYS } from "../../utils/localStorage";
 import { stringAvatar } from "../../utils/utils";
-import HeaderLink from "./HeaderLink";
-import { PATHS } from "../../routes/PATHS";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi } from "../../services";
-import SnackBar from "../snackBar/SnackBar";
-import { useMe } from "../../services/user";
-import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
+import Logo from "../logo/Logo";
+import SnackBar from "../snackBar/SnackBar";
+import HeaderLink from "./HeaderLink";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -39,7 +39,6 @@ export default function Header() {
   };
 
   const [waiting, setWaiting] = useState(false);
-  const queryClient = useQueryClient();
   const logoutMutation = useMutation({
     mutationFn: async () => {
       const respose = await authApi.logout();
@@ -96,9 +95,15 @@ export default function Header() {
       {!token && isMenuOpen && (
         <div className="absolute top-16 left-0 right-0 bg-white shadow-lg p-5 sm:hidden">
           <ul className="flex flex-col space-y-4 items-end px-2">
-            <li><HeaderLink name="Home" to={PATHS.INDEX} /></li>
-            <li><HeaderLink name="Login" to={PATHS.LOGIN} /></li>
-            <li><HeaderLink name="Register" to={PATHS.REGISTER} /></li>
+            <li>
+              <HeaderLink name="Home" to={PATHS.INDEX} />
+            </li>
+            <li>
+              <HeaderLink name="Login" to={PATHS.LOGIN} />
+            </li>
+            <li>
+              <HeaderLink name="Register" to={PATHS.REGISTER} />
+            </li>
           </ul>
         </div>
       )}
@@ -161,12 +166,16 @@ export default function Header() {
             slotProps={{ list: { "aria-labelledby": "basic-button" } }}
           >
             <MenuItem onClick={handleClose}>
-              <ListItemIcon><IoMdSettings /></ListItemIcon>
+              <ListItemIcon>
+                <IoMdSettings />
+              </ListItemIcon>
               <ListItemText>Settings</ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem onClick={() => logoutMutation.mutate()}>
-              <ListItemIcon><MdLogout /></ListItemIcon>
+              <ListItemIcon>
+                <MdLogout />
+              </ListItemIcon>
               <ListItemText>Logout</ListItemText>
             </MenuItem>
           </Menu>
@@ -179,9 +188,15 @@ export default function Header() {
         <nav className="hidden sm:flex items-center gap-5">
           <LanguageSwitcher />
           <ul className="flex space-x-5">
-            <li><HeaderLink name={t("common.home")} to={PATHS.INDEX} /></li>
-            <li><HeaderLink name={t("login.title")} to={PATHS.LOGIN} /></li>
-            <li><HeaderLink name={t("register.title")} to={PATHS.REGISTER} /></li>
+            <li>
+              <HeaderLink name={t("common.home")} to={PATHS.INDEX} />
+            </li>
+            <li>
+              <HeaderLink name={t("login.title")} to={PATHS.LOGIN} />
+            </li>
+            <li>
+              <HeaderLink name={t("register.title")} to={PATHS.REGISTER} />
+            </li>
           </ul>
         </nav>
       )}

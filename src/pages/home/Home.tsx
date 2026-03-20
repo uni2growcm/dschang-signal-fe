@@ -16,6 +16,9 @@ type FilterType = "public" | "mine";
 export default function Home() {
   const [showError, setShowError] = useState(false);
   const [filter, setFilter] = useState<FilterType>("public");
+  // Pagination state for public reports
+  const [page, setPage] = useState(0);
+  const size = 10;
 
   const {
     data: myReports = [],
@@ -27,10 +30,15 @@ export default function Home() {
     data: publicReports = [],
     isLoading: publicLoading,
     isError: publicError,
-  } = usePublicReports();
+  } = usePublicReports(page, size);
 
   const isLoading = privateLoading || publicLoading;
   const hasError = privateError || publicError;
+
+  // Reset page to 0 if filter changes to public
+  useEffect(() => {
+    if (filter === "public") setPage(0);
+  }, [filter]);
 
   const displayedReports = useMemo(() => {
     if (!isAuth()) return publicReports;
@@ -105,12 +113,37 @@ export default function Home() {
             </div>
           )}
           {displayedReports.length > 0 ? (
-            displayedReports.map((report) => (
-              <ReportCard key={report.id} report={report} />
-            ))
+            <>
+              {displayedReports.map((report) => (
+                <ReportCard key={report.id} report={report} />
+              ))}
+            </>
           ) : (
             <div className="text-center text-gray-500 py-10">
               Aucun signalement trouvé
+            </div>
+          )}
+
+          {/* Pagination controls for public reports only */}
+          {filter === "public" && (
+            <div className="flex justify-center items-center gap-4 mt-6">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className={`px-4 py-2 rounded bg-gray-200 text-gray-700 font-medium transition-all ${page === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-300"}`}
+              >
+                Previous
+              </button>
+              <span className="font-semibold text-gray-700">
+                Page {page + 1}
+              </span>
+              <button
+                onClick={() => setPage((p) => displayedReports.length === size ? p + 1 : p)}
+                disabled={displayedReports.length < size}
+                className={`px-4 py-2 rounded bg-gray-200 text-gray-700 font-medium transition-all ${displayedReports.length < size ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-300"}`}
+              >
+                Next
+              </button>
             </div>
           )}
         </div>

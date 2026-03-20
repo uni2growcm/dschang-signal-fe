@@ -10,7 +10,7 @@ import {
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FormTextField from "../forms/shared/FormTextField";
 import SnackBar from "../snackBar/SnackBar";
 import {
@@ -67,8 +67,8 @@ export default function ReportForm() {
     queryFn: getCategories,
   });
 
-  const categoryOptions: CategoryOption[] = (categories as any[]).map(
-    (cat: any) => ({ id: cat.id, name: cat.name })
+  const categoryOptions: CategoryOption[] = (categories as Array<{ id: number | string; name: string }>).map(
+    (cat) => ({ id: cat.id, name: cat.name })
   );
 
   const allSelected = [
@@ -80,218 +80,244 @@ export default function ReportForm() {
     _: React.SyntheticEvent,
     newValue: CategoryOption[]
   ) => {
-    const otherOption = newValue.find((v) => v.id === "other");
-    const withoutOther = newValue.filter((v) => v.id !== "other");
-    setSelectedCategories(withoutOther);
 
-    if (otherOption) {
-      setShowNewCategory(true);
-      if (otherOption.name.startsWith('+ Add "')) {
-        const extracted = otherOption.name
-          .replace('+ Add "', "")
-          .replace('" as new category', "");
-        window.dispatchEvent(
-          new CustomEvent("prefill-category", { detail: extracted })
-        );
-      }
-    } else {
-      setShowNewCategory(false);
-      setNewCategoryError("");
-    }
+      const [medias, setMedias] = useState<File[]>([]);
+      const [preview, setPreview] = useState<string[]>([]);
+      const [isError, setIsError] = useState(false);
+      const [message, setMessage] = useState("");
+      const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>([]);
+      const [showNewCategory, setShowNewCategory] = useState(false);
+      const [categoryError, setCategoryError] = useState("");
+      const [newCategoryError, setNewCategoryError] = useState("");
 
-    setCategoryError("");
-  };
-
-  const handleNewCategoryBlur = async (name: string) => {
-    if (!name.trim() || name.trim().length < 2) return;
-    try {
-      const exists = await checkCategoryExists(name.trim());
-      if (exists) {
-        setNewCategoryError(
-          "This category already exists. Please select it from the list."
-        );
-      } else {
-        setNewCategoryError("");
-      }
-    } catch {
-      // Silently ignore check errors
-    }
-  };
-
-  const removeCategory = (id: number | string) => {
-    if (id === "other") {
-      setShowNewCategory(false);
-      setNewCategoryError("");
-    } else {
-      setSelectedCategories((prev) => prev.filter((cat) => cat.id !== id));
-    }
-  };
-
-  const mutation = useMutation({
-    mutationFn: async (values: ReportFormValues) => {
-      if (newCategoryError) {
-        throw new Error(newCategoryError);
-      }
-
-      let finalCategoryIds: number[] = [];
-
-      if (showNewCategory && values.newCategoryName.trim()) {
-        try {
-          const newCategory = await createCategory(values.newCategoryName);
-          finalCategoryIds.push(newCategory.id);
-        } catch {
-          throw new Error(
-            "This category already exists. Please select it from the list or choose a different name."
-          );
-        }
-      }
-
-      const existingIds = selectedCategories
-        .filter((cat) => cat.id !== "other")
-        .map((cat) => Number(cat.id));
-      finalCategoryIds = [...finalCategoryIds, ...existingIds];
-
-      const report = await createReport({
-        title: values.title,
-        description: values.description,
-        locationText: values.locationText,
-        categoryIds: finalCategoryIds,
+      const { data: categories = [] } = useQuery({
+        queryKey: ["categories"],
+        queryFn: getCategories,
       });
 
-      const reportId = report.id!;
-      for (const file of medias) {
-        await uploadMedia(reportId, file);
-      }
-      return report;
-    },
-    onSuccess: () => {
-      setMessage("Report created successfully!");
-      setIsError(false);
-      setMedias([]);
-      setPreview([]);
-      setSelectedCategories([]);
-      setShowNewCategory(false);
-      setNewCategoryError("");
-    },
-    onError: (error: any) => {
-      setMessage(error?.message || "Error creating report. Please try again.");
-      setIsError(true);
-    },
-  });
+      const categoryOptions: CategoryOption[] = (categories as Array<{ id: number | string; name: string }>).map(
+        (cat) => ({ id: cat.id, name: cat.name })
+      );
 
-  const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files ?? []);
-    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-    setMedias((prev) => [...prev, ...newFiles]);
-    setPreview((prev) => [...prev, ...newPreviews]);
-    e.target.value = "";
-  };
+      const allSelected = [
+        ...selectedCategories,
+        ...(showNewCategory ? [OTHER_OPTION] : []),
+      ];
 
-  const removeMedia = (index: number) => {
-    setMedias((prev) => prev.filter((_, i) => i !== index));
-    setPreview((prev) => prev.filter((_, i) => i !== index));
-  };
+      // Ref to store setFieldValue for use in event listener
+      const setFieldValueRef = useRef<((field: string, value: any) => void) | null>(null);
 
-  return (
-    <div className={styles.formWrapper}>
-      <div className={styles.formHeader}>
-        <Typography variant="body2" color="#666">
-          Describe the issue you observed in your area.{" "}
-          <span style={{ color: "#e53935" }}>*</span> Required fields
+      useEffect(() => {
+        const handler = (e: Event) => {
+          const customEvent = e as CustomEvent;
+          if (setFieldValueRef.current) {
+            setFieldValueRef.current("newCategoryName", customEvent.detail);
+          }
+        };
+        window.addEventListener("prefill-category", handler);
+        return () => window.removeEventListener("prefill-category", handler);
+      }, []);
+
+      const handleCategoryChange = (
+        _: React.SyntheticEvent,
+        newValue: CategoryOption[]
+      ) => {
+        const otherOption = newValue.find((v) => v.id === "other");
+        const withoutOther = newValue.filter((v) => v.id !== "other");
+        setSelectedCategories(withoutOther);
+
+        if (otherOption) {
+          setShowNewCategory(true);
+          if (otherOption.name.startsWith('+ Add "')) {
+            const extracted = otherOption.name
+              .replace('+ Add "', "")
+              .replace('" as new category', "");
+            window.dispatchEvent(
+              new CustomEvent("prefill-category", { detail: extracted })
+            );
+          }
+        } else {
+          setShowNewCategory(false);
+          setNewCategoryError("");
+        }
+
+        setCategoryError("");
+      };
+
+      const handleNewCategoryBlur = async (name: string) => {
+        if (!name.trim() || name.trim().length < 2) return;
+        try {
+          const exists = await checkCategoryExists(name.trim());
+          if (exists) {
+            setNewCategoryError(
+              "This category already exists. Please select it from the list."
+            );
+          } else {
+            setNewCategoryError("");
+          }
+        } catch {
+          // Silently ignore check errors
+        }
+      };
+
+      const removeCategory = (id: number | string) => {
+        if (id === "other") {
+          setShowNewCategory(false);
+          setNewCategoryError("");
+        } else {
+          setSelectedCategories((prev) => prev.filter((cat) => cat.id !== id));
+        }
+      };
+
+      const mutation = useMutation({
+        mutationFn: async (values: ReportFormValues) => {
+          if (newCategoryError) {
+            throw new Error(newCategoryError);
+          }
+
+          let finalCategoryIds: number[] = [];
+
+          if (showNewCategory && values.newCategoryName.trim()) {
+            try {
+              const newCategory = await createCategory(values.newCategoryName);
+              finalCategoryIds.push(newCategory.id);
+            } catch {
+              throw new Error(
+                "This category already exists. Please select it from the list or choose a different name."
+              );
+            }
+          }
+
+          const existingIds = selectedCategories
+            .filter((cat) => cat.id !== "other")
+            .map((cat) => Number(cat.id));
+          finalCategoryIds = [...finalCategoryIds, ...existingIds];
+
+          const report = await createReport({
+            title: values.title,
+            description: values.description,
+            locationText: values.locationText,
+            categoryIds: finalCategoryIds,
+          });
+
+          const reportId = report.id!;
+          for (const file of medias) {
+            await uploadMedia(reportId, file);
+          }
+          return report;
+        },
+        onSuccess: () => {
+          setMessage("Report created successfully!");
+          setIsError(false);
+          setMedias([]);
+          setPreview([]);
+          setSelectedCategories([]);
+          setShowNewCategory(false);
+          setNewCategoryError("");
+        },
+        onError: (error: unknown) => {
+          if (error && typeof error === "object" && "message" in error) {
+            setMessage((error as { message?: string }).message || "Error creating report. Please try again.");
+          } else {
+            setMessage("Error creating report. Please try again.");
+          }
+          setIsError(true);
+        },
+      });
+          <span style={{ color: '#e53935' }}>*</span> Required fields
         </Typography>
       </div>
 
-      <Formik
-        initialValues={{
-          title: "",
-          description: "",
-          locationText: "",
-          newCategoryName: "",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(values) => mutation.mutate(values)}
-      >
-        {({ values, handleChange, handleBlur, errors, touched, setFieldValue }) => {
-          useEffect(() => {
-            const handler = (e: Event) => {
-              setFieldValue("newCategoryName", (e as CustomEvent).detail);
-            };
-            window.addEventListener("prefill-category", handler);
-            return () => window.removeEventListener("prefill-category", handler);
-          }, [setFieldValue]);
+      return (
+        <div className={styles.formWrapper}>
+          <div className={styles.formHeader}>
+            <Typography variant="body2" color="#666">
+              Describe the issue you observed in your area.{' '}
+              <span style={{ color: '#e53935' }}>*</span> Required fields
+            </Typography>
+          </div>
 
-          return (
-            <Form>
-              <div className={styles.formInputs}>
-                <FormTextField
-                  label="Title *"
-                  name="title"
-                  value={values.title}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.title && Boolean(errors.title)}
-                  helperText={touched.title && errors.title}
+          <Formik
+            initialValues={{
+              title: "",
+              description: "",
+              locationText: "",
+              newCategoryName: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => mutation.mutate(values)}
+          >
+            {({ values, handleChange, handleBlur, errors, touched, setFieldValue }) => {
+              setFieldValueRef.current = setFieldValue;
+              return (
+                    option.id === value.id
+                  }
+                  disableCloseOnSelect
+                  renderTags={() => null}
+                  componentsProps={{
+                    popper: {
+                      placement: "bottom",
+                      modifiers: [{ name: "flip", enabled: false }],
+                    },
+                  }}
+                  filterOptions={(
+                    options: CategoryOption[],
+                    params: { inputValue: string }
+                  ) => {
+                    const trimmed = params.inputValue.trim().toLowerCase();
+                    const filtered = options.filter(
+                      (opt: CategoryOption) =>
+                        opt.id !== "other" &&
+                        opt.name.toLowerCase().includes(trimmed)
+                    );
+                    if (
+                      trimmed.length > 0 &&
+                      !categoryOptions.some(
+                        (cat: CategoryOption) => cat.name.toLowerCase() === trimmed
+                      )
+                    ) {
+                      return [
+                        ...filtered,
+                        {
+                          id: "other",
+                          name: `+ Add "${params.inputValue.trim()}" as new category`,
+                        },
+                      ];
+                    }
+                    return [...filtered, OTHER_OPTION];
+                  }}
+                  renderOption={(
+                    props: HTMLAttributes<HTMLLIElement>,
+                    option: CategoryOption
+                  ) => (
+                    <li
+                      {...props}
+                      key={String(option.id)}
+                      style={{
+                        color: option.id === "other" ? "#7c4dff" : "inherit",
+                        fontStyle: option.id === "other" ? "italic" : "normal",
+                      }}
+                    >
+                      {option.name}
+                    </li>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Category (optional)"
+                      error={Boolean(categoryError)}
+                      helperText={categoryError}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "8px",
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#7c4dff",
+                          },
+                        },
+                      }}
+                    />
+                  )}
                 />
-
-                <FormTextField
-                  label="Description *"
-                  name="description"
-                  value={values.description}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.description && Boolean(errors.description)}
-                  helperText={touched.description && errors.description}
-                  multiline
-                  rows={4}
-                />
-
-                <FormTextField
-                  label="Location *"
-                  name="locationText"
-                  value={values.locationText}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.locationText && Boolean(errors.locationText)}
-                  helperText={touched.locationText && errors.locationText}
-                />
-
-                {allSelected.length > 0 && (
-                  <div className={styles.selectedCategories}>
-                    <Typography variant="caption" color="#999">
-                      Selected categories
-                    </Typography>
-                    <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
-                      {allSelected.map((cat) => (
-                        <Chip
-                          key={cat.id}
-                          label={
-                            cat.id === "other"
-                              ? values.newCategoryName || "+ Add new category"
-                              : cat.name
-                          }
-                          size="small"
-                          onDelete={() => removeCategory(cat.id)}
-                          sx={{
-                            backgroundColor: "#f5f5f5",
-                            color: "#555",
-                            border: "1px solid #e0e0e0",
-                            "& .MuiChip-deleteIcon": {
-                              color: "#bbb",
-                              "&:hover": { color: "#888" },
-                            },
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  </div>
-                )}
-
-                <Autocomplete
-                  multiple
-                  options={[...categoryOptions, OTHER_OPTION]}
-                  getOptionLabel={(option) => option.name}
-                  value={allSelected}
-                  onChange={handleCategoryChange}
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }
