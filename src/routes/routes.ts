@@ -4,6 +4,7 @@ import NotFound from "../pages/notFound/NotFound";
 import RegisterPage from "../pages/register/RegisterPage";
 import { PATHS } from "./PATHS";
 import Home from "../pages/home/Home";
+import CreateReportPage from "../pages/report/CreateReportPage";
 import { LOCAL_STORAGE_KEYS } from "../utils/localStorage";
 
 const isAuthenticated: boolean = !!localStorage.getItem(
@@ -28,6 +29,10 @@ export const clientsRoutes = createBrowserRouter([
     loader: () => {
       if (isAuthenticated) throw redirect(PATHS.INDEX);
     },
+  },
+  {
+    path: PATHS.CREATE_REPORT,
+    Component: CreateReportPage,
   },
   {
     path: PATHS.NOT_FOUND,
