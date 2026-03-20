@@ -33,6 +33,14 @@ export const reportApi = new ReportApi(apiConfig);
 export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
 
+export const getReportById = async (id: number) => {
+  const [report, medias] = await Promise.all([
+    reportApi.getReportById({ id }),
+    mediaApi.getReportMedias({ reportId: id }),
+  ]);
+  return { ...report, medias };
+};
+
 export const createReport = async (data: {
   title: string;
   description: string;
@@ -62,13 +70,9 @@ export const uploadMedia = async (reportId: number, file: File) => {
   const response = await fetch(`${API_URL.dev}/reports/${reportId}/media`, {
     method: "POST",
     body: formData,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
-  if (!response.ok) {
-    throw new Error("Media upload failed");
-  }
+  if (!response.ok) throw new Error("Media upload failed");
   return response.json();
 };
 
@@ -88,9 +92,7 @@ export const createCategory = async (name: string) => {
     },
     body: JSON.stringify({ name: normalizedName }),
   });
-  if (!response.ok) {
-    throw new Error("Category creation failed");
-  }
+  if (!response.ok) throw new Error("Category creation failed");
   return response.json();
 };
 

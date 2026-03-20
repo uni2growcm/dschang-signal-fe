@@ -2,13 +2,14 @@
   min-height: 100vh;
   background-color: #f8f8f8;
   display: flex;
-  justify-content: center;
-  padding: 40px 20px;
+  flex-direction: column;
 }
 
 .contentWrapper {
   width: 100%;
   max-width: 600px;
+  margin: 40px auto;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -20,8 +21,27 @@
   gap: 4px;
 }
 
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+  padding: 12px 20px;
+  width: fit-content;
+  transition: color 0.2s;
+}
+
+.backButton:hover {
+  color: #7c4dff;
+}
+
 @media (max-width: 640px) {
-  .pageContainer {
-    padding: 20px 12px;
+  .contentWrapper {
+    padding: 0 12px;
+    margin: 20px auto;
   }
 }

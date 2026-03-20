@@ -114,26 +114,19 @@ paths:
         - name: id
           in: path
           required: true
-          description: Unique identifier of the user
           schema:
             type: integer
             format: int64
             example: 4
       responses:
         '200':
-          description: User found successfully
+          description: User found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '404':
           description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal server error
           content:
             application/json:
               schema:
@@ -148,11 +141,9 @@ paths:
         - name: id
           in: path
           required: true
-          description: Unique identifier of the user
           schema:
             type: integer
             format: int64
-            example: 4
       requestBody:
         required: true
         content:
@@ -161,13 +152,13 @@ paths:
               $ref: '#/components/schemas/ChangeRoleRequest'
       responses:
         '200':
-          description: Role updated successfully
+          description: Role updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '403':
-          description: Forbidden - Admin only
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -403,14 +394,13 @@ paths:
         - name: id
           in: path
           required: true
-          description: Unique identifier of the report
           schema:
             type: integer
             format: int64
             example: 1
       responses:
         '200':
-          description: Report found successfully
+          description: Report found
           content:
             application/json:
               schema:
@@ -563,6 +553,120 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /reports/{reportId}/media:
+    post:
+      operationId: uploadMedia
+      tags: [ Media ]
+      summary: Upload a media file for a report
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [ file ]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Media uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaResponse'
+        '404':
+          description: Report not found
+    get:
+      operationId: getReportMedias
+      tags: [ Media ]
+      summary: Get all media files for a specific report
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of media files for the report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaResponse'
+        '404':
+          description: Report not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /media:
+    get:
+      operationId: getAllMedia
+      tags: [ Media ]
+      summary: Get all media files
+      responses:
+        '200':
+          description: List of media files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaResponse'
+
+  /media/{mediaId}:
+    delete:
+      operationId: deleteMedia
+      tags: [ Media ]
+      summary: Delete a media file
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Media deleted successfully
+    get:
+      operationId: getMediaById
+      tags: [ Media ]
+      summary: Get a media file by id
+      security: []
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Media file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Media not found
+
   /categories:
     get:
       operationId: getAllCategories
@@ -659,93 +763,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /reports/{reportId}/media:
-    post:
-      operationId: uploadMedia
-      tags: [ Media ]
-      summary: Upload a media file for a report
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: reportId
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required: [ file ]
-              properties:
-                file:
-                  type: string
-                  format: binary
-                description:
-                  type: string
-      responses:
-        '201':
-          description: Media uploaded successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MediaResponse'
-        '404':
-          description: Report not found
-
-  /media:
-    get:
-      operationId: getAllMedia
-      tags: [ Media ]
-      summary: Get all media files
-      responses:
-        '200':
-          description: List of media files
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MediaResponse'
-
-  /media/{mediaId}:
-    delete:
-      operationId: deleteMedia
-      tags: [ Media ]
-      summary: Delete a media file
-      parameters:
-        - name: mediaId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: Media deleted successfully
-    get:
-      operationId: getMediaById
-      tags: [ Media ]
-      summary: Get a media file by id
-      security: []
-      parameters:
-        - name: mediaId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Media file
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
-        '404':
-          description: Media not found
-
 components:
   securitySchemes:
     bearerAuth:
@@ -789,7 +806,7 @@ components:
     Sort:
       name: sort
       in: query
-      description: 'Sorting criteria (example: fullName)'
+      description: Sorting criteria
       required: false
       schema:
         type: string
@@ -978,9 +995,9 @@ components:
             $ref: "#/components/schemas/CategoryResponse"
 
     CategoryRequest:
+      type: object
       required:
         - name
-      type: object
       properties:
         name:
           type: string
@@ -1002,13 +1019,9 @@ components:
         name:
           type: string
           example: "Road"
-          maxLength: 255
         color:
           type: string
           example: "#FF5733"
-          pattern: '^#[0-9A-Fa-f]{6}$'
-          description: Hex color code (e.g., #FF5733)
-          maxLength: 10
         createdAt:
           type: string
           format: date-time

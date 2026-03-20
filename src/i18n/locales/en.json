@@ -65,6 +65,7 @@
     "code": "404",
     "title": "Page not found",
     "message": "Sorry, the page you're looking for doesn't exist or has been moved.",
+    "reportText": "The report you are looking for does not exist or has been deleted.",
     "backHome": "Go back to Home"
   },
   "reports": {
