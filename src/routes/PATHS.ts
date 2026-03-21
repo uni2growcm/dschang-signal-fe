@@ -4,5 +4,6 @@ export const PATHS = {
   REGISTER: '/register',
   NOT_FOUND: '*',
   CREATE_REPORT: '/report/create',
+  REPORT_DETAILS: '/reports/:id',
   SETTINGS: '/settings',
 };

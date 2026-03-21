@@ -1,13 +1,9 @@
-import { Box, Grow, Typography } from "@mui/material";
-<<<<<<< Updated upstream
-import { useTranslation } from "react-i18next";
-=======
-import styles from "./login.module.css";
->>>>>>> Stashed changes
-import loginImage from "../../assets/login-image.jpg";
-import LoginForm from "../../components/forms/login/LoginForm";
-import Logo from "../../components/logo/Logo";
-import styles from "./login.module.css";
+import { Box, Grow, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import loginImage from '../../assets/login-image.jpg';
+import LoginForm from '../../components/forms/login/LoginForm';
+import Logo from '../../components/logo/Logo';
+import styles from './login.module.css';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -27,28 +23,22 @@ export default function LoginPage() {
                 variant="h5"
                 sx={{ fontWeight: 600, fontSize: 30, lineHeight: 1.4 }}
               >
-<<<<<<< Updated upstream
-                "{t("login.quote")}"
-=======
-                "A simple way to report and track issues in our community."
->>>>>>> Stashed changes
+                "{t('login.quote')}" "A simple way to report and track issues in
+                our community."
               </Typography>
             </div>
 
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 20 }}>
-<<<<<<< Updated upstream
-              {t("login.quoter")}
+              {t('login.quoter')}
             </Typography>
 
             <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
-              {t("login.quoterTitle")}
-=======
+              {t('login.quoterTitle')}
               Marie Nguemo
             </Typography>
 
             <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
               Community Leader, Dschang
->>>>>>> Stashed changes
             </Typography>
           </Box>
         </Box>
