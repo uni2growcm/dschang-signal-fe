@@ -1,7 +1,6 @@
 import { Backdrop, CircularProgress, Grow } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import Header from '../../components/header/Header';
 import ReportCard from '../../components/report/ReportCard';
 import PaginationControls from '../../components/pagination/PaginationControls';
 import { isAuth } from '../../utils/utils';
@@ -54,11 +53,12 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (hasError) {
+    if (!hasError) return;
+    const timer = setTimeout(() => {
       setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 5000);
-      return () => clearTimeout(timer);
-    }
+      setTimeout(() => setShowError(false), 5000);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [hasError]);
 
   if (isLoading) {
