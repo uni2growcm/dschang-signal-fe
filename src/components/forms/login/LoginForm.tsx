@@ -110,12 +110,6 @@ export default function LoginForm() {
               </Typography>
             </div>
 
-            <SuccessFade
-              show={success}
-              message="Login successful"
-              redirectText="Redirecting..."
-            />
-
             <div
               className={styles.loginInputs}
               style={{
