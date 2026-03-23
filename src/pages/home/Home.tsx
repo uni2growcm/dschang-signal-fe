@@ -54,11 +54,12 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (hasError) {
+    if (!hasError) return;
+    const timer = setTimeout(() => {
       setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 5000);
-      return () => clearTimeout(timer);
-    }
+      setTimeout(() => setShowError(false), 5000);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [hasError]);
 
   if (isLoading) {
