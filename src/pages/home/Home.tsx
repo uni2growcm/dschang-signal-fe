@@ -48,7 +48,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-        <Header />
+
         <Backdrop
           open={true}
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -64,7 +64,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-      <Header />
       <SnackBar
         open={showError}
         severity="error"

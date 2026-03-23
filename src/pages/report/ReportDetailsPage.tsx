@@ -1,9 +1,7 @@
-import { useParams, Navigate, useNavigate } from "react-router";
+import { useParams, Navigate, useNavigate, Link } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getReportById, deleteReport } from "../../services";
 import { useMe } from "../../services/user";
-import Header from "../../components/header/Header";
-import { Link } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import styles from "./ReportDetailsPage.module.css";
 import { useState } from "react";
@@ -56,7 +54,6 @@ export default function ReportDetailsPage() {
   if (isLoading) {
     return (
       <div className={styles.pageContainer}>
-        <Header />
         <div className="flex justify-center items-center flex-1 mt-20">
           <CircularProgress />
         </div>
@@ -70,7 +67,6 @@ export default function ReportDetailsPage() {
 
   return (
     <div className={styles.pageContainer}>
-      <Header />
       <div className={styles.contentWrapper}>
       
         <div className="flex justify-between items-center">
