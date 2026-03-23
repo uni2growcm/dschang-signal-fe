@@ -5,10 +5,7 @@ import {
   TextField,
   Typography,
   Stack,
-  FormControl,
-  MenuItem,
   Collapse,
-  Select,
   InputAdornment,
   IconButton,
   CircularProgress,
@@ -40,8 +37,7 @@ export const GeneralSection = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [language, setLanguage] = useState('');
-  const [timezone, setTimezone] = useState('');
+
   const [isProfileDirty, setIsProfileDirty] = useState(false);
   const [notification, setNotification] = useState<Notification | null>(null);
 
@@ -448,7 +444,8 @@ export const GeneralSection = () => {
                           updatePasswordMutation.isPending ||
                           !values.newPassword ||
                           !values.confirmPassword ||
-                          values.newPassword !== values.confirmPassword
+                          values.newPassword !== values.confirmPassword ||
+                          values.currentPassword.length < 6 || values.currentPassword === values.newPassword
                         }
                         startIcon={
                           updatePasswordMutation.isPending ? (
@@ -472,82 +469,35 @@ export const GeneralSection = () => {
           )}
         </Formik>
 
-        <Box>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            mb={0.5}
-            display="block"
-          >
-            Default language
-          </Typography>
-          <FormControl fullWidth size="small">
-            <Select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              displayEmpty
+        {!showPasswordFields && (
+          <Box display="flex" justifyContent="flex-end" gap={1} pt={1}>
+            <Button
+              variant="outlined"
+              color="inherit"
+              size="small"
+              onClick={() => generalFormRef.current?.resetForm()}
             >
-              <MenuItem value="">—</MenuItem>
-              <MenuItem value="fr">Français</MenuItem>
-              <MenuItem value="en">English</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-
-        <Box>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            mb={0.5}
-            display="block"
-          >
-            Timezone
-          </Typography>
-          <FormControl fullWidth size="small">
-            <Select
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              displayEmpty
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              disabled={updateProfileMutation.isPending || !isProfileDirty}
+              startIcon={
+                updateProfileMutation.isPending ? (
+                  <CircularProgress size={14} color="inherit" />
+                ) : null
+              }
+              sx={{
+                backgroundColor: '#7C4DFF',
+                '&:hover': { backgroundColor: '#6C3FEF' },
+              }}
+              onClick={() => generalFormRef.current?.submitForm()}
             >
-              <MenuItem value="">—</MenuItem>
-              <MenuItem value="Africa/Douala">Africa/Douala (UTC+1)</MenuItem>
-              <MenuItem value="UTC">UTC</MenuItem>
-              <MenuItem value="Europe/Paris">Europe/Paris (UTC+1)</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box display="flex" justifyContent="flex-end" gap={1} pt={1}>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="small"
-            onClick={() => generalFormRef.current?.resetForm()}
-            disabled={showPasswordFields}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            disabled={
-              updateProfileMutation.isPending ||
-              showPasswordFields ||
-              !isProfileDirty
-            }
-            startIcon={
-              updateProfileMutation.isPending ? (
-                <CircularProgress size={14} color="inherit" />
-              ) : null
-            }
-            sx={{
-              backgroundColor: '#7C4DFF',
-              '&:hover': { backgroundColor: '#6C3FEF' },
-            }}
-            onClick={() => generalFormRef.current?.submitForm()}
-          >
-            {updateProfileMutation.isPending ? 'Saving...' : 'Save changes'}
-          </Button>
-        </Box>
+              {updateProfileMutation.isPending ? 'Saving...' : 'Save changes'}
+            </Button>
+          </Box>
+        )}
       </Stack>
     </SettingsSection>
   );

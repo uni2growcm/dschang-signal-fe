@@ -16,6 +16,10 @@ export const passwordValidationSchema = Yup.object({
 
   newPassword: Yup.string()
     .min(6, 'Password must be at least 6 characters')
+    .notOneOf(
+      [Yup.ref('currentPassword')],
+      'New password must be different from current password',
+    )
     .required('New password is required'),
 
   confirmPassword: Yup.string()

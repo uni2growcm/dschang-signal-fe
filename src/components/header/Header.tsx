@@ -23,6 +23,7 @@ import LanguageSwitcher from '../languageSwitcher/LanguageSwitcher';
 import Logo from '../logo/Logo';
 import SnackBar from '../snackBar/SnackBar';
 import HeaderLink from './HeaderLink';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const { t } = useTranslation();
@@ -169,7 +170,9 @@ export default function Header() {
               <ListItemIcon>
                 <IoMdSettings />
               </ListItemIcon>
-              <ListItemText>Settings</ListItemText>
+              <ListItemText>
+                <Link to="/settings">Settings</Link>
+              </ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem onClick={() => logoutMutation.mutate()}>

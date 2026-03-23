@@ -9,10 +9,12 @@ import {
   Toolbar,
   CircularProgress,
 } from '@mui/material';
-import TopNavBar from '../../components/topNavBar/TopNavBar';
 import { UsersSection } from '../../components/settings/contentSettings/UserSection';
 import { useQuery } from '@tanstack/react-query';
 import { userApi } from '../../services';
+import { Link } from 'react-router-dom';
+import { PATHS } from '../../routes/PATHS';
+import Header from '../../components/header/Header';
 
 export const Settings = () => {
   const { data: currentUser, isLoading } = useQuery({
@@ -24,7 +26,7 @@ export const Settings = () => {
 
   return (
     <>
-      <TopNavBar />
+      <Header />
       <Toolbar />
 
       <Box
@@ -36,6 +38,12 @@ export const Settings = () => {
         }}
       >
         <Box maxWidth={750} mx="auto">
+          <Link
+            to={PATHS.INDEX}
+            className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
+          >
+            ← Back to Home
+          </Link>
           <Box mb={4} textAlign="center">
             <Typography
               variant="h5"
