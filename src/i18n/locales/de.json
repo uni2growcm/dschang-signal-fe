@@ -90,5 +90,29 @@
     "quote": "Schließen Sie sich uns an, um in Ihrer Gemeinschaft etwas zu bewirken.",
     "author": "Marie Nguemo",
     "role": "Gemeindeleiterin, Dschang"
+  },
+  "reportForm": {
+      "headerDescription": "Beschreiben Sie das Problem, das Sie in Ihrer Umgebung beobachtet haben.",
+      "requiredFields": "Pflichtfelder",
+      "title": "Titel",
+      "description": "Beschreibung",
+      "location": "Standort",
+      "categoryOptional": "Kategorie (optional)",
+      "selectedCategories": "Ausgewählte Kategorien",
+      "newCategory": "Name der neuen Kategorie",
+      "attachMedia": "Fotos oder Videos anhängen",
+      "optional": "optional",
+      "selectFiles": "Klicken Sie, um Dateien auszuwählen",
+      "submit": "Meldung senden",
+      "success": "Meldung erfolgreich erstellt!",
+      "error": "Fehler beim Erstellen der Meldung.",
+      "addCategory": "+ Neue Kategorie hinzufügen",
+      "addCategoryDynamic": "+ \"{{value}}\" als neue Kategorie hinzufügen"
+    },
+  "reportPage": {
+    "title": "Meldung erstellen",
+    "subtitle": "Helfen Sie, Ihre Stadt zu verbessern, indem Sie ein Problem melden",
+    "backHome": "Zurück zur Startseite"
   }
+
 }

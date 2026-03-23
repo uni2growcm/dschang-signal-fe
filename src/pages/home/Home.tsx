@@ -10,6 +10,7 @@ import {
 } from "../../services/report";
 import SnackBar from "../../components/snackBar/SnackBar";
 import { PATHS } from "../../routes/PATHS";
+import { useTranslation } from "react-i18next";
 
 type FilterType = "public" | "mine";
 
@@ -28,7 +29,7 @@ export default function Home() {
     isLoading: publicLoading,
     isError: publicError,
   } = usePublicReports();
-
+  const { t } = useTranslation();
   const isLoading = privateLoading || publicLoading;
   const hasError = privateError || publicError;
 
@@ -55,7 +56,7 @@ export default function Home() {
         >
           <div className="flex flex-col items-center gap-4">
             <CircularProgress color="inherit" />
-            <p className="text-white">Chargement des signalements...</p>
+            <p className="text-white">{t("home.loadingReports")}</p>
           </div>
         </Backdrop>
       </div>
@@ -68,7 +69,7 @@ export default function Home() {
       <SnackBar
         open={showError}
         severity="error"
-        message="Échec du chargement des signalements. Veuillez recharger la page."
+        message={t("home.errorLoading")}
       />
       <Grow in timeout={1000}>
         <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
@@ -83,7 +84,7 @@ export default function Home() {
                       : "text-gray-500 hover:text-gray-800"
                   }`}
                 >
-                  Public
+                  {t("home.filterPublic")}
                 </button>
                 <button
                   onClick={() => setFilter("mine")}
@@ -93,14 +94,14 @@ export default function Home() {
                       : "text-gray-500 hover:text-gray-800"
                   }`}
                 >
-                  Mes signalements
+                  {t("home.filterMine")}
                 </button>
               </div>
               <Link
                 to={PATHS.CREATE_REPORT}
                 className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
               >
-                 + Create a Report
+                {t("home.createReport")}
               </Link>
             </div>
           )}
@@ -110,7 +111,7 @@ export default function Home() {
             ))
           ) : (
             <div className="text-center text-gray-500 py-10">
-              Aucun signalement trouvé
+              {t("home.noReports")}
             </div>
           )}
         </div>

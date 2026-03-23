@@ -90,5 +90,28 @@
     "quote": "Unisciti a noi per fare la differenza nella tua comunità.",
     "author": "Marie Nguemo",
     "role": "Leader della comunità, Dschang"
+  },
+  "reportForm": {
+    "headerDescription": "Descrivi il problema che hai osservato nella tua zona.",
+    "requiredFields": "Campi obbligatori",
+    "title": "Titolo",
+    "description": "Descrizione",
+    "location": "Posizione",
+    "categoryOptional": "Categoria (opzionale)",
+    "selectedCategories": "Categorie selezionate",
+    "newCategory": "Nome della nuova categoria",
+    "attachMedia": "Allega foto o video",
+    "optional": "opzionale",
+    "selectFiles": "Clicca per selezionare i file",
+    "submit": "Invia segnalazione",
+    "success": "Segnalazione creata con successo!",
+    "error": "Errore durante la creazione della segnalazione.",
+    "addCategory": "+ Aggiungi nuova categoria",
+    "addCategoryDynamic": "+ Aggiungi \"{{value}}\" come nuova categoria"
+  },
+  "reportPage": {
+    "title": "Crea una segnalazione",
+    "subtitle": "Aiuta a migliorare la tua città segnalando un problema",
+    "backHome": "Torna alla home"
   }
 }

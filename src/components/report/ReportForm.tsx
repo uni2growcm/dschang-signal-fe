@@ -22,6 +22,7 @@ import {
 } from "../../services";
 import styles from "./ReportForm.module.css";
 import { MdCloudUpload } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 const OTHER_OPTION = { id: "other" as const, name: "+ Add new category" };
 
@@ -43,9 +44,9 @@ const validationSchema = Yup.object({
     .max(150, "Title must be at most 150 characters")
     .required("Title is required"),
   description: Yup.string()
-  .min(10, "Description must be at least 10 characters")
-  .required("Description is required"),
-  
+    .min(10, "Description must be at least 10 characters")
+    .required("Description is required"),
+
   locationText: Yup.string().required("Location is required"),
   newCategoryName: Yup.string()
     .min(2, "Category name must be at least 2 characters")
@@ -57,10 +58,13 @@ export default function ReportForm() {
   const [preview, setPreview] = useState<string[]>([]);
   const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<
+    CategoryOption[]
+  >([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
+  const { t } = useTranslation();
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -68,7 +72,7 @@ export default function ReportForm() {
   });
 
   const categoryOptions: CategoryOption[] = (categories as any[]).map(
-    (cat: any) => ({ id: cat.id, name: cat.name })
+    (cat: any) => ({ id: cat.id, name: cat.name }),
   );
 
   const allSelected = [
@@ -78,7 +82,7 @@ export default function ReportForm() {
 
   const handleCategoryChange = (
     _: React.SyntheticEvent,
-    newValue: CategoryOption[]
+    newValue: CategoryOption[],
   ) => {
     const otherOption = newValue.find((v) => v.id === "other");
     const withoutOther = newValue.filter((v) => v.id !== "other");
@@ -91,7 +95,7 @@ export default function ReportForm() {
           .replace('+ Add "', "")
           .replace('" as new category', "");
         window.dispatchEvent(
-          new CustomEvent("prefill-category", { detail: extracted })
+          new CustomEvent("prefill-category", { detail: extracted }),
         );
       }
     } else {
@@ -108,7 +112,7 @@ export default function ReportForm() {
       const exists = await checkCategoryExists(name.trim());
       if (exists) {
         setNewCategoryError(
-          "This category already exists. Please select it from the list."
+          "This category already exists. Please select it from the list.",
         );
       } else {
         setNewCategoryError("");
@@ -141,7 +145,7 @@ export default function ReportForm() {
           finalCategoryIds.push(newCategory.id);
         } catch {
           throw new Error(
-            "This category already exists. Please select it from the list or choose a different name."
+            "This category already exists. Please select it from the list or choose a different name.",
           );
         }
       }
@@ -196,8 +200,9 @@ export default function ReportForm() {
     <div className={styles.formWrapper}>
       <div className={styles.formHeader}>
         <Typography variant="body2" color="#666">
-          Describe the issue you observed in your area.{" "}
-          <span style={{ color: "#e53935" }}>*</span> Required fields
+          {t("reportForm.headerDescription")}{" "}
+          <span style={{ color: "#e53935" }}>*</span>{" "}
+          {`${t("reportForm.requiredFields")} *`}
         </Typography>
       </div>
 
@@ -211,20 +216,28 @@ export default function ReportForm() {
         validationSchema={validationSchema}
         onSubmit={(values) => mutation.mutate(values)}
       >
-        {({ values, handleChange, handleBlur, errors, touched, setFieldValue }) => {
+        {({
+          values,
+          handleChange,
+          handleBlur,
+          errors,
+          touched,
+          setFieldValue,
+        }) => {
           useEffect(() => {
             const handler = (e: Event) => {
               setFieldValue("newCategoryName", (e as CustomEvent).detail);
             };
             window.addEventListener("prefill-category", handler);
-            return () => window.removeEventListener("prefill-category", handler);
+            return () =>
+              window.removeEventListener("prefill-category", handler);
           }, [setFieldValue]);
 
           return (
             <Form>
               <div className={styles.formInputs}>
                 <FormTextField
-                  label="Title *"
+                  label={`${t("reportForm.title")} *`}
                   name="title"
                   value={values.title}
                   onChange={handleChange}
@@ -234,7 +247,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Description *"
+                  label={`${t("reportForm.description")} *`}
                   name="description"
                   value={values.description}
                   onChange={handleChange}
@@ -246,7 +259,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Location *"
+                  label={`${t("reportForm.location")} *`}
                   name="locationText"
                   value={values.locationText}
                   onChange={handleChange}
@@ -258,7 +271,7 @@ export default function ReportForm() {
                 {allSelected.length > 0 && (
                   <div className={styles.selectedCategories}>
                     <Typography variant="caption" color="#999">
-                      Selected categories
+                      {t("reportForm.selectedCategories")}
                     </Typography>
                     <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
                       {allSelected.map((cat) => (
@@ -308,12 +321,12 @@ export default function ReportForm() {
                     const filtered = options.filter(
                       (opt) =>
                         opt.id !== "other" &&
-                        opt.name.toLowerCase().includes(trimmed)
+                        opt.name.toLowerCase().includes(trimmed),
                     );
                     if (
                       trimmed.length > 0 &&
                       !categoryOptions.some(
-                        (cat) => cat.name.toLowerCase() === trimmed
+                        (cat) => cat.name.toLowerCase() === trimmed,
                       )
                     ) {
                       return [
@@ -341,7 +354,7 @@ export default function ReportForm() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Category (optional)"
+                      label={t("reportForm.categoryOptional")}
                       error={Boolean(categoryError)}
                       helperText={categoryError}
                       sx={{
@@ -360,7 +373,7 @@ export default function ReportForm() {
                   <Box display="flex" gap={1} alignItems="flex-start">
                     <Box flex={1}>
                       <FormTextField
-                        label="New category name *"
+                        label={`${t("reportForm.newCategory")} *`}
                         name="newCategoryName"
                         value={values.newCategoryName}
                         onChange={handleChange}
@@ -395,9 +408,11 @@ export default function ReportForm() {
 
                 <Box>
                   <Typography variant="body2" color="#666" mb={1}>
-                    Attach photos or videos{" "}
+                    {" "}
+                    {t("reportForm.attachMedia")}{" "}
                     <span style={{ color: "#999", fontSize: 12 }}>
-                      (optional)
+                      {" "}
+                      ({t("reportForm.optional")})
                     </span>
                   </Typography>
                   <label className={styles.uploadZone}>
@@ -410,7 +425,8 @@ export default function ReportForm() {
                     />
                     <MdCloudUpload size={28} color="#7c4dff" />
                     <Typography variant="body2" color="#7c4dff" mt={0.5}>
-                      Click to select files
+                      {" "}
+                      {t("reportForm.selectFiles")}
                     </Typography>
                   </label>
                 </Box>
@@ -459,7 +475,7 @@ export default function ReportForm() {
                   {mutation.isPending ? (
                     <CircularProgress size={20} color="inherit" />
                   ) : (
-                    "Submit Report"
+                    t("reportForm.submit")
                   )}
                 </Button>
               </div>

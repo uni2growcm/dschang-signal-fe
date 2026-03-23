@@ -9,7 +9,10 @@ export default function LoginPage() {
   const { t } = useTranslation();
   return (
     <Box className={`${styles.loginContainer} max-sm:flex-col`}>
-      <Logo col className="absolute max-sm:relative top-5 sm:left-5 max-sm:self-center" />
+      <Logo
+        col
+        className="absolute max-sm:relative top-5 sm:left-5 max-sm:self-center"
+      />
       <Grow in timeout={1000}>
         <Box
           sx={{

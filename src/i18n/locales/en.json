@@ -91,5 +91,39 @@
     "quote": "Join us to make a difference in your community.",
     "author": "Marie Nguemo",
     "role": "Community Leader, Dschang"
+  },
+
+  "reportForm": {
+    "headerDescription": "Describe the issue you observed in your area.",
+    "requiredFields": "Required fields",
+    "title": "Title",
+    "description": "Description",
+    "location": "Location",
+    "categoryOptional": "Category (optional)",
+    "selectedCategories": "Selected categories",
+    "newCategory": "New category name",
+    "attachMedia": "Attach photos or videos",
+    "optional": "optional",
+    "selectFiles": "Click to select files",
+    "submit": "Submit Report",
+    "success": "Report created successfully!",
+    "error": "Error creating report. Please try again.",
+    "addCategory": "+ Add new category",
+    "addCategoryDynamic": "+ Add \"{{value}}\" as new category"
+  },
+
+  "reportPage": {
+    "title": "Create a Report",
+    "subtitle": "Help improve your city by reporting an issue",
+    "backHome": "Back to Home"
+  },
+
+  "home": {
+    "loadingReports": "Loading reports...",
+    "errorLoading": "Failed to load reports. Please reload the page.",
+    "filterPublic": "Public",
+    "filterMine": "My Reports",
+    "createReport": "Create Report",
+    "noReports": "No reports found"
   }
 }

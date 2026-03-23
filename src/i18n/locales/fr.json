@@ -90,5 +90,38 @@
     "quote": "Rejoignez-nous pour faire la différence dans votre communauté.",
     "author": "Marie Nguemo",
     "role": "Leader communautaire, Dschang"
+  },
+
+  "reportForm": {
+    "headerDescription": "Décrivez le problème observé dans votre zone.",
+    "requiredFields": "Champs obligatoires",
+    "title": "Titre",
+    "description": "Description",
+    "location": "Localisation",
+    "categoryOptional": "Catégorie (optionnelle)",
+    "selectedCategories": "Catégories sélectionnées",
+    "newCategory": "Nom de la nouvelle catégorie",
+    "attachMedia": "Joindre des photos ou vidéos",
+    "optional": "optionnel",
+    "selectFiles": "Cliquez pour sélectionner des fichiers",
+    "submit": "Soumettre le signalement",
+    "success": "Signalement créé avec succès !",
+    "error": "Erreur lors de la création du signalement.",
+    "addCategory": "+ Ajouter une nouvelle catégorie",
+    "addCategoryDynamic": "+ Ajouter \"{{value}}\" comme nouvelle catégorie"
+  },
+
+  "reportPage": {
+    "title": "Créer un signalement",
+    "subtitle": "Aidez à améliorer votre ville en signalant un problème",
+    "backHome": "Retour à l'accueil"
+  },
+  "home": {
+    "loadingReports": "Chargement des signalements...",
+    "errorLoading": "Échec du chargement des signalements. Veuillez recharger la page.",
+    "filterPublic": "Public",
+    "filterMine": "Mes signalements",
+    "createReport": "Créer un signalement",
+    "noReports": "Aucun signalement trouvé"
   }
 }
