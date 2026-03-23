@@ -1,9 +1,9 @@
-import { Box, Grow, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import loginImage from "../../assets/login-image.jpg";
-import LoginForm from "../../components/forms/login/LoginForm";
-import Logo from "../../components/logo/Logo";
-import styles from "./login.module.css";
+import { Box, Grow, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import loginImage from '../../assets/login-image.jpg';
+import LoginForm from '../../components/forms/login/LoginForm';
+import Logo from '../../components/logo/Logo';
+import styles from './login.module.css';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -26,16 +26,16 @@ export default function LoginPage() {
                 variant="h5"
                 sx={{ fontWeight: 600, fontSize: 30, lineHeight: 1.4 }}
               >
-                "{t("login.quote")}"
+                "{t('login.quote')}"
               </Typography>
             </div>
 
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 20 }}>
-              {t("login.quoter")}
+              {t('login.quoter')}
             </Typography>
 
             <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
-              {t("login.quoterTitle")}
+              {t('login.quoterTitle')}
             </Typography>
           </Box>
         </Box>

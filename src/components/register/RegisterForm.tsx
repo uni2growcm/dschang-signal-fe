@@ -1,16 +1,10 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import axios from "axios";
-import { Form, Formik } from "formik";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router";
-import { PATHS } from "../../routes/PATHS";
-import { authApi } from "../../services";
-import FormTextField from "../forms/shared/FormTextField";
-import SuccessFade from "../forms/shared/SuccessFade";
-import styles from "./RegisterForm.module.css";
-import { registerValidationSchema } from "./registerValidationSchema";
+import { Box, Button, Divider, TextField, Typography } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { FcGoogle } from 'react-icons/fc';
+import styles from './RegisterForm.module.css';
+import { registerValidationSchema } from './registerValidationSchema';
+import { PATHS } from '../../routes/PATHS';
+import { useNavigate } from 'react-router';
 
 interface RegisterFormValues {
   email: string;
@@ -19,50 +13,22 @@ interface RegisterFormValues {
 }
 
 export default function RegisterForm() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  const handleSubmit = async (values: RegisterFormValues) => {
-    try {
-      await authApi.register({
-        registerRequest: {
-          fullName: values.fullName,
-          email: values.email,
-          password: values.password,
-        },
-      });
-      setIsSuccess(true);
-      setTimeout(() => {
-        navigate(PATHS.LOGIN);
-      }, 2000);
-    } catch (error: unknown) {
-      console.error("Register error:", error);
-
-      let message = t("register.error");
-
-      if (axios.isAxiosError(error)) {
-        message = error.response?.data?.message || message;
-      }
-
-      alert(message);
-    }
+  const handleSubmit = (values: RegisterFormValues) => {
+    console.log('Register attempt:', values);
   };
 
   return (
     <Formik
-      initialValues={{ email: "", fullName: "", password: "" }}
+      initialValues={{
+        email: '',
+        fullName: '',
+        password: '',
+      }}
       validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
-      {({
-        values,
-        handleChange,
-        handleBlur,
-        errors,
-        touched,
-        isSubmitting,
-      }) => (
+      {({ values, handleChange, handleBlur, errors, touched }) => (
         <Form>
           <div className={styles.registerForm}>
             <div className={styles.registerHeader}>
@@ -70,133 +36,169 @@ export default function RegisterForm() {
                 sx={{
                   fontSize: 28,
                   fontWeight: 700,
-                  color: "#1a1a1a",
+                  color: '#1a1a1a',
                   letterSpacing: -0.5,
                 }}
               >
-                {t("register.title")}
+                Create your account
               </Typography>
-
               <Typography
                 sx={{
-                  color: "#757575",
+                  color: '#757575',
                   fontSize: 14,
                   lineHeight: 1.5,
-                  textAlign: "center",
+                  textAlign: 'center',
                 }}
               >
-                {t("register.description")}
+                Join Dschang's Signal and start reporting issues in your
+                community.
               </Typography>
             </div>
 
-            <SuccessFade
-              show={isSuccess}
-              message={t("register.success")}
-              redirectText={t("register.redirect")}
-            />
-
-            <div
-              className={styles.registerInputs}
-              style={{
-                opacity: isSuccess ? 0.5 : 1,
-                pointerEvents: isSuccess ? "none" : "auto",
-                transition: "all 0.4s ease",
-              }}
-            >
-              <FormTextField
-                label={t("register.fullName")}
+            <div className={styles.registerInputs}>
+              <TextField
+                label="Full Name"
                 name="fullName"
+                type="text"
+                fullWidth
+                variant="outlined"
+                size="small"
                 value={values.fullName}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.fullName && Boolean(errors.fullName)}
                 helperText={touched.fullName && errors.fullName}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#7c4dff',
+                    },
+                    '&.Mui-focused': {
+                      '& fieldset': {
+                        borderColor: '#7c4dff',
+                      },
+                    },
+                  },
+                }}
               />
 
               <TextField
-                label={t("register.email")}
+                label="Email"
                 name="email"
                 type="email"
+                fullWidth
+                variant="outlined"
+                size="small"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#7c4dff',
+                    },
+                    '&.Mui-focused': {
+                      '& fieldset': {
+                        borderColor: '#7c4dff',
+                      },
+                    },
+                  },
+                }}
               />
 
               <TextField
-                label={t("register.password")}
+                label="Password"
                 name="password"
                 type="password"
+                fullWidth
+                variant="outlined"
+                size="small"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#7c4dff',
+                    },
+                    '&.Mui-focused': {
+                      '& fieldset': {
+                        borderColor: '#7c4dff',
+                      },
+                    },
+                  },
+                }}
               />
             </div>
 
             <Button
               type="submit"
               fullWidth
-              disabled={isSubmitting || isSuccess}
               sx={{
-                backgroundColor: "#7c4dff",
-                color: "white",
-                padding: "12px",
-                borderRadius: "24px",
+                backgroundColor: '#7c4dff',
+                color: 'white',
+                padding: '12px',
+                borderRadius: '24px',
                 fontWeight: 600,
-                fontSize: "15px",
-                textTransform: "none",
-                marginTop: "8px",
-                transition: "all 0.3s ease",
-                "&:hover": { backgroundColor: "#6b3edb" },
+                fontSize: '15px',
+                textTransform: 'none',
+                boxShadow: '0 4px 12px rgba(124, 77, 255, 0.3)',
+                '&:hover': {
+                  backgroundColor: '#6b3edb',
+                  boxShadow: '0 6px 16px rgba(124, 77, 255, 0.4)',
+                },
+                marginTop: '8px',
               }}
             >
-              {isSuccess
-                ? t("register.redirecting")
-                : isSubmitting
-                  ? t("register.loading")
-                  : t("register.submit")}
+              Register
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>
-                {t("register.or")}
-              </Divider>
+              <Divider sx={{ fontSize: '14px', color: '#999' }}>OR</Divider>
             </Box>
 
             <Button
               variant="outlined"
               fullWidth
-              disabled={isSuccess}
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                padding: "12px",
-                borderRadius: "24px",
-                border: "1px solid #ddd",
-                color: "#333",
-                textTransform: "none",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                padding: '12px',
+                borderRadius: '24px',
+                border: '1px solid #ddd',
+                color: '#333',
+                textTransform: 'none',
+                fontSize: '15px',
+                fontWeight: 500,
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  border: '1px solid #bbb',
+                },
               }}
             >
               <FcGoogle size={25} />
               <span className="text-inherit font-medium text-lg">
-                {t("register.continueGoogle")}
+                Continue with Google
               </span>
             </Button>
 
             <div className={styles.loginText}>
-              {t("register.haveAccount")}{" "}
+              Already have an account?{' '}
               <button
                 type="button"
                 className={styles.loginLink}
                 onClick={() => navigate(PATHS.LOGIN)}
-                disabled={isSuccess}
               >
-                {t("register.loginLink")}
+                Log in
               </button>
             </div>
           </div>
