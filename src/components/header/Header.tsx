@@ -8,25 +8,26 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-} from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
-import { MdClose, MdLogout, MdMenu } from "react-icons/md";
-import { PATHS } from "../../routes/PATHS";
-import { authApi } from "../../services";
-import { useMe } from "../../services/user";
-import { LOCAL_STORAGE_KEYS } from "../../utils/localStorage";
-import { stringAvatar } from "../../utils/utils";
-import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
-import Logo from "../logo/Logo";
-import SnackBar from "../snackBar/SnackBar";
-import HeaderLink from "./HeaderLink";
+} from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IoIosNotificationsOutline, IoMdSettings } from 'react-icons/io';
+import { MdClose, MdLogout, MdMenu } from 'react-icons/md';
+import { PATHS } from '../../routes/PATHS';
+import { authApi } from '../../services';
+import { useMe } from '../../services/user';
+import { LOCAL_STORAGE_KEYS } from '../../utils/localStorage';
+import { stringAvatar } from '../../utils/utils';
+import LanguageSwitcher from '../languageSwitcher/LanguageSwitcher';
+import Logo from '../logo/Logo';
+import SnackBar from '../snackBar/SnackBar';
+import HeaderLink from './HeaderLink';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const { t } = useTranslation();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -49,7 +50,7 @@ export default function Header() {
       window.location.href = PATHS.INDEX;
     },
     onError: (error) => {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     },
     onSettled: () => {
       setTimeout(() => {
@@ -67,7 +68,7 @@ export default function Header() {
   return isLoading ? (
     <Backdrop
       open={isLoading}
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
     ></Backdrop>
   ) : (
     <header className="text-black w-full h-16 flex items-center justify-between p-5 xl:px-40 bg-white shadow-lg">
@@ -110,7 +111,7 @@ export default function Header() {
 
       <Backdrop
         open={waiting}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <div className="flex flex-col items-center gap-3">
           <MdLogout size={40} className="animate-spin" />
@@ -120,7 +121,7 @@ export default function Header() {
 
       <Backdrop
         open={logoutMutation.isError}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <div className="flex flex-col items-center gap-3">
           <MdClose size={40} className="text-red-500" />
@@ -140,15 +141,15 @@ export default function Header() {
           <Button
             variant="text"
             id="basic-button"
-            aria-controls={open ? "basic-menu" : undefined}
+            aria-controls={open ? 'basic-menu' : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
+            aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
             startIcon={
               <Avatar
-                {...stringAvatar(user?.fullName || "")}
+                {...stringAvatar(user?.fullName || '')}
                 className="font-semibold!"
-                sx={{ width: 30, height: 30, fontSize: "14px !important" }}
+                sx={{ width: 30, height: 30, fontSize: '14px !important' }}
               />
             }
             className="capitalize! flex items-center space-x-3 text-gray-700 bg-gray-200! transition-all duration-300 ease-in-out rounded-[20px]! px-2! py-1!"
@@ -163,13 +164,15 @@ export default function Header() {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            slotProps={{ list: { "aria-labelledby": "basic-button" } }}
+            slotProps={{ list: { 'aria-labelledby': 'basic-button' } }}
           >
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <IoMdSettings />
               </ListItemIcon>
-              <ListItemText>Settings</ListItemText>
+              <ListItemText>
+                <Link to="/settings">Settings</Link>
+              </ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem onClick={() => logoutMutation.mutate()}>
@@ -189,13 +192,13 @@ export default function Header() {
           <LanguageSwitcher />
           <ul className="flex space-x-5">
             <li>
-              <HeaderLink name={t("common.home")} to={PATHS.INDEX} />
+              <HeaderLink name={t('common.home')} to={PATHS.INDEX} />
             </li>
             <li>
-              <HeaderLink name={t("login.title")} to={PATHS.LOGIN} />
+              <HeaderLink name={t('login.title')} to={PATHS.LOGIN} />
             </li>
             <li>
-              <HeaderLink name={t("register.title")} to={PATHS.REGISTER} />
+              <HeaderLink name={t('register.title')} to={PATHS.REGISTER} />
             </li>
           </ul>
         </nav>

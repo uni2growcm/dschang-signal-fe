@@ -1,13 +1,13 @@
-import { createBrowserRouter, redirect } from "react-router";
-import LoginPage from "../pages/login/LoginPage";
-import NotFound from "../pages/notFound/NotFound";
-import RegisterPage from "../pages/register/RegisterPage";
-import { PATHS } from "./PATHS";
-import Home from "../pages/home/Home";
-import CreateReportPage from "../pages/report/CreateReportPage";
-import ReportDetailsPage from "../pages/report/ReportDetailsPage";
-import { LOCAL_STORAGE_KEYS } from "../utils/localStorage";
-import EditReportPage from "../pages/report/EditReportPage";
+import { createBrowserRouter, redirect } from 'react-router';
+import LoginPage from '../pages/login/LoginPage';
+import NotFound from '../pages/notFound/NotFound';
+import RegisterPage from '../pages/register/RegisterPage';
+import { PATHS } from './PATHS';
+import Home from '../pages/home/Home';
+import { Settings } from '../pages/settings/Settings';
+import CreateReportPage from '../pages/report/CreateReportPage';
+import ReportDetailsPage from '../pages/report/ReportDetailsPage';
+import { LOCAL_STORAGE_KEYS } from '../utils/localStorage';
 
 const isAuthenticated: boolean = !!localStorage.getItem(
   LOCAL_STORAGE_KEYS.TOKEN,
@@ -41,9 +41,9 @@ export const clientsRoutes = createBrowserRouter([
     Component: ReportDetailsPage,
   },
   {
-  path: PATHS.EDIT_REPORT,
-  Component: EditReportPage,
-},
+    path: PATHS.SETTINGS,
+    Component: Settings,
+  },
   {
     path: PATHS.NOT_FOUND,
     Component: NotFound,
