@@ -1,7 +1,6 @@
 import { Backdrop, CircularProgress, Grow } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import Header from '../../components/header/Header';
 import ReportCard from '../../components/report/ReportCard';
 import PaginationControls from '../../components/pagination/PaginationControls';
 import { isAuth } from '../../utils/utils';
@@ -65,7 +64,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-        <Header />
+
         <Backdrop
           open={true}
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -81,7 +80,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-      <Header />
       <SnackBar
         open={showError}
         severity="error"

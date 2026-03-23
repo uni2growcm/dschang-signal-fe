@@ -82,6 +82,7 @@ export default function Header() {
 
       {!token && (
         <div className="sm:hidden flex items-center">
+          <LanguageSwitcher />
           <button
             type="button"
             onClick={toggleMobileMenu}
@@ -94,7 +95,7 @@ export default function Header() {
       )}
 
       {!token && isMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-white shadow-lg p-5 sm:hidden">
+        <div className="z-50 absolute top-16 left-0 right-0 bg-white shadow-lg p-5 sm:hidden">
           <ul className="flex flex-col space-y-4 items-end px-2">
             <li>
               <HeaderLink name="Home" to={PATHS.INDEX} />
@@ -171,7 +172,7 @@ export default function Header() {
                 <IoMdSettings />
               </ListItemIcon>
               <ListItemText>
-                <Link to="/settings">Settings</Link>
+                <Link to={PATHS.SETTINGS}>Settings</Link>
               </ListItemText>
             </MenuItem>
             <Divider />

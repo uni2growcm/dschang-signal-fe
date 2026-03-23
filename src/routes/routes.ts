@@ -9,6 +9,7 @@ import ReportDetailsPage from "../pages/report/ReportDetailsPage";
 import { Settings } from "../pages/settings/Settings";
 import { LOCAL_STORAGE_KEYS } from "../utils/localStorage";
 import { PATHS } from "./PATHS";
+import Layout from "../components/layout/Layout";
 
 const isAuthenticated: boolean = !!localStorage.getItem(
   LOCAL_STORAGE_KEYS.TOKEN,
@@ -16,8 +17,30 @@ const isAuthenticated: boolean = !!localStorage.getItem(
 
 export const clientsRoutes = createBrowserRouter([
   {
-    index: true,
-    Component: Home,
+    path: PATHS.INDEX,
+    Component: Layout,
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        path: PATHS.CREATE_REPORT,
+        Component: CreateReportPage,
+      },
+      {
+        path: PATHS.REPORT_DETAILS,
+        Component: ReportDetailsPage,
+      },
+      {
+        path: PATHS.EDIT_REPORT,
+        Component: EditReportPage,
+      },
+      {
+        path: PATHS.SETTINGS,
+        Component: Settings,
+      },
+    ],
   },
   {
     path: PATHS.LOGIN,
@@ -32,22 +55,6 @@ export const clientsRoutes = createBrowserRouter([
     loader: () => {
       if (isAuthenticated) throw redirect(PATHS.INDEX);
     },
-  },
-  {
-    path: PATHS.CREATE_REPORT,
-    Component: CreateReportPage,
-  },
-  {
-    path: PATHS.EDIT_REPORT,
-    Component: EditReportPage,
-  },
-  {
-    path: PATHS.REPORT_DETAILS,
-    Component: ReportDetailsPage,
-  },
-  {
-    path: PATHS.SETTINGS,
-    Component: Settings,
   },
   {
     path: PATHS.NOT_FOUND,
