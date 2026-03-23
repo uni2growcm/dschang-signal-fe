@@ -6,9 +6,9 @@ import {
   UserApi,
   Configuration,
   type Middleware,
-} from "./api";
-import { API_URL } from "./utils/env";
-import { LOCAL_STORAGE_KEYS } from "./utils/localStorage";
+} from './api';
+import { API_URL } from './utils/env';
+import { LOCAL_STORAGE_KEYS } from './utils/localStorage';
 
 const addTokenToHeadersMiddleware: Middleware = {
   pre: async (request) => {
@@ -49,30 +49,30 @@ export const createReport = async (data: {
 }) => {
   const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
   const response = await fetch(`${API_URL.dev}/reports`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || "Failed to create report");
+    throw new Error(error.message || 'Failed to create report');
   }
   return response.json();
 };
 
 export const uploadMedia = async (reportId: number, file: File) => {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append('file', file);
   const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
   const response = await fetch(`${API_URL.dev}/reports/${reportId}/media`, {
-    method: "POST",
+    method: 'POST',
     body: formData,
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!response.ok) throw new Error("Media upload failed");
+  if (!response.ok) throw new Error('Media upload failed');
   return response.json();
 };
 
@@ -85,14 +85,14 @@ export const createCategory = async (name: string) => {
   const normalizedName =
     name.trim().charAt(0).toUpperCase() + name.trim().slice(1).toLowerCase();
   const response = await fetch(`${API_URL.dev}/categories`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ name: normalizedName }),
   });
-  if (!response.ok) throw new Error("Category creation failed");
+  if (!response.ok) throw new Error('Category creation failed');
   return response.json();
 };
 

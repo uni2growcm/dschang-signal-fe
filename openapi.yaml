@@ -21,7 +21,7 @@ paths:
   /login:
     post:
       operationId: login
-      tags: [ Auth ]
+      tags: [Auth]
       summary: Login user
       security: []
       requestBody:
@@ -41,7 +41,7 @@ paths:
   /register:
     post:
       operationId: register
-      tags: [ Auth ]
+      tags: [Auth]
       summary: Register a new user
       security: []
       requestBody:
@@ -59,7 +59,7 @@ paths:
   /logout:
     post:
       operationId: logout
-      tags: [ Auth ]
+      tags: [Auth]
       summary: Logout user
       security:
         - bearerAuth: []
@@ -82,12 +82,12 @@ paths:
   /users:
     get:
       operationId: getAllUsers
-      tags: [ User ]
+      tags: [User]
       summary: Get paginated list of users
       parameters:
-        - $ref: "#/components/parameters/Page"
-        - $ref: "#/components/parameters/Size"
-        - $ref: "#/components/parameters/Sort"
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: Paginated list of users
@@ -108,7 +108,7 @@ paths:
   /users/{id}:
     get:
       operationId: getUserById
-      tags: [ User ]
+      tags: [User]
       summary: Get a specific user by ID
       parameters:
         - name: id
@@ -135,7 +135,7 @@ paths:
   /users/{id}/role:
     patch:
       operationId: changeUserRole
-      tags: [ User ]
+      tags: [User]
       summary: Change a user's role (Admin only)
       parameters:
         - name: id
@@ -173,12 +173,13 @@ paths:
   /users/me:
     get:
       operationId: getCurrentUser
-      tags: [ User ]
+      tags: [User]
       summary: Get the currently authenticated user
       security:
         - bearerAuth: []
       responses:
         '200':
+          description: Authenticated user
           description: Authenticated user
           content:
             application/json:
@@ -191,10 +192,51 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+    patch:
+      operationId: updateProfile
+      tags: [User]
+      summary: Update current user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Email already in use
+
+  /users/me/password:
+    patch:
+      operationId: updatePassword
+      tags: [User]
+      summary: Update current user password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePasswordRequest'
+      responses:
+        '200':
+          description: Password updated successfully
+        '400':
+          description: Current password is incorrect
+
   /reports/public:
     get:
       operationId: getPublicReports
-      tags: [ Report ]
+      tags: [Report]
       summary: Get all validated reports
       security: []
       parameters:
@@ -226,7 +268,7 @@ paths:
   /reports/my-reports:
     get:
       operationId: getMyReports
-      tags: [ Report ]
+      tags: [Report]
       summary: Get authenticated user reports
       security:
         - bearerAuth: []
@@ -261,7 +303,7 @@ paths:
   /reports/admin:
     get:
       operationId: getAllReports
-      tags: [ Report ]
+      tags: [Report]
       summary: Get all reports (Admin only)
       security:
         - bearerAuth: []
@@ -292,13 +334,13 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ PENDING_REVIEW, ACCEPTED, REJECTED ]
+            enum: [PENDING_REVIEW, ACCEPTED, REJECTED]
         - name: reportStatus
           in: query
           required: false
           schema:
             type: string
-            enum: [ PENDING, IN_PROGRESS, RESOLVED ]
+            enum: [PENDING, IN_PROGRESS, RESOLVED]
         - name: category
           in: query
           required: false
@@ -354,7 +396,7 @@ paths:
   /reports:
     post:
       operationId: createReport
-      tags: [ Report ]
+      tags: [Report]
       summary: Create a new report
       security:
         - bearerAuth: []
@@ -387,7 +429,7 @@ paths:
   /reports/{id}:
     get:
       operationId: getReportById
-      tags: [ Report ]
+      tags: [Report]
       summary: Get a specific report by ID
       parameters:
         - name: id
@@ -418,8 +460,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteReport
-      tags: [ Report ]
+      tags: [Report]
       summary: Delete a report
+      description: Only the author can delete it, and only if status is PENDING.
       description: Only the author can delete it, and only if status is PENDING.
       security:
         - bearerAuth: []
@@ -435,11 +478,13 @@ paths:
           description: Report deleted successfully
         '400':
           description: Report status is not PENDING
+          description: Report status is not PENDING
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
+          description: Forbidden
           description: Forbidden
           content:
             application/json:
@@ -453,13 +498,13 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     patch:
       operationId: updateReport
-      tags: [ Report ]
+      tags: [Report]
       summary: Update a report
       description: >
         Only the author can update it, and only if moderationStatus is PENDING_REVIEW
         and reportStatus is PENDING.
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -501,7 +546,7 @@ paths:
   /reports/{id}/moderation-status:
     patch:
       operationId: updateModerationStatus
-      tags: [ Report ]
+      tags: [Report]
       summary: Update report moderation status (Admin only)
       parameters:
         - name: id
@@ -519,17 +564,20 @@ paths:
       responses:
         '200':
           description: Status updated
+          description: Status updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Report'
         '400':
           description: Bad request
+          description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
+          description: Forbidden
           description: Forbidden
           content:
             application/json:
@@ -545,7 +593,7 @@ paths:
   /reports/{id}/report-status:
     patch:
       operationId: updateReportStatus
-      tags: [ Report ]
+      tags: [Report]
       summary: Update report status (Admin only)
       parameters:
         - name: id
@@ -563,11 +611,13 @@ paths:
       responses:
         '200':
           description: Status updated
+          description: Status updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Report'
         '400':
+          description: Bad request
           description: Bad request
           content:
             application/json:
@@ -575,11 +625,13 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
+          description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
+          description: Forbidden
           description: Forbidden
           content:
             application/json:
@@ -595,7 +647,7 @@ paths:
   /reports/{reportId}/media:
     post:
       operationId: uploadMedia
-      tags: [ Media ]
+      tags: [Media]
       summary: Upload a media file for a report
       security:
         - bearerAuth: []
@@ -611,7 +663,7 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              required: [ file ]
+              required: [file]
               properties:
                 file:
                   type: string
@@ -629,7 +681,7 @@ paths:
           description: Report not found
     get:
       operationId: getReportMedias
-      tags: [ Media ]
+      tags: [Media]
       summary: Get all media files for a specific report
       security:
         - bearerAuth: []
@@ -658,7 +710,7 @@ paths:
   /media:
     get:
       operationId: getAllMedia
-      tags: [ Media ]
+      tags: [Media]
       summary: Get all media files
       responses:
         '200':
@@ -673,7 +725,7 @@ paths:
   /media/{mediaId}:
     delete:
       operationId: deleteMedia
-      tags: [ Media ]
+      tags: [Media]
       summary: Delete a media file
       parameters:
         - name: mediaId
@@ -686,7 +738,7 @@ paths:
           description: Media deleted successfully
     get:
       operationId: getMediaById
-      tags: [ Media ]
+      tags: [Media]
       summary: Get a media file by id
       security: []
       parameters:
@@ -709,7 +761,7 @@ paths:
   /categories:
     get:
       operationId: getAllCategories
-      tags: [ Category ]
+      tags: [Category]
       summary: Get all categories
       security:
         - bearerAuth: []
@@ -730,7 +782,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: createCategory
-      tags: [ Category ]
+      tags: [Category]
       summary: Create a new category
       security:
         - bearerAuth: []
@@ -769,7 +821,7 @@ paths:
   /categories/{id}:
     delete:
       operationId: deleteCategory
-      tags: [ Category ]
+      tags: [Category]
       summary: Delete a category
       security:
         - bearerAuth: []
@@ -790,6 +842,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
+          description: Forbidden
           description: Forbidden
           content:
             application/json:
@@ -899,7 +952,7 @@ components:
       properties:
         role:
           type: string
-          enum: [ ADMIN, CITIZEN ]
+          enum: [ADMIN, CITIZEN]
           example: CITIZEN
 
     UpdateModerationStatusRequest:
@@ -909,11 +962,11 @@ components:
       properties:
         status:
           type: string
-          enum: [ PENDING_REVIEW, ACCEPTED, REJECTED ]
+          enum: [PENDING_REVIEW, ACCEPTED, REJECTED]
           example: ACCEPTED
         rejectionReason:
           type: string
-          example: "Reporting outside area of jurisdiction"
+          example: 'Reporting outside area of jurisdiction'
 
     UpdateReportStatusRequest:
       type: object
@@ -922,7 +975,7 @@ components:
       properties:
         status:
           type: string
-          enum: [ PENDING, IN_PROGRESS, RESOLVED ]
+          enum: [PENDING, IN_PROGRESS, RESOLVED]
           example: IN_PROGRESS
 
     ReportRequest:
@@ -933,22 +986,22 @@ components:
       properties:
         title:
           type: string
-          example: "Pothole on Kennedy Avenue"
+          example: 'Pothole on Kennedy Avenue'
           minLength: 3
           maxLength: 150
         description:
           type: string
-          example: "Large dangerous pothole on the roadway"
+          example: 'Large dangerous pothole on the roadway'
           minLength: 10
         locationText:
           type: string
-          example: "Kennedy Avenue, in front of the university"
+          example: 'Kennedy Avenue, in front of the university'
         categoryIds:
           type: array
           items:
             type: integer
             format: int64
-          example: [ 1, 2 ]
+          example: [1, 2]
 
     User:
       type: object
@@ -993,43 +1046,43 @@ components:
           example: 1
         title:
           type: string
-          example: "Pothole on Kennedy Avenue"
+          example: 'Pothole on Kennedy Avenue'
         description:
           type: string
-          example: "Large dangerous pothole on the roadway"
+          example: 'Large dangerous pothole on the roadway'
         locationText:
           type: string
-          example: "Kennedy Avenue, in front of the university"
+          example: 'Kennedy Avenue, in front of the university'
         moderationStatus:
           type: string
-          enum: [ PENDING_REVIEW, ACCEPTED, REJECTED ]
-          example: "PENDING_REVIEW"
+          enum: [PENDING_REVIEW, ACCEPTED, REJECTED]
+          example: 'PENDING_REVIEW'
         reportStatus:
           type: string
-          enum: [ PENDING, IN_PROGRESS, RESOLVED ]
-          example: "PENDING"
+          enum: [PENDING, IN_PROGRESS, RESOLVED]
+          example: 'PENDING'
         rejectionReason:
           type: string
-          example: "Area not covered by municipality"
+          example: 'Area not covered by municipality'
         createdAt:
           type: string
           format: date-time
           readOnly: true
-          example: "2026-03-10T14:30:00Z"
+          example: '2026-03-10T14:30:00Z'
         reviewedAt:
           type: string
           format: date-time
-          example: "2026-03-11T09:15:00Z"
+          example: '2026-03-11T09:15:00Z'
         updatedAt:
           type: string
           format: date-time
-          example: "2026-03-10T14:30:00Z"
+          example: '2026-03-10T14:30:00Z'
         createdBy:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         categories:
           type: array
           items:
-            $ref: "#/components/schemas/CategoryResponse"
+            $ref: '#/components/schemas/CategoryResponse'
 
     CategoryRequest:
       type: object
@@ -1038,12 +1091,12 @@ components:
       properties:
         name:
           type: string
-          example: "Road"
+          example: 'Road'
           maxLength: 50
           minLength: 2
         color:
           type: string
-          example: "#FFD700"
+          example: '#FFD700'
           pattern: '^#[0-9A-Fa-f]{6}$'
 
     CategoryResponse:
@@ -1054,14 +1107,14 @@ components:
           example: 1
         name:
           type: string
-          example: "Road"
+          example: 'Road'
         color:
           type: string
-          example: "#FF5733"
+          example: '#FF5733'
         createdAt:
           type: string
           format: date-time
-          example: "2026-03-10T10:30:00Z"
+          example: '2026-03-10T10:30:00Z'
         createdBy:
           $ref: '#/components/schemas/User'
 
@@ -1098,4 +1151,22 @@ components:
         status:
           type: integer
         message:
+          type: string
+
+    UpdatePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        fullName:
           type: string

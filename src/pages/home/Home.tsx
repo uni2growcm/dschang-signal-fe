@@ -1,41 +1,57 @@
-import { Backdrop, CircularProgress, Grow } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router";
-import Header from "../../components/header/Header";
-import ReportCard from "../../components/report/ReportCard";
-import { isAuth } from "../../utils/utils";
+import { Backdrop, CircularProgress, Grow } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router';
+import Header from '../../components/header/Header';
+import ReportCard from '../../components/report/ReportCard';
+import PaginationControls from '../../components/pagination/PaginationControls';
+import { isAuth } from '../../utils/utils';
 import {
   useAuthenticatedUserReports,
   usePublicReports,
-} from "../../services/report";
-import SnackBar from "../../components/snackBar/SnackBar";
-import { PATHS } from "../../routes/PATHS";
+} from '../../services/report';
+import SnackBar from '../../components/snackBar/SnackBar';
+import { PATHS } from '../../routes/PATHS';
 
-type FilterType = "public" | "mine";
+type FilterType = 'public' | 'mine';
 
 export default function Home() {
   const [showError, setShowError] = useState(false);
-  const [filter, setFilter] = useState<FilterType>("public");
+  const [filter, setFilter] = useState<FilterType>('public');
+  const [page, setPage] = useState(1);
 
   const {
-    data: myReports = [],
+    data: myReportsData,
     isLoading: privateLoading,
     isError: privateError,
-  } = useAuthenticatedUserReports();
+  } = useAuthenticatedUserReports(page);
 
   const {
-    data: publicReports = [],
+    data: publicReportsData,
     isLoading: publicLoading,
     isError: publicError,
-  } = usePublicReports();
+  } = usePublicReports(page);
 
   const isLoading = privateLoading || publicLoading;
   const hasError = privateError || publicError;
 
   const displayedReports = useMemo(() => {
-    if (!isAuth()) return publicReports;
-    return filter === "mine" ? myReports : publicReports;
-  }, [filter, myReports, publicReports]);
+    if (!isAuth()) return publicReportsData?.reports ?? [];
+    return filter === 'mine'
+      ? (myReportsData?.reports ?? [])
+      : (publicReportsData?.reports ?? []);
+  }, [filter, myReportsData, publicReportsData]);
+
+  const totalPages = useMemo(() => {
+    if (!isAuth()) return publicReportsData?.totalPages ?? 0;
+    return filter === 'mine'
+      ? (myReportsData?.totalPages ?? 0)
+      : (publicReportsData?.totalPages ?? 0);
+  }, [filter, myReportsData, publicReportsData]);
+
+  const handleFilterChange = (newFilter: FilterType) => {
+    setFilter(newFilter);
+    setPage(1);
+  };
 
   useEffect(() => {
     if (!hasError) return;
@@ -52,7 +68,7 @@ export default function Home() {
         <Header />
         <Backdrop
           open={true}
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         >
           <div className="flex flex-col items-center gap-4">
             <CircularProgress color="inherit" />
@@ -77,21 +93,21 @@ export default function Home() {
             <div className="flex justify-between items-center">
               <div className="flex gap-2 bg-white rounded-full shadow-sm p-1 border border-gray-200">
                 <button
-                  onClick={() => setFilter("public")}
+                  onClick={() => handleFilterChange('public')}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    filter === "public"
-                      ? "bg-primary text-white shadow"
-                      : "text-gray-500 hover:text-gray-800"
+                    filter === 'public'
+                      ? 'bg-primary text-white shadow'
+                      : 'text-gray-500 hover:text-gray-800'
                   }`}
                 >
                   Public
                 </button>
                 <button
-                  onClick={() => setFilter("mine")}
+                  onClick={() => handleFilterChange('mine')}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    filter === "mine"
-                      ? "bg-primary text-white shadow"
-                      : "text-gray-500 hover:text-gray-800"
+                    filter === 'mine'
+                      ? 'bg-primary text-white shadow'
+                      : 'text-gray-500 hover:text-gray-800'
                   }`}
                 >
                   Mes signalements
@@ -114,6 +130,12 @@ export default function Home() {
               Aucun signalement trouvé
             </div>
           )}
+          <PaginationControls
+            page={page}
+            totalPages={totalPages}
+            onNext={() => setPage((p) => p + 1)}
+            onPrev={() => setPage((p) => p - 1)}
+          />
         </div>
       </Grow>
     </div>
