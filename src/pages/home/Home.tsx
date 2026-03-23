@@ -38,11 +38,12 @@ export default function Home() {
   }, [filter, myReports, publicReports]);
 
   useEffect(() => {
-    if (hasError) {
+    if (!hasError) return;
+    const timer = setTimeout(() => {
       setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 5000);
-      return () => clearTimeout(timer);
-    }
+      setTimeout(() => setShowError(false), 5000);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [hasError]);
 
   if (isLoading) {
@@ -100,7 +101,7 @@ export default function Home() {
                 to={PATHS.CREATE_REPORT}
                 className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
               >
-                 + Create a Report
+                + Create a Report
               </Link>
             </div>
           )}

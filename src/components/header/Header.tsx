@@ -71,7 +71,7 @@ export default function Header() {
     ></Backdrop>
   ) : (
     <header className="text-black w-full h-16 flex items-center justify-between p-5 xl:px-40 bg-white shadow-lg">
-      <Logo className="text-black" textcolor="black" />
+      <Logo className="text-black!" textStyle="text-black!" />
 
       <SnackBar
         open={isError}
