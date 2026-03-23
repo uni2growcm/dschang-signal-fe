@@ -1,16 +1,15 @@
-import { Backdrop, CircularProgress, Grow } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
-import PaginationControls from "../../components/pagination/PaginationControls";
-import ReportCard from "../../components/report/ReportCard";
-import SnackBar from "../../components/snackBar/SnackBar";
-import { PATHS } from "../../routes/PATHS";
+import { Backdrop, CircularProgress, Grow } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router';
+import ReportCard from '../../components/report/ReportCard';
+import PaginationControls from '../../components/pagination/PaginationControls';
+import { isAuth } from '../../utils/utils';
 import {
   useAuthenticatedUserReports,
   usePublicReports,
 } from "../../services/report";
-import { isAuth } from "../../utils/utils";
+import SnackBar from "../../components/snackBar/SnackBar";
+import { PATHS } from "../../routes/PATHS";
 
 type FilterType = "public" | "mine";
 
@@ -18,7 +17,15 @@ export default function Home() {
   const [showError, setShowError] = useState(false);
   const [filter, setFilter] = useState<FilterType>("public");
   const [page, setPage] = useState(1);
+  const [authenticated, setAuthenticated] = useState<boolean>(isAuth());
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAuthenticated(isAuth());
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
   const {
     data: myReportsData,
     isLoading: privateLoading,
@@ -30,23 +37,23 @@ export default function Home() {
     isLoading: publicLoading,
     isError: publicError,
   } = usePublicReports(page);
-  const { t } = useTranslation();
+
   const isLoading = privateLoading || publicLoading;
   const hasError = privateError || publicError;
 
   const displayedReports = useMemo(() => {
-    if (!isAuth()) return publicReportsData?.reports ?? [];
-    return filter === "mine"
-      ? (myReportsData?.reports ?? [])
-      : (publicReportsData?.reports ?? []);
-  }, [filter, myReportsData, publicReportsData]);
+  if (!authenticated) return publicReportsData?.reports ?? [];
+  return filter === 'mine'
+    ? (myReportsData?.reports ?? [])
+    : (publicReportsData?.reports ?? []);
+}, [filter, myReportsData, publicReportsData, authenticated]);
 
-  const totalPages = useMemo(() => {
-    if (!isAuth()) return publicReportsData?.totalPages ?? 0;
-    return filter === "mine"
-      ? (myReportsData?.totalPages ?? 0)
-      : (publicReportsData?.totalPages ?? 0);
-  }, [filter, myReportsData, publicReportsData]);
+const totalPages = useMemo(() => {
+  if (!authenticated) return publicReportsData?.totalPages ?? 0;
+  return filter === 'mine'
+    ? (myReportsData?.totalPages ?? 0)
+    : (publicReportsData?.totalPages ?? 0);
+}, [filter, myReportsData, publicReportsData, authenticated]);
 
   const handleFilterChange = (newFilter: FilterType) => {
     setFilter(newFilter);
@@ -65,13 +72,14 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
+
         <Backdrop
           open={true}
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         >
           <div className="flex flex-col items-center gap-4">
             <CircularProgress color="inherit" />
-            <p className="text-white">{t("home.loadingReports")}</p>
+            <p className="text-white">Chargement des signalements...</p>
           </div>
         </Backdrop>
       </div>
@@ -83,11 +91,11 @@ export default function Home() {
       <SnackBar
         open={showError}
         severity="error"
-        message={t("home.errorLoading")}
+        message="Échec du chargement des signalements. Veuillez recharger la page."
       />
       <Grow in timeout={1000}>
         <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
-          {isAuth() && (
+         {authenticated && (
             <div className="flex justify-between items-center">
               <div className="flex gap-2 bg-white rounded-full shadow-sm p-1 border border-gray-200">
                 <button
@@ -98,7 +106,7 @@ export default function Home() {
                       : "text-gray-500 hover:text-gray-800"
                   }`}
                 >
-                  {t("home.filterPublic")}
+                  Public
                 </button>
                 <button
                   onClick={() => handleFilterChange("mine")}
@@ -108,14 +116,14 @@ export default function Home() {
                       : "text-gray-500 hover:text-gray-800"
                   }`}
                 >
-                  {t("home.filterMine")}
+                  Mes signalements
                 </button>
               </div>
               <Link
                 to={PATHS.CREATE_REPORT}
                 className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
               >
-                {t("home.createReport")}
+                + Create a Report
               </Link>
             </div>
           )}
@@ -125,7 +133,7 @@ export default function Home() {
             ))
           ) : (
             <div className="text-center text-gray-500 py-10">
-              {t("home.noReports")}
+              Aucun signalement trouvé
             </div>
           )}
           <PaginationControls

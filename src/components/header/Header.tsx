@@ -9,7 +9,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
@@ -24,10 +24,15 @@ import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
 import Logo from "../logo/Logo";
 import SnackBar from "../snackBar/SnackBar";
 import HeaderLink from "./HeaderLink";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { t } = useTranslation();
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN),
+  );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -47,7 +52,10 @@ export default function Header() {
     },
     onSuccess: () => {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
-      window.location.href = PATHS.INDEX;
+      window.dispatchEvent(new Event("storage"));
+      setToken(null);
+      queryClient.clear();
+      navigate(PATHS.INDEX);
     },
     onError: (error) => {
       console.error("Logout failed:", error);
