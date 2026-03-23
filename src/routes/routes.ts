@@ -4,6 +4,7 @@ import NotFound from "../pages/notFound/NotFound";
 import RegisterPage from "../pages/register/RegisterPage";
 import { PATHS } from "./PATHS";
 import Home from "../pages/home/Home";
+import { Settings } from "../pages/settings/Settings";
 import CreateReportPage from "../pages/report/CreateReportPage";
 import ReportDetailsPage from "../pages/report/ReportDetailsPage";
 import { LOCAL_STORAGE_KEYS } from "../utils/localStorage";
@@ -34,6 +35,10 @@ export const clientsRoutes = createBrowserRouter([
       {
         path: PATHS.EDIT_REPORT,
         Component: EditReportPage,
+      },
+      {
+        path: PATHS.SETTINGS,
+        Component: Settings,
       },
     ],
   },
