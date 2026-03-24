@@ -1,5 +1,5 @@
 import { t } from 'i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import styles from './notFound.module.css';
 
 function NotFound() {

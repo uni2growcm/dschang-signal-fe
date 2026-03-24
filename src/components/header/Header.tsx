@@ -8,26 +8,30 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-} from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { IoIosNotificationsOutline, IoMdSettings } from 'react-icons/io';
-import { MdClose, MdLogout, MdMenu } from 'react-icons/md';
-import { PATHS } from '../../routes/PATHS';
-import { authApi } from '../../services';
-import { useMe } from '../../services/user';
-import { LOCAL_STORAGE_KEYS } from '../../utils/localStorage';
-import { stringAvatar } from '../../utils/utils';
-import LanguageSwitcher from '../languageSwitcher/LanguageSwitcher';
-import Logo from '../logo/Logo';
-import SnackBar from '../snackBar/SnackBar';
-import HeaderLink from './HeaderLink';
-import { Link } from 'react-router-dom';
+} from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
+import { MdClose, MdLogout, MdMenu } from "react-icons/md";
+import { Link, useNavigate } from "react-router";
+import { PATHS } from "../../routes/PATHS";
+import { authApi } from "../../services";
+import { useMe } from "../../services/user";
+import { LOCAL_STORAGE_KEYS } from "../../utils/localStorage";
+import { stringAvatar } from "../../utils/utils";
+import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
+import Logo from "../logo/Logo";
+import SnackBar from "../snackBar/SnackBar";
+import HeaderLink from "./HeaderLink";
 
 export default function Header() {
   const { t } = useTranslation();
-  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN),
+  );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -47,10 +51,13 @@ export default function Header() {
     },
     onSuccess: () => {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
-      window.location.href = PATHS.INDEX;
+      globalThis.dispatchEvent(new Event("storage"));
+      setToken(null);
+      queryClient.clear();
+      navigate(PATHS.INDEX);
     },
     onError: (error) => {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     },
     onSettled: () => {
       setTimeout(() => {
@@ -68,7 +75,7 @@ export default function Header() {
   return isLoading ? (
     <Backdrop
       open={isLoading}
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
     ></Backdrop>
   ) : (
     <header className="text-black w-full h-16 flex items-center justify-between p-5 xl:px-40 bg-white shadow-lg">
@@ -77,7 +84,7 @@ export default function Header() {
       <SnackBar
         open={isError}
         severity="error"
-        message="Failed to fetch user information"
+        message={t("header.fetchUserError")}
       />
 
       {!token && (
@@ -88,7 +95,7 @@ export default function Header() {
             onClick={toggleMobileMenu}
             className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-primary hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500"
           >
-            <span className="sr-only">Open main menu</span>
+            <span className="sr-only">{t("header.openMenu")}</span>
             {isMenuOpen ? <MdClose size={20} /> : <MdMenu size={20} />}
           </button>
         </div>
@@ -98,13 +105,13 @@ export default function Header() {
         <div className="z-50 absolute top-16 left-0 right-0 bg-white shadow-lg p-5 sm:hidden">
           <ul className="flex flex-col space-y-4 items-end px-2">
             <li>
-              <HeaderLink name="Home" to={PATHS.INDEX} />
+              <HeaderLink name={t("common.home")} to={PATHS.INDEX} />
             </li>
             <li>
-              <HeaderLink name="Login" to={PATHS.LOGIN} />
+              <HeaderLink name={t("login.title")} to={PATHS.LOGIN} />
             </li>
             <li>
-              <HeaderLink name="Register" to={PATHS.REGISTER} />
+              <HeaderLink name={t("register.title")} to={PATHS.REGISTER} />
             </li>
           </ul>
         </div>
@@ -112,27 +119,27 @@ export default function Header() {
 
       <Backdrop
         open={waiting}
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <div className="flex flex-col items-center gap-3">
           <MdLogout size={40} className="animate-spin" />
-          <span>Logging out...</span>
+          <span>{t("header.loggingOut")}</span>
         </div>
       </Backdrop>
 
       <Backdrop
         open={logoutMutation.isError}
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <div className="flex flex-col items-center gap-3">
           <MdClose size={40} className="text-red-500" />
-          <span>Logout failed. Please try again.</span>
+          <span>{t("header.logoutFailed")}</span>
         </div>
       </Backdrop>
 
       <SnackBar
         open={logoutMutation.isSuccess && waiting}
-        message="Logged out successfully!"
+        message={t("header.logoutSuccess")}
         severity="success"
       />
 
@@ -142,15 +149,15 @@ export default function Header() {
           <Button
             variant="text"
             id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
+            aria-controls={open ? "basic-menu" : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
+            aria-expanded={open ? "true" : undefined}
             onClick={handleClick}
             startIcon={
               <Avatar
-                {...stringAvatar(user?.fullName || '')}
+                {...stringAvatar(user?.fullName || "")}
                 className="font-semibold!"
-                sx={{ width: 30, height: 30, fontSize: '14px !important' }}
+                sx={{ width: 30, height: 30, fontSize: "14px !important" }}
               />
             }
             className="capitalize! flex items-center space-x-3 text-gray-700 bg-gray-200! transition-all duration-300 ease-in-out rounded-[20px]! px-2! py-1!"
@@ -165,14 +172,14 @@ export default function Header() {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            slotProps={{ list: { 'aria-labelledby': 'basic-button' } }}
+            slotProps={{ list: { "aria-labelledby": "basic-button" } }}
           >
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <IoMdSettings />
               </ListItemIcon>
               <ListItemText>
-                <Link to={PATHS.SETTINGS}>Settings</Link>
+                <Link to={PATHS.SETTINGS}>{t("header.settings")}</Link>
               </ListItemText>
             </MenuItem>
             <Divider />
@@ -180,7 +187,7 @@ export default function Header() {
               <ListItemIcon>
                 <MdLogout />
               </ListItemIcon>
-              <ListItemText>Logout</ListItemText>
+              <ListItemText>{t("header.logout")}</ListItemText>
             </MenuItem>
           </Menu>
 
@@ -193,13 +200,13 @@ export default function Header() {
           <LanguageSwitcher />
           <ul className="flex space-x-5">
             <li>
-              <HeaderLink name={t('common.home')} to={PATHS.INDEX} />
+              <HeaderLink name={t("common.home")} to={PATHS.INDEX} />
             </li>
             <li>
-              <HeaderLink name={t('login.title')} to={PATHS.LOGIN} />
+              <HeaderLink name={t("login.title")} to={PATHS.LOGIN} />
             </li>
             <li>
-              <HeaderLink name={t('register.title')} to={PATHS.REGISTER} />
+              <HeaderLink name={t("register.title")} to={PATHS.REGISTER} />
             </li>
           </ul>
         </nav>

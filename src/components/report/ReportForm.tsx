@@ -16,8 +16,11 @@ import {
   type ChangeEvent,
   type SyntheticEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { MdCloudUpload } from "react-icons/md";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { PATHS } from "../../routes/PATHS";
 import {
   checkCategoryExists,
   createCategory,
@@ -28,8 +31,6 @@ import {
 import FormTextField from "../forms/shared/FormTextField";
 import SnackBar from "../snackBar/SnackBar";
 import styles from "./ReportForm.module.css";
-
-const OTHER_OPTION = { id: "other" as const, name: "+ Add new category" };
 
 interface CategoryOption {
   id: number | string;
@@ -50,30 +51,39 @@ const initialValues: ReportFormValues = {
   newCategoryName: "",
 };
 
-const validationSchema = Yup.object({
-  title: Yup.string()
-    .min(3, "Title must be at least 3 characters")
-    .max(150, "Title must be at most 150 characters")
-    .required("Title is required"),
-  description: Yup.string()
-    .min(10, "Description must be at least 10 characters")
-    .required("Description is required"),
-  locationText: Yup.string().required("Location is required"),
-  newCategoryName: Yup.string()
-    .trim()
-    .min(2, "Category name must be at least 2 characters")
-    .max(50, "Category name must be at most 50 characters"),
-});
-
 export default function ReportForm() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const [medias, setMedias] = useState<File[]>([]);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>(
+    [],
+  );
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
   const [categoryInput, setCategoryInput] = useState("");
+
+  const OTHER_OPTION = {
+    id: "other" as const,
+    name: t("reportForm.addCategory"),
+  };
+
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, t("reportForm.titleMin"))
+      .max(150, t("reportForm.titleMax"))
+      .required(t("reportForm.titleRequired")),
+    description: Yup.string()
+      .min(10, t("reportForm.descriptionMin"))
+      .required(t("reportForm.descriptionRequired")),
+    locationText: Yup.string().required(t("reportForm.locationRequired")),
+    newCategoryName: Yup.string()
+      .trim()
+      .min(2, t("reportForm.categoryNameMin"))
+      .max(50, t("reportForm.categoryNameMax")),
+  });
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -107,18 +117,14 @@ export default function ReportForm() {
         const trimmedCategoryName = values.newCategoryName.trim();
 
         if (trimmedCategoryName.length < 2) {
-          setNewCategoryError("Please enter a valid new category name.");
-          throw new Error("Please enter a valid new category name.");
+          setNewCategoryError(t("reportForm.categoryNameMin"));
+          throw new Error(t("reportForm.categoryNameMin"));
         }
 
         const exists = await checkCategoryExists(trimmedCategoryName);
         if (exists) {
-          setNewCategoryError(
-            "This category already exists. Please select it from the list.",
-          );
-          throw new Error(
-            "This category already exists. Please select it from the list.",
-          );
+          setNewCategoryError(t("reportForm.categoryExists"));
+          throw new Error(t("reportForm.categoryExistsFull"));
         }
 
         const createdCategory = (await createCategory(trimmedCategoryName)) as {
@@ -126,7 +132,7 @@ export default function ReportForm() {
         };
 
         if (typeof createdCategory.id !== "number") {
-          throw new Error("Category creation failed.");
+          throw new Error(t("reportForm.error"));
         }
 
         finalCategoryIds = [...finalCategoryIds, createdCategory.id];
@@ -140,7 +146,7 @@ export default function ReportForm() {
       })) as { id?: number };
 
       if (typeof report.id !== "number") {
-        throw new Error("Report creation failed.");
+        throw new Error(t("reportForm.error"));
       }
 
       await Promise.all(medias.map((file) => uploadMedia(report.id as number, file)));
@@ -148,7 +154,7 @@ export default function ReportForm() {
       return report;
     },
     onSuccess: () => {
-      setMessage("Report created successfully!");
+      setMessage(t("reportForm.success"));
       setIsError(false);
       setMedias([]);
       setSelectedCategories([]);
@@ -156,12 +162,13 @@ export default function ReportForm() {
       setCategoryError("");
       setNewCategoryError("");
       setCategoryInput("");
+      navigate(PATHS.INDEX, {
+        state: { filter: "mine" },
+      });
     },
     onError: (error: unknown) => {
       const errorMessage =
-        error instanceof Error && error.message
-          ? error.message
-          : "Error creating report. Please try again.";
+        error instanceof Error && error.message ? error.message : t("reportForm.error");
 
       setMessage(errorMessage);
       setIsError(true);
@@ -192,18 +199,23 @@ export default function ReportForm() {
       return;
     }
 
-    const exists = await checkCategoryExists(trimmedName);
-    if (exists) {
-      setNewCategoryError(
-        "This category already exists. Please select it from the list.",
-      );
+    try {
+      const exists = await checkCategoryExists(trimmedName);
+      if (exists) {
+        setNewCategoryError(t("reportForm.categoryExists"));
+        return;
+      }
+    } catch {
       return;
     }
 
     setNewCategoryError("");
   };
 
-  const removeCategory = (id: number | string, setFieldValue: FormikHelpers<ReportFormValues>["setFieldValue"]) => {
+  const removeCategory = (
+    id: number | string,
+    setFieldValue: FormikHelpers<ReportFormValues>["setFieldValue"],
+  ) => {
     if (id === "other") {
       setShowNewCategory(false);
       setNewCategoryError("");
@@ -212,7 +224,9 @@ export default function ReportForm() {
       return;
     }
 
-    setSelectedCategories((current) => current.filter((category) => category.id !== id));
+    setSelectedCategories((current) =>
+      current.filter((category) => category.id !== id),
+    );
   };
 
   const resetToast = () => {
@@ -236,8 +250,9 @@ export default function ReportForm() {
     <div className={styles.formWrapper}>
       <div className={styles.formHeader}>
         <Typography variant="body2" color="#666">
-          Describe the issue you observed in your area. {" "}
-          <span style={{ color: "#e53935" }}>*</span> Required fields
+          {t("reportForm.headerDescription")}{" "}
+          <span style={{ color: "#e53935" }}>*</span>{" "}
+          {t("reportForm.requiredFields")}
         </Typography>
       </div>
 
@@ -293,7 +308,7 @@ export default function ReportForm() {
             <Form>
               <div className={styles.formInputs}>
                 <FormTextField
-                  label="Title *"
+                  label={`${t("reportForm.title")} *`}
                   name="title"
                   value={values.title}
                   onChange={handleChange}
@@ -303,7 +318,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Description *"
+                  label={`${t("reportForm.description")} *`}
                   name="description"
                   value={values.description}
                   onChange={handleChange}
@@ -315,7 +330,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Location *"
+                  label={`${t("reportForm.location")} *`}
                   name="locationText"
                   value={values.locationText}
                   onChange={handleChange}
@@ -327,7 +342,7 @@ export default function ReportForm() {
                 {allSelected.length > 0 && (
                   <div className={styles.selectedCategories}>
                     <Typography variant="caption" color="#999">
-                      Selected categories
+                      {t("reportForm.selectedCategories")}
                     </Typography>
                     <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
                       {allSelected.map((category) => (
@@ -335,7 +350,7 @@ export default function ReportForm() {
                           key={String(category.id)}
                           label={
                             category.id === "other"
-                              ? values.newCategoryName || "+ Add new category"
+                              ? values.newCategoryName || t("reportForm.addCategory")
                               : category.name
                           }
                           size="small"
@@ -410,7 +425,7 @@ export default function ReportForm() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Category (optional)"
+                      label={t("reportForm.categoryOptional")}
                       error={Boolean(categoryError)}
                       helperText={categoryError}
                       sx={{
@@ -429,7 +444,7 @@ export default function ReportForm() {
                   <Box display="flex" gap={1} alignItems="flex-start">
                     <Box flex={1}>
                       <FormTextField
-                        label="New category name *"
+                        label={`${t("reportForm.newCategory")} *`}
                         name="newCategoryName"
                         value={values.newCategoryName}
                         onChange={(event) => {
@@ -467,8 +482,10 @@ export default function ReportForm() {
 
                 <Box>
                   <Typography variant="body2" color="#666" mb={1}>
-                    Attach photos or videos {" "}
-                    <span style={{ color: "#999", fontSize: 12 }}>(optional)</span>
+                    {t("reportForm.attachMedia")}{" "}
+                    <span style={{ color: "#999", fontSize: 12 }}>
+                      ({t("reportForm.optional")})
+                    </span>
                   </Typography>
                   <label className={styles.uploadZone}>
                     <input
@@ -480,7 +497,7 @@ export default function ReportForm() {
                     />
                     <MdCloudUpload size={28} color="#7c4dff" />
                     <Typography variant="body2" color="#7c4dff" mt={0.5}>
-                      Click to select files
+                      {t("reportForm.selectFiles")}
                     </Typography>
                   </label>
                 </Box>
@@ -516,7 +533,9 @@ export default function ReportForm() {
                 <Button
                   type="submit"
                   variant="contained"
-                  disabled={mutation.isPending || isSubmitting || Boolean(newCategoryError)}
+                  disabled={
+                    mutation.isPending || isSubmitting || Boolean(newCategoryError)
+                  }
                   fullWidth
                   sx={{
                     backgroundColor: "#7c4dff",
@@ -529,7 +548,7 @@ export default function ReportForm() {
                   {mutation.isPending ? (
                     <CircularProgress size={20} color="inherit" />
                   ) : (
-                    "Submit Report"
+                    t("reportForm.submit")
                   )}
                 </Button>
               </div>
