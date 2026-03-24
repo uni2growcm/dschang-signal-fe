@@ -64,8 +64,8 @@ export default function ReportDetailsPage() {
   }
 
   if (isError || !report) {
-    return <Navigate to="/not-found" replace />;
-  }
+  return <Navigate to={PATHS.NOT_FOUND} replace />;
+}
 
   return (
     <div className={styles.pageContainer}>
