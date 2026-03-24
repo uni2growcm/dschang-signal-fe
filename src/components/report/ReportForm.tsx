@@ -12,6 +12,7 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PATHS } from "../../routes/PATHS";
+import * as Yup from "yup";
 import {
   checkCategoryExists,
   createCategory,
@@ -25,7 +26,7 @@ import styles from "./ReportForm.module.css";
 import { MdCloudUpload } from "react-icons/md";
 import { useNavigate } from "react-router";
 
-const OTHER_OPTION = { id: "other" as const, name: "+ Add new category" };
+// const OTHER_OPTION = { id: "other" as const, name: "+ Add new category" };
 
 interface CategoryOption {
   id: number | string;
@@ -39,20 +40,20 @@ interface ReportFormValues {
   newCategoryName: string;
 }
 
-const validationSchema = Yup.object({
-  title: Yup.string()
-    .min(3, "Title must be at least 3 characters")
-    .max(150, "Title must be at most 150 characters")
-    .required("Title is required"),
-  description: Yup.string()
-    .min(10, "Description must be at least 10 characters")
-    .required("Description is required"),
+// const validationSchema = Yup.object({
+//   title: Yup.string()
+//     .min(3, "Title must be at least 3 characters")
+//     .max(150, "Title must be at most 150 characters")
+//     .required("Title is required"),
+//   description: Yup.string()
+//     .min(10, "Description must be at least 10 characters")
+//     .required("Description is required"),
 
-  locationText: Yup.string().required("Location is required"),
-  newCategoryName: Yup.string()
-    .min(2, "Category name must be at least 2 characters")
-    .max(50, "Category name must be at most 50 characters"),
-});
+//   locationText: Yup.string().required("Location is required"),
+//   newCategoryName: Yup.string()
+//     .min(2, "Category name must be at least 2 characters")
+//     .max(50, "Category name must be at most 50 characters"),
+// });
 
 export default function ReportForm() {
   const [medias, setMedias] = useState<File[]>([]);
