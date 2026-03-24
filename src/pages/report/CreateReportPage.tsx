@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 import ReportForm from "../../components/report/ReportForm";
-import Header from "../../components/header/Header";
 import { Link } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import styles from "./CreateReportPage.module.css";
@@ -10,7 +9,6 @@ export default function CreateReportPage() {
   const { t } = useTranslation();
   return (
     <div className={styles.pageContainer}>
-      <Header />
       <div className={styles.contentWrapper}>
         <Link
           to={PATHS.INDEX}

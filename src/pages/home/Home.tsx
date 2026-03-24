@@ -1,17 +1,16 @@
 import { Backdrop, CircularProgress, Grow } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import Header from "../../components/header/Header";
-import ReportCard from "../../components/report/ReportCard";
 import PaginationControls from "../../components/pagination/PaginationControls";
-import { isAuth } from "../../utils/utils";
+import ReportCard from "../../components/report/ReportCard";
+import SnackBar from "../../components/snackBar/SnackBar";
+import { PATHS } from "../../routes/PATHS";
 import {
   useAuthenticatedUserReports,
   usePublicReports,
 } from "../../services/report";
-import SnackBar from "../../components/snackBar/SnackBar";
-import { PATHS } from "../../routes/PATHS";
-import { useTranslation } from "react-i18next";
+import { isAuth } from "../../utils/utils";
 
 type FilterType = "public" | "mine";
 
@@ -55,17 +54,17 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (hasError) {
+    if (!hasError) return;
+    const timer = setTimeout(() => {
       setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 5000);
-      return () => clearTimeout(timer);
-    }
+      setTimeout(() => setShowError(false), 5000);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [hasError]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-        <Header />
         <Backdrop
           open={true}
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -81,7 +80,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-      <Header />
       <SnackBar
         open={showError}
         severity="error"
