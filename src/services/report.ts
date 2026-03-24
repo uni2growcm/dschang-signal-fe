@@ -41,3 +41,4 @@ export const usePublicReports = (page: number) => {
         }),
   });
 };
+

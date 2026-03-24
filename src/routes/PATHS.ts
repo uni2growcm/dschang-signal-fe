@@ -2,7 +2,7 @@ export const PATHS = {
   INDEX: '/',
   LOGIN: '/login',
   REGISTER: '/register',
-  NOT_FOUND: '*',
+   NOT_FOUND: '/not-found', 
   CREATE_REPORT: '/report/create',
   REPORT_DETAILS: '/reports/:id',
   EDIT_REPORT: '/reports/:id/edit',

@@ -34,9 +34,23 @@ export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
 
 export const getReportById = async (id: number) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+  
+  
+  if (!token) {
+    const response = await fetch(`${API_URL.dev}/reports/public/${id}`);
+    if (!response.ok) {
+      throw new Error('Report not found or not public');
+    }
+    const report = await response.json();
+   
+    return { ...report, medias: [] };
+  }
+  
+  
   const [report, medias] = await Promise.all([
     reportApi.getReportById({ id }),
-    mediaApi.getReportMedias({ reportId: id }),
+    mediaApi.getReportMedias({ reportId: id })
   ]);
   return { ...report, medias };
 };
