@@ -1,23 +1,30 @@
-import { Backdrop, CircularProgress, Grow } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router';
-import ReportCard from '../../components/report/ReportCard';
-import PaginationControls from '../../components/pagination/PaginationControls';
-import { isAuth } from '../../utils/utils';
+import { Backdrop, CircularProgress, Grow } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router";
+import ReportCard from "../../components/report/ReportCard";
+import PaginationControls from "../../components/pagination/PaginationControls";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router";
+import { isAuth } from "../../utils/utils";
 import {
   useAuthenticatedUserReports,
   usePublicReports,
 } from "../../services/report";
 import SnackBar from "../../components/snackBar/SnackBar";
 import { PATHS } from "../../routes/PATHS";
-import { useTranslation } from 'react-i18next';
 
 type FilterType = "public" | "mine";
+type HomeLocationState = {
+  filter?: "public" | "mine";
+};
 
 export default function Home() {
   const [showError, setShowError] = useState(false);
-  const [filter, setFilter] = useState<FilterType>("public");
   const [page, setPage] = useState(1);
+  const location = useLocation() as { state?: HomeLocationState };
+  const [filter, setFilter] = useState<FilterType>(
+    location.state?.filter || "public",
+  );
   const [authenticated, setAuthenticated] = useState<boolean>(isAuth());
 
   useEffect(() => {
@@ -44,18 +51,18 @@ export default function Home() {
   const hasError = privateError || publicError;
 
   const displayedReports = useMemo(() => {
-  if (!authenticated) return publicReportsData?.reports ?? [];
-  return filter === 'mine'
-    ? (myReportsData?.reports ?? [])
-    : (publicReportsData?.reports ?? []);
-}, [filter, myReportsData, publicReportsData, authenticated]);
+    if (!authenticated) return publicReportsData?.reports ?? [];
+    return filter === "mine"
+      ? (myReportsData?.reports ?? [])
+      : (publicReportsData?.reports ?? []);
+  }, [filter, myReportsData, publicReportsData, authenticated]);
 
-const totalPages = useMemo(() => {
-  if (!authenticated) return publicReportsData?.totalPages ?? 0;
-  return filter === 'mine'
-    ? (myReportsData?.totalPages ?? 0)
-    : (publicReportsData?.totalPages ?? 0);
-}, [filter, myReportsData, publicReportsData, authenticated]);
+  const totalPages = useMemo(() => {
+    if (!authenticated) return publicReportsData?.totalPages ?? 0;
+    return filter === "mine"
+      ? (myReportsData?.totalPages ?? 0)
+      : (publicReportsData?.totalPages ?? 0);
+  }, [filter, myReportsData, publicReportsData, authenticated]);
 
   const handleFilterChange = (newFilter: FilterType) => {
     setFilter(newFilter);
@@ -63,18 +70,16 @@ const totalPages = useMemo(() => {
   };
 
   useEffect(() => {
-    if (!hasError) return;
-    const timer = setTimeout(() => {
+    if (hasError) {
       setShowError(true);
-      setTimeout(() => setShowError(false), 5000);
-    }, 0);
-    return () => clearTimeout(timer);
+      const timer = setTimeout(() => setShowError(false), 5000);
+      return () => clearTimeout(timer);
+    }
   }, [hasError]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-
         <Backdrop
           open={true}
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -97,7 +102,7 @@ const totalPages = useMemo(() => {
       />
       <Grow in timeout={1000}>
         <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
-         {authenticated && (
+          {authenticated && (
             <div className="flex justify-between items-center">
               <div className="flex gap-2 bg-white rounded-full shadow-sm p-1 border border-gray-200">
                 <button
