@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
 import { MdClose, MdLogout, MdMenu } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import { authApi } from "../../services";
 import { useMe } from "../../services/user";
@@ -24,7 +24,6 @@ import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
 import Logo from "../logo/Logo";
 import SnackBar from "../snackBar/SnackBar";
 import HeaderLink from "./HeaderLink";
-import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -52,7 +51,7 @@ export default function Header() {
     },
     onSuccess: () => {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
-      window.dispatchEvent(new Event("storage"));
+      globalThis.dispatchEvent(new Event("storage"));
       setToken(null);
       queryClient.clear();
       navigate(PATHS.INDEX);
