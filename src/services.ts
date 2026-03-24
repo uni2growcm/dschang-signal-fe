@@ -34,11 +34,39 @@ export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
 
 export const getReportById = async (id: number) => {
-  const [report, medias] = await Promise.all([
-    reportApi.getReportById({ id }),
-    mediaApi.getReportMedias({ reportId: id }),
-  ]);
-  return { ...report, medias };
+  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+  
+  if (!token) {
+    try {  
+      const response = await fetch(`${API_URL.dev}/reports/public/${id}`);
+      
+      if (response.status === 404) {  
+        throw new Error('REPORT_NOT_FOUND');
+      }
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch public report');
+      }
+      
+      const report = await response.json();
+      return { ...report, medias: [] };
+      
+    } catch (error) {  
+      console.error('Error fetching public report:', error);
+      throw error;
+    }
+  }
+  
+  try {  
+    const [report, medias] = await Promise.all([
+      reportApi.getReportById({ id }),
+      mediaApi.getReportMedias({ reportId: id })
+    ]);
+    return { ...report, medias };
+  } catch (error) {  
+    console.error('Error fetching private report:', error);
+    throw new Error('Failed to fetch report details');
+  }
 };
 
 export const createReport = async (data: {

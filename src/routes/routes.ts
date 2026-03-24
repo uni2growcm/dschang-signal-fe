@@ -56,8 +56,6 @@ export const clientsRoutes = createBrowserRouter([
       if (isAuthenticated) throw redirect(PATHS.INDEX);
     },
   },
-  {
-    path: PATHS.NOT_FOUND,
-    Component: NotFound,
-  },
+  { path: PATHS.NOT_FOUND, Component: NotFound },
+  { path: "*", Component: NotFound },
 ]);

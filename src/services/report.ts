@@ -73,3 +73,4 @@ export const useCategories = () => {
     queryFn: getCategories,
   });
 };
+
