@@ -1,95 +1,132 @@
 import { Backdrop, CircularProgress, Grow } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import Header from "../../components/header/Header";
 import ReportCard from "../../components/report/ReportCard";
-import { isAuth } from "../../utils/utils";
-import {
-  useAuthenticatedUserReports,
-  usePublicReports,
-  useCategories,
-} from "../../services/report";
+import PaginationControls from "../../components/pagination/PaginationControls";
 import SnackBar from "../../components/snackBar/SnackBar";
 import { PATHS } from "../../routes/PATHS";
+import {
+  useAuthenticatedUserReports,
+  useCategories,
+  usePublicReports,
+} from "../../services/report";
+import { isAuth } from "../../utils/utils";
 
 type FilterType = "public" | "mine";
 
-const REPORT_STATUSES = ["PENDING", "IN_PROGRESS", "RESOLVED"] as const;
+type ReportStatus = "PENDING" | "IN_PROGRESS" | "RESOLVED";
+
+type CategoryOption = {
+  id: number;
+  name: string;
+};
+
+const REPORT_STATUSES: ReportStatus[] = ["PENDING", "IN_PROGRESS", "RESOLVED"];
 const PAGE_SIZE = 10;
 
+const formatStatus = (status: ReportStatus) =>
+  status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
+
 export default function Home() {
+  const authenticated = isAuth();
   const [showError, setShowError] = useState(false);
   const [filter, setFilter] = useState<FilterType>("public");
-
-  // Pagination
-  const [page, setPage] = useState(0);
-
-  // Filters
+  const [page, setPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
   const { data: categories = [] } = useCategories();
-
   const {
-    data: myReports = [],
+    data: myReportsData,
     isLoading: privateLoading,
     isError: privateError,
-  } = useAuthenticatedUserReports();
-
+  } = useAuthenticatedUserReports(page, PAGE_SIZE);
   const {
-    data: publicReports = [],
+    data: publicReportsData,
     isLoading: publicLoading,
     isError: publicError,
-  } = usePublicReports({
-    page,
-    size: PAGE_SIZE,
-    category: selectedCategory || undefined,
-    status: selectedStatus || undefined,
-  });
+  } = usePublicReports({ page, size: PAGE_SIZE });
 
-  const isLoading = privateLoading || publicLoading;
-  const hasError = privateError || publicError;
+  const isPublicView = !authenticated || filter === "public";
+  const sourceReports = useMemo(() => {
+    if (!authenticated) {
+      return publicReportsData?.reports ?? [];
+    }
 
-  // Reset page when filters change
-  useEffect(() => {
-    setPage(0);
-  }, [selectedCategory, selectedStatus, filter]);
+    return filter === "mine"
+      ? myReportsData?.reports ?? []
+      : publicReportsData?.reports ?? [];
+  }, [authenticated, filter, myReportsData, publicReportsData]);
 
   const displayedReports = useMemo(() => {
-    if (!isAuth()) return publicReports;
-    return filter === "mine" ? myReports : publicReports;
-  }, [filter, myReports, publicReports]);
+    return sourceReports.filter((report) => {
+      const matchesCategory =
+        selectedCategory === "" ||
+        report.categories?.some((category) => category.name === selectedCategory);
+      const matchesStatus =
+        selectedStatus === "" || report.reportStatus === selectedStatus;
 
-  const isPublicView = !isAuth() || filter === "public";
-  const hasNextPage = publicReports.length === PAGE_SIZE;
+      return matchesCategory && matchesStatus;
+    });
+  }, [selectedCategory, selectedStatus, sourceReports]);
+
+  const totalPages = useMemo(() => {
+    if (!authenticated) {
+      return publicReportsData?.totalPages ?? 1;
+    }
+
+    return filter === "mine"
+      ? myReportsData?.totalPages ?? 1
+      : publicReportsData?.totalPages ?? 1;
+  }, [authenticated, filter, myReportsData, publicReportsData]);
+
+  const isLoading = authenticated
+    ? filter === "mine"
+      ? privateLoading
+      : publicLoading
+    : publicLoading;
+  const hasError = authenticated
+    ? filter === "mine"
+      ? privateError
+      : publicError
+    : publicError;
+  const hasActiveFilters = selectedCategory !== "" || selectedStatus !== "";
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter, selectedCategory, selectedStatus]);
+
+  useEffect(() => {
+    if (!hasError) {
+      setShowError(false);
+      return;
+    }
+
+    setShowError(true);
+  }, [hasError]);
+
+  const handleFilterChange = (nextFilter: FilterType) => {
+    setFilter(nextFilter);
+  };
 
   const handleClearFilters = () => {
     setSelectedCategory("");
     setSelectedStatus("");
-    setPage(0);
   };
-
-  const hasActiveFilters = selectedCategory !== "" || selectedStatus !== "";
-
-  useEffect(() => {
-    if (hasError) {
-      setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [hasError]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-        <Header />
         <Backdrop
-          open={true}
+          open
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         >
           <div className="flex flex-col items-center gap-4">
             <CircularProgress color="inherit" />
-            <p className="text-white">Chargement des signalements...</p>
+            <p className="text-white">Loading reports...</p>
           </div>
         </Backdrop>
       </div>
@@ -98,22 +135,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50">
-      <Header />
       <SnackBar
         open={showError}
         severity="error"
-        message="Échec du chargement des signalements. Veuillez recharger la page."
+        message="Failed to load reports. Please refresh the page."
+        onClose={() => setShowError(false)}
       />
-      <Grow in timeout={1000}>
-        <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
 
-          {/* ── Top bar: Public/Mine toggle + Create button ── */}
-          {isAuth() && (
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 bg-white rounded-full shadow-sm p-1 border border-gray-200">
+      <Grow in timeout={1000}>
+        <div className="container my-10 flex flex-col gap-5 max-lg:px-5">
+          {authenticated && (
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex gap-2 rounded-full border border-gray-200 bg-white p-1 shadow-sm">
                 <button
-                  onClick={() => setFilter("public")}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  type="button"
+                  onClick={() => handleFilterChange("public")}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
                     filter === "public"
                       ? "bg-primary text-white shadow"
                       : "text-gray-500 hover:text-gray-800"
@@ -122,100 +159,94 @@ export default function Home() {
                   Public
                 </button>
                 <button
-                  onClick={() => setFilter("mine")}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  type="button"
+                  onClick={() => handleFilterChange("mine")}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
                     filter === "mine"
                       ? "bg-primary text-white shadow"
                       : "text-gray-500 hover:text-gray-800"
                   }`}
                 >
-                  Mes signalements
+                  My reports
                 </button>
               </div>
+
               <Link
                 to={PATHS.CREATE_REPORT}
-                className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
+                className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90"
               >
                 + Create a Report
               </Link>
             </div>
           )}
 
-          {/* ── Filters (public view only) ── */}
           {isPublicView && (
-            <div className="flex flex-wrap items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-sm border border-gray-100">
-              {/* Category filter */}
-              <div className="flex flex-col gap-0.5 min-w-[160px]">
-                <label className="text-xs text-gray-400 font-medium">
-                  Category
-                </label>
+            <div className="flex flex-wrap items-end gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
+              <div className="flex min-w-[160px] flex-col gap-0.5">
+                <label className="text-xs font-medium text-gray-400">Category</label>
                 <select
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer"
+                  onChange={(event) => setSelectedCategory(event.target.value)}
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">All categories</option>
-                  {(categories as Array<{ id: number; name: string }>).map(
-                    (cat) => (
-                      <option key={cat.id} value={cat.name}>
-                        {cat.name}
-                      </option>
-                    )
-                  )}
-                </select>
-              </div>
-
-              {/* Status filter */}
-              <div className="flex flex-col gap-0.5 min-w-[140px]">
-                <label className="text-xs text-gray-400 font-medium">
-                  Status
-                </label>
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer"
-                >
-                  <option value="">All statuses</option>
-                  {REPORT_STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {s.replace("_", " ")}
+                  {(categories as CategoryOption[]).map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Clear filters button */}
+              <div className="flex min-w-[140px] flex-col gap-0.5">
+                <label className="text-xs font-medium text-gray-400">Status</label>
+                <select
+                  value={selectedStatus}
+                  onChange={(event) => setSelectedStatus(event.target.value)}
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">All statuses</option>
+                  {REPORT_STATUSES.map((status) => (
+                    <option key={status} value={status}>
+                      {formatStatus(status)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {hasActiveFilters && (
                 <button
+                  type="button"
                   onClick={handleClearFilters}
-                  className="mt-4 text-xs text-primary font-medium hover:underline transition-all"
+                  className="text-xs font-medium text-primary transition-all hover:underline"
                 >
                   Clear filters
                 </button>
               )}
 
-              {/* Active filter badges */}
               {hasActiveFilters && (
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className="flex flex-wrap gap-2">
                   {selectedCategory && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-primary text-xs rounded-full border border-purple-100">
+                    <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
                       {selectedCategory}
                       <button
+                        type="button"
                         onClick={() => setSelectedCategory("")}
-                        className="hover:text-red-500 transition-colors"
+                        className="transition-colors hover:text-red-500"
                       >
-                        ×
+                        x
                       </button>
                     </span>
                   )}
                   {selectedStatus && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-primary text-xs rounded-full border border-purple-100">
-                      {selectedStatus.replace("_", " ")}
+                    <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
+                      {formatStatus(selectedStatus as ReportStatus)}
                       <button
+                        type="button"
                         onClick={() => setSelectedStatus("")}
-                        className="hover:text-red-500 transition-colors"
+                        className="transition-colors hover:text-red-500"
                       >
-                        ×
+                        x
                       </button>
                     </span>
                   )}
@@ -224,19 +255,19 @@ export default function Home() {
             </div>
           )}
 
-          {/* ── Report list ── */}
           {displayedReports.length > 0 ? (
             displayedReports.map((report) => (
               <ReportCard key={report.id} report={report} />
             ))
           ) : (
-            <div className="text-center text-gray-500 py-16 flex flex-col items-center gap-2">
-              <span className="text-4xl">🔍</span>
-              <p className="font-medium">Aucun signalement trouvé</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center text-gray-500">
+              <span className="text-4xl">No reports</span>
+              <p className="font-medium">No reports found for this view.</p>
               {hasActiveFilters && (
                 <button
+                  type="button"
                   onClick={handleClearFilters}
-                  className="text-sm text-primary hover:underline mt-1"
+                  className="mt-1 text-sm text-primary hover:underline"
                 >
                   Clear filters to see all reports
                 </button>
@@ -244,37 +275,13 @@ export default function Home() {
             </div>
           )}
 
-          {/* ── Pagination (public view only) ── */}
-          {isPublicView && (
-            <div className="flex justify-center items-center gap-4 mt-4 pb-6">
-              <button
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
-                className={`px-5 py-2 rounded-full text-sm font-medium border transition-all ${
-                  page === 0
-                    ? "opacity-40 cursor-not-allowed border-gray-200 text-gray-400"
-                    : "border-primary text-primary hover:bg-primary hover:text-white"
-                }`}
-              >
-                ← Previous
-              </button>
-
-              <span className="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-sm font-semibold text-gray-700 shadow-sm">
-                Page {page + 1}
-              </span>
-
-              <button
-                onClick={() => setPage((p) => p + 1)}
-                disabled={!hasNextPage}
-                className={`px-5 py-2 rounded-full text-sm font-medium border transition-all ${
-                  !hasNextPage
-                    ? "opacity-40 cursor-not-allowed border-gray-200 text-gray-400"
-                    : "border-primary text-primary hover:bg-primary hover:text-white"
-                }`}
-              >
-                Next →
-              </button>
-            </div>
+          {!hasActiveFilters && displayedReports.length > 0 && (
+            <PaginationControls
+              page={page}
+              totalPages={totalPages}
+              onNext={() => setPage((current) => Math.min(totalPages, current + 1))}
+              onPrev={() => setPage((current) => Math.max(1, current - 1))}
+            />
           )}
         </div>
       </Grow>

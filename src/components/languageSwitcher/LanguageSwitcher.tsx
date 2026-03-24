@@ -16,18 +16,13 @@ const LanguageSwitcher = () => {
   return (
     <FormControl size="small" variant="outlined" sx={{ minWidth: 100 }}>
       <Select
+        variant="outlined"
         value={i18n.language}
         onChange={handleLanguageChange}
         sx={{
           color: "inherit",
           ".MuiOutlinedInput-notchedOutline": {
-            borderColor: "inherit",
-          },
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "inherit",
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "inherit",
+            border: 0,
           },
         }}
       >

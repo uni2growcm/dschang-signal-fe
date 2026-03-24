@@ -1,9 +1,10 @@
 export const PATHS = {
-  INDEX: "/",
-  LOGIN: "/login",
-  REGISTER: "/register",
-  NOT_FOUND: "*",
-  CREATE_REPORT: "/report/create",
-  REPORT_DETAILS: "/reports/:id",
-  EDIT_REPORT: "/reports/:id/edit",
+  INDEX: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  NOT_FOUND: '*',
+  CREATE_REPORT: '/report/create',
+  REPORT_DETAILS: '/reports/:id',
+  EDIT_REPORT: '/reports/:id/edit',
+  SETTINGS: '/settings',
 };

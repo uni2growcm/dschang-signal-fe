@@ -1,9 +1,15 @@
 import { Avatar, IconButton } from "@mui/material";
-import { stringAvatar } from "../../utils/utils";
 import { CiMenuKebab } from "react-icons/ci";
 import { Link } from "react-router";
 import type { Report } from "../../api";
 import { PATHS } from "../../routes/PATHS";
+import { stringAvatar } from "../../utils/utils";
+
+const formatStatus = (status: NonNullable<Report["reportStatus"]>) =>
+  status
+    .split("_")
+    .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+    .join(" ");
 
 export default function ReportCard({ report }: Readonly<{ report: Report }>) {
   const statusStyles: Record<Exclude<Report["reportStatus"], undefined>, string> = {
@@ -13,40 +19,40 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
   };
 
   return (
-    <div className="bg-white rounded-lg items-start shadow-md min-w-80 p-3 w-full">
-      <div className="grid grid-cols-[1fr_auto] justify-between items-center mb-4">
+    <div className="min-w-80 w-full items-start rounded-lg bg-white p-3 shadow-md">
+      <div className="mb-4 grid grid-cols-[1fr_auto] items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar
             {...stringAvatar(report.createdBy?.fullName || "")}
             className="font-semibold! max-sm:w-8! max-sm:h-8! text-sm!"
           />
-          <div className="flex flex-col leading-none gap-0">
+          <div className="flex flex-col gap-0 leading-none">
             <p className="text-lg max-sm:text-sm">{report.createdBy?.fullName}</p>
-            <p className="text-sm max-sm:text-xs font-mono font-normal text-gray-500">
+            <p className="text-sm font-mono font-normal text-gray-500 max-sm:text-xs">
               {report.createdAt?.toDateString()}
             </p>
           </div>
         </div>
-        <div className="flex gap-4 items-center">
-          <span className={`text-sm px-3 rounded-full border ${statusStyles[report.reportStatus!]}`}>
-            {report.reportStatus!
-              .split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ").toLocaleLowerCase().replaceAll(/\b\w/g, (char) => char.toUpperCase())}
-          </span>
+        <div className="flex items-center gap-4">
+          {report.reportStatus && (
+            <span className={`rounded-full border px-3 text-sm ${statusStyles[report.reportStatus]}`}>
+              {formatStatus(report.reportStatus)}
+            </span>
+          )}
           <IconButton size="small">
             <CiMenuKebab />
           </IconButton>
         </div>
       </div>
       <h2 className="mb-2">{report.title}</h2>
-      <p className="text-gray-700 mb-4 leading-none">{report.description}</p>
+      <p className="mb-4 leading-none text-gray-700">{report.description}</p>
       <p className="text-sm text-gray-500">{report.locationText}</p>
       <div className="mt-3 flex justify-end">
         <Link
           to={PATHS.REPORT_DETAILS.replace(":id", String(report.id))}
-          className="text-primary font-semibold text-sm hover:underline"
+          className="text-sm font-semibold text-primary hover:underline"
         >
-          View Details →
+          View Details
         </Link>
       </div>
     </div>

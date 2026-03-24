@@ -1,16 +1,16 @@
-import { Box, Grow, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import registerImage from "../../assets/register-image.png";
-import Logo from "../../components/logo/Logo";
-import RegisterForm from "../../components/register/RegisterForm";
-import styles from "./register.module.css";
+import { Box, Grow, Typography } from '@mui/material';
+import styles from './register.module.css';
+import Logo from '../../components/logo/Logo';
+import RegisterForm from '../../components/register/RegisterForm';
+import registerImage from '../../assets/register-image.png';
 
 export default function RegisterPage() {
-  const { t } = useTranslation();
-
   return (
-    <Box className={`${styles.registerContainer} max-sm:flex-col`} >
-    <Logo col className="absolute max-sm:relative top-5 sm:left-5 max-sm:self-center" />
+    <Box className={`${styles.registerContainer} max-sm:flex-col`}>
+      <Logo
+        col
+        className="absolute max-sm:relative top-5 sm:left-5 max-sm:self-center"
+      />
 
       <Grow in timeout={1000}>
         <Box
@@ -25,22 +25,22 @@ export default function RegisterPage() {
                 variant="h5"
                 sx={{ fontWeight: 600, fontSize: 30, lineHeight: 1.4 }}
               >
-                {t("registerPage.quote")}
+                "Join us to make a difference in your community."
               </Typography>
             </div>
 
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 20 }}>
-              {t("registerPage.author")}
+              Marie Nguemo
             </Typography>
 
             <Typography variant="caption" sx={{ fontSize: 14, opacity: 0.8 }}>
-              {t("registerPage.role")}
+              Community Leader, Dschang
             </Typography>
           </Box>
         </Box>
       </Grow>
 
-     <Box className={`${styles.rightSection} max-sm:bg-white!`}>
+      <Box className={`${styles.rightSection} max-sm:bg-white!`}>
         <Box className={styles.formWrapper}>
           <RegisterForm />
         </Box>
