@@ -1,10 +1,3 @@
-import { useParams, Navigate, useNavigate, Link } from "react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getReportById, deleteReport } from "../../services";
-import { useMe } from "../../services/user";
-import { PATHS } from "../../routes/PATHS";
-import styles from "./ReportDetailsPage.module.css";
-import { useState } from "react";
 import {
   CircularProgress,
   Dialog,
@@ -13,8 +6,17 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link, Navigate, useNavigate, useParams } from "react-router";
+import { PATHS } from "../../routes/PATHS";
+import { deleteReport, getReportById } from "../../services";
+import { useMe } from "../../services/user";
+import styles from "./ReportDetailsPage.module.css";
 
 export default function ReportDetailsPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -73,7 +75,7 @@ export default function ReportDetailsPage() {
             to={PATHS.INDEX}
             className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
           >
-            ← Back to Home
+            {t("reportDetails.backHome")}
           </Link>
 
           <div className="flex gap-3">
@@ -82,7 +84,7 @@ export default function ReportDetailsPage() {
                 to={PATHS.EDIT_REPORT.replace(":id", String(report.id))}
                 className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
               >
-                Edit Report
+                {t("reportDetails.editReport")}
               </Link>
             )}
 
@@ -91,7 +93,7 @@ export default function ReportDetailsPage() {
                 onClick={() => setDeleteDialogOpen(true)}
                 className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
               >
-                Delete Report
+                {t("reportDetails.deleteReport")}
               </button>
             )}
 
@@ -99,11 +101,10 @@ export default function ReportDetailsPage() {
               open={deleteDialogOpen}
               onClose={() => setDeleteDialogOpen(false)}
             >
-              <DialogTitle>Delete Report</DialogTitle>
+              <DialogTitle>{t("reportDetails.deleteTitle")}</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Are you sure you want to delete this report? This action
-                  cannot be undone.
+                  {t("reportDetails.deleteMessage")}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -111,7 +112,7 @@ export default function ReportDetailsPage() {
                   onClick={() => setDeleteDialogOpen(false)}
                   className="px-4 py-2 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-100 transition-all"
                 >
-                  No
+                  {t("reportDetails.no")}
                 </button>
                 <button
                   onClick={() => {
@@ -121,7 +122,7 @@ export default function ReportDetailsPage() {
                   disabled={deleteMutation.isPending}
                   className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
                 >
-                  Yes, Delete
+                  {t("reportDetails.yesDelete")}
                 </button>
               </DialogActions>
             </Dialog>
@@ -131,7 +132,7 @@ export default function ReportDetailsPage() {
         {deleteMutation.isError && (
           <p className="text-red-500 text-sm text-center">
             {(deleteMutation.error as Error)?.message ||
-              "Failed to delete report"}
+              t("reportDetails.deleteError")}
           </p>
         )}
 
@@ -139,10 +140,10 @@ export default function ReportDetailsPage() {
           <div className={styles.header}>
             <div>
               <h1 className={styles.title}>
-                {report.title || "Untitled Report"}
+                {report.title || t("reportDetails.untitledReport")}
               </h1>
               <p className={styles.location}>
-                {report.locationText || "No location provided"}
+                {report.locationText || t("reportDetails.noLocation")}
               </p>
             </div>
             <span

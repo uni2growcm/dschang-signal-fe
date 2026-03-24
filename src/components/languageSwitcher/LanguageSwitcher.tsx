@@ -9,8 +9,9 @@ import { useTranslation } from "react-i18next";
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
 
-  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
-    i18n.changeLanguage(event.target.value);
+  const handleLanguageChange = async (event: SelectChangeEvent<string>) => {
+    const selectedLanguage = event.target.value;
+    await i18n.changeLanguage(selectedLanguage);
   };
 
   return (
@@ -26,10 +27,10 @@ const LanguageSwitcher = () => {
           },
         }}
       >
-        <MenuItem value="en">English</MenuItem>
-        <MenuItem value="fr">Français</MenuItem>
-        <MenuItem value="it">Italiano</MenuItem>
-        <MenuItem value="de">Deutsch</MenuItem>
+        <MenuItem value="en">En</MenuItem>
+        <MenuItem value="fr">Fr</MenuItem>
+        <MenuItem value="it">It</MenuItem>
+        <MenuItem value="de">De</MenuItem>
       </Select>
     </FormControl>
   );

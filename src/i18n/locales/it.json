@@ -59,12 +59,19 @@
     "invalidEmail": "Email non valida",
     "passwordRequired": "La password è obbligatoria",
     "passwordMin": "La password deve contenere almeno 6 caratteri",
-    "passwordMatch": "Le password non corrispondono"
+    "passwordMatch": "Le password non corrispondono",
+    "createAccountHeader": "Crea il tuo account",
+    "joinDescription": "Unisciti a Dschang's Signal e inizia a segnalare problemi nella tua comunità.",
+    "accountExists": "Un account con questa email esiste già. Per favore accedi.",
+    "invalidData": "Dati di registrazione non validi. Controlla le tue informazioni.",
+    "registrationFailed": "Registrazione non riuscita. Per favore riprova.",
+    "successRedirect": "Registrazione riuscita! Reindirizzamento al login..."
   },
   "notFound": {
     "code": "404",
     "title": "Pagina non trovata",
     "message": "Scusa, la pagina che stai cercando non esiste o è stata spostata.",
+    "reportText": "La segnalazione che stai cercando non esiste o è stata eliminata.",
     "backHome": "Torna alla home"
   },
   "reports": {
@@ -90,5 +97,89 @@
     "quote": "Unisciti a noi per fare la differenza nella tua comunità.",
     "author": "Marie Nguemo",
     "role": "Leader della comunità, Dschang"
+  },
+  "header": {
+    "fetchUserError": "Impossibile recuperare le informazioni dell'utente",
+    "loggingOut": "Uscita in corso...",
+    "logoutFailed": "Uscita non riuscita. Per favore riprova.",
+    "logoutSuccess": "Uscita riuscita!",
+    "openMenu": "Apri il menu principale",
+    "settings": "Impostazioni",
+    "logout": "Esci"
+  },
+  "reportForm": {
+    "headerDescription": "Descrivi il problema che hai osservato nella tua zona.",
+    "requiredFields": "Campi obbligatori",
+    "title": "Titolo",
+    "description": "Descrizione",
+    "location": "Posizione",
+    "categoryOptional": "Categoria (opzionale)",
+    "selectedCategories": "Categorie selezionate",
+    "newCategory": "Nome della nuova categoria",
+    "attachMedia": "Allega foto o video",
+    "optional": "opzionale",
+    "selectFiles": "Clicca per selezionare i file",
+    "submit": "Invia la segnalazione",
+    "success": "Segnalazione creata con successo!",
+    "error": "Errore nella creazione della segnalazione. Per favore riprova.",
+    "addCategory": "+ Aggiungi nuova categoria",
+    "addCategoryDynamic": "+ Aggiungi \"{{value}}\" come nuova categoria",
+    "titleMin": "Il titolo deve contenere almeno 3 caratteri",
+    "titleMax": "Il titolo deve contenere al massimo 150 caratteri",
+    "titleRequired": "Il titolo è obbligatorio",
+    "descriptionMin": "La descrizione deve contenere almeno 10 caratteri",
+    "descriptionRequired": "La descrizione è obbligatoria",
+    "locationRequired": "La posizione è obbligatoria",
+    "categoryNameMin": "Il nome della categoria deve contenere almeno 2 caratteri",
+    "categoryNameMax": "Il nome della categoria deve contenere al massimo 50 caratteri",
+    "categoryExists": "Questa categoria esiste già. Per favore selezionala dall'elenco.",
+    "categoryExistsFull": "Questa categoria esiste già. Per favore selezionala dall'elenco o scegli un nome diverso."
+  },
+  "reportPage": {
+    "title": "Crea una segnalazione",
+    "subtitle": "Aiuta a migliorare la tua città segnalando un problema",
+    "backHome": "Torna alla home"
+  },
+  "home": {
+    "loadingReports": "Caricamento segnalazioni...",
+    "errorLoading": "Errore nel caricamento delle segnalazioni. Per favore ricarica la pagina.",
+    "filterPublic": "Pubblico",
+    "filterMine": "Le mie segnalazioni",
+    "createReport": "Crea una segnalazione",
+    "noReports": "Nessuna segnalazione trovata"
+  },
+  "settings": {
+    "backHome": "← Torna alla home",
+    "title": "Impostazioni",
+    "description": "Gestisci la configurazione del tuo progetto e le preferenze"
+  },
+  "reportDetails": {
+    "backHome": "← Torna alla home",
+    "editReport": "Modifica la segnalazione",
+    "deleteReport": "Elimina la segnalazione",
+    "deleteTitle": "Elimina la segnalazione",
+    "deleteMessage": "Sei sicuro di voler eliminare questa segnalazione? Questa azione non può essere annullata.",
+    "no": "No",
+    "yesDelete": "Sì, elimina",
+    "deleteError": "Errore nell'eliminazione della segnalazione",
+    "untitledReport": "Segnalazione senza titolo",
+    "noLocation": "Nessuna posizione fornita",
+    "noDescription": "Nessuna descrizione fornita",
+    "createdAt": "Creato il",
+    "moderation": "Moderazione",
+    "reportedBy": "Segnalato da",
+    "unknown": "Sconosciuto",
+    "noCategories": "Nessuna categoria",
+    "noMedia": "Nessun media disponibile",
+    "downloadDocument": "📄 Scarica documento",
+    "unknownStatus": "SCONOSCIUTO",
+    "unnamed": "Senza nome"
+  },
+  "usersSection": {
+    "title": "Elenco utenti",
+    "description": "Gestisci gli utenti registrati e i loro ruoli",
+    "searchPlaceholder": "Cerca per nome completo...",
+    "roleUpdated": "Ruolo utente aggiornato con successo",
+    "roleUpdateError": "Non puoi autorizzare te stesso. Chiedi a un altro admin di aggiornare il tuo ruolo."
   }
 }
