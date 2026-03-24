@@ -1,33 +1,34 @@
-import { useParams, Navigate, useNavigate, Link } from "react-router";
 import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  useQuery as useQueryCategories,
-} from "@tanstack/react-query";
-import {
-  CircularProgress,
-  Typography,
   Autocomplete,
-  TextField,
-  Chip,
   Box,
+  Chip,
+  CircularProgress,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import {
+  useMutation,
+  useQuery,
+  useQuery as useQueryCategories,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { Form, Formik } from "formik";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { MdCloudUpload } from "react-icons/md";
+import { Link, Navigate, useNavigate, useParams } from "react-router";
+import * as Yup from "yup";
 import FormTextField from "../../components/forms/shared/FormTextField";
 import SnackBar from "../../components/snackBar/SnackBar";
 import { PATHS } from "../../routes/PATHS";
 import {
+  deleteMedia,
+  getCategories,
   getReportById,
   updateReport,
   uploadMedia,
-  deleteMedia,
-  getCategories,
 } from "../../services";
 import { useMe } from "../../services/user";
-import { MdCloudUpload } from "react-icons/md";
 import styles from "./CreateReportPage.module.css";
 
 interface CategoryOption {
@@ -35,21 +36,22 @@ interface CategoryOption {
   name: string;
 }
 
-const validationSchema = Yup.object({
-  title: Yup.string()
-    .min(3, "Title must be at least 3 characters")
-    .max(150, "Title must be at most 150 characters")
-    .required("Title is required"),
-  description: Yup.string()
-    .min(10, "Description must be at least 10 characters")
-    .required("Description is required"),
-  locationText: Yup.string().required("Location is required"),
-});
-
 export default function EditReportPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, t("reportForm.titleMin"))
+      .max(150, t("reportForm.titleMax"))
+      .required(t("reportForm.titleRequired")),
+    description: Yup.string()
+      .min(10, t("reportForm.descriptionMin"))
+      .required(t("reportForm.descriptionRequired")),
+    locationText: Yup.string().required(t("reportForm.locationRequired")),
+  });
 
   const {
     data: report,

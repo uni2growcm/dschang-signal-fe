@@ -1,63 +1,65 @@
-import { useState } from 'react';
+import { PeopleOutlined, SearchOutlined } from "@mui/icons-material";
 import {
+  Alert,
+  Avatar,
   Box,
+  Chip,
+  CircularProgress,
+  FormControl,
+  InputAdornment,
+  MenuItem,
+  Pagination,
+  Select,
+  Snackbar,
   Stack,
   TextField,
   Typography,
-  Avatar,
-  Chip,
-  InputAdornment,
-  Select,
-  MenuItem,
-  FormControl,
-  CircularProgress,
-  Snackbar,
-  Alert,
-  Pagination,
-} from '@mui/material';
-import { PeopleOutlined, SearchOutlined } from '@mui/icons-material';
-import { SettingsSection } from '../SharedSettingsComponents/SettingsSection';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { userApi } from '../../../services';
-import type { ChangeRoleRequestRoleEnum } from '../../../api/models/ChangeRoleRequest';
-import { getAllUsersPaginated } from '../../../utils/usersApiExtended';
+} from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { ChangeRoleRequestRoleEnum } from "../../../api/models/ChangeRoleRequest";
+import { userApi } from "../../../services";
+import { getAllUsersPaginated } from "../../../utils/usersApiExtended";
+import { SettingsSection } from "../SharedSettingsComponents/SettingsSection";
 
 interface Notification {
   message: string;
-  severity: 'success' | 'error';
+  severity: "success" | "error";
 }
 
 const PAGE_SIZE = 3;
 const ALL_USERS_SIZE = 10000;
 
 export const UsersSection = () => {
-  const [search, setSearch] = useState('');
+  const { t } = useTranslation();
+  const [search, setSearch] = useState("");
   const [notification, setNotification] = useState<Notification | null>(null);
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
 
-  const showNotification = (message: string, severity: 'success' | 'error') => {
+  const showNotification = (message: string, severity: "success" | "error") => {
     setNotification({ message, severity });
   };
 
   const { data: paginatedData, isLoading: isPaginatedLoading } = useQuery({
-    queryKey: ['users', page],
+    queryKey: ["users", page],
     queryFn: () =>
       getAllUsersPaginated({
         page: page - 1,
         size: PAGE_SIZE,
-        sort: 'fullName',
+        sort: "fullName",
       }),
     enabled: !search,
   });
 
   const { data: allData, isLoading: isAllLoading } = useQuery({
-    queryKey: ['users', 'all'],
+    queryKey: ["users", "all"],
     queryFn: () =>
       getAllUsersPaginated({
         page: 0,
         size: ALL_USERS_SIZE,
-        sort: 'fullName',
+        sort: "fullName",
       }),
     enabled: !!search,
   });
@@ -80,14 +82,11 @@ export const UsersSection = () => {
         changeRoleRequest: { role },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users', page] });
-      showNotification('User role updated successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ["users", page] });
+      showNotification(t("usersSection.roleUpdated"), "success");
     },
     onError: () => {
-      showNotification(
-        'you can not authorize yourself, please ask another admin to update your role',
-        'error',
-      );
+      showNotification(t("usersSection.roleUpdateError"), "error");
     },
   });
 
@@ -105,27 +104,27 @@ export const UsersSection = () => {
   return (
     <SettingsSection
       icon={<PeopleOutlined />}
-      title="List of Users"
-      description="Manage registered users and their roles"
+      title={t("usersSection.title")}
+      description={t("usersSection.description")}
     >
       <Snackbar
         open={!!notification}
         autoHideDuration={5000}
         onClose={() => setNotification(null)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={() => setNotification(null)}
           severity={notification?.severity}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {notification?.message}
         </Alert>
       </Snackbar>
 
       <TextField
-        placeholder="Search by full name..."
+        placeholder={t("usersSection.searchPlaceholder")}
         size="small"
         fullWidth
         value={search}
@@ -136,7 +135,7 @@ export const UsersSection = () => {
             <InputAdornment position="start">
               <SearchOutlined
                 fontSize="small"
-                sx={{ color: 'text.secondary' }}
+                sx={{ color: "text.secondary" }}
               />
             </InputAdornment>
           ),
@@ -162,11 +161,11 @@ export const UsersSection = () => {
             <Box key={user.id}>
               <Box
                 display="flex"
-                alignItems={{ xs: 'flex-start', sm: 'center' }}
+                alignItems={{ xs: "flex-start", sm: "center" }}
                 justifyContent="space-between"
                 py={1.5}
                 gap={1.5}
-                flexDirection={{ xs: 'column', sm: 'row' }}
+                flexDirection={{ xs: "column", sm: "row" }}
               >
                 <Box
                   display="flex"
@@ -179,17 +178,17 @@ export const UsersSection = () => {
                     sx={{
                       width: 36,
                       height: 36,
-                      bgcolor: 'primary.main',
+                      bgcolor: "primary.main",
                       fontSize: 13,
-                      fontWeight: 'bold',
+                      fontWeight: "bold",
                       flexShrink: 0,
                     }}
                   >
                     {user.fullName
-                      ?.split(' ')
+                      ?.split(" ")
                       .filter(Boolean)
                       .map((n: string) => n[0])
-                      .join('')
+                      .join("")
                       .toUpperCase()}
                   </Avatar>
                   <Box minWidth={0}>
@@ -200,11 +199,11 @@ export const UsersSection = () => {
                       variant="caption"
                       color="text.secondary"
                       sx={{
-                        display: 'block',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        maxWidth: { xs: '200px', sm: '100%' },
+                        display: "block",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: { xs: "200px", sm: "100%" },
                       }}
                     >
                       {user.email}
@@ -217,18 +216,18 @@ export const UsersSection = () => {
                   alignItems="center"
                   gap={1}
                   flexShrink={0}
-                  width={{ xs: '100%', sm: 'auto' }}
-                  justifyContent={{ xs: 'space-between', sm: 'flex-end' }}
+                  width={{ xs: "100%", sm: "auto" }}
+                  justifyContent={{ xs: "space-between", sm: "flex-end" }}
                 >
                   <Chip
-                    label={user.isActive ? 'Active' : 'Inactive'}
+                    label={user.isActive ? "Active" : "Inactive"}
                     size="small"
                     sx={{
                       bgcolor: user.isActive
-                        ? 'rgba(76, 175, 80, 0.1)'
-                        : 'rgba(158, 158, 158, 0.1)',
-                      color: user.isActive ? 'success.main' : 'text.secondary',
-                      fontWeight: 'medium',
+                        ? "rgba(76, 175, 80, 0.1)"
+                        : "rgba(158, 158, 158, 0.1)",
+                      color: user.isActive ? "success.main" : "text.secondary",
+                      fontWeight: "medium",
                       fontSize: 11,
                     }}
                   />
@@ -238,7 +237,7 @@ export const UsersSection = () => {
                     sx={{ minWidth: { xs: 120, sm: 110 } }}
                   >
                     <Select
-                      value={user.role ?? 'CITIZEN'}
+                      value={user.role ?? "CITIZEN"}
                       disabled={updateRoleMutation.isPending}
                       onChange={(e) =>
                         updateRoleMutation.mutate({
@@ -248,8 +247,8 @@ export const UsersSection = () => {
                       }
                       sx={{
                         fontSize: 12,
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'divider',
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "divider",
                         },
                       }}
                     >
@@ -266,7 +265,7 @@ export const UsersSection = () => {
 
               {index < filteredUsers.length - 1 && (
                 <Box
-                  sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
+                  sx={{ borderBottom: "1px solid", borderColor: "divider" }}
                 />
               )}
             </Box>

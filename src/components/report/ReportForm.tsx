@@ -1,30 +1,28 @@
 import {
+  Autocomplete,
   Box,
   Button,
-  Typography,
-  CircularProgress,
   Chip,
-  Autocomplete,
+  CircularProgress,
   TextField,
+  Typography,
 } from "@mui/material";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { MdCloudUpload } from "react-icons/md";
+import * as Yup from "yup";
+import {
+  checkCategoryExists,
+  createCategory,
+  createReport,
+  getCategories,
+  uploadMedia,
+} from "../../services";
 import FormTextField from "../forms/shared/FormTextField";
 import SnackBar from "../snackBar/SnackBar";
-import {
-  createReport,
-  uploadMedia,
-  getCategories,
-  createCategory,
-  checkCategoryExists,
-} from "../../services";
 import styles from "./ReportForm.module.css";
-import { MdCloudUpload } from "react-icons/md";
-import { useTranslation } from "react-i18next";
-
-const OTHER_OPTION = { id: "other" as const, name: "+ Add new category" };
 
 interface CategoryOption {
   id: number | string;
@@ -38,21 +36,6 @@ interface ReportFormValues {
   newCategoryName: string;
 }
 
-const validationSchema = Yup.object({
-  title: Yup.string()
-    .min(3, "Title must be at least 3 characters")
-    .max(150, "Title must be at most 150 characters")
-    .required("Title is required"),
-  description: Yup.string()
-    .min(10, "Description must be at least 10 characters")
-    .required("Description is required"),
-
-  locationText: Yup.string().required("Location is required"),
-  newCategoryName: Yup.string()
-    .min(2, "Category name must be at least 2 characters")
-    .max(50, "Category name must be at most 50 characters"),
-});
-
 export default function ReportForm() {
   const [medias, setMedias] = useState<File[]>([]);
   const [preview, setPreview] = useState<string[]>([]);
@@ -65,6 +48,25 @@ export default function ReportForm() {
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
   const { t } = useTranslation();
+
+  const OTHER_OPTION = {
+    id: "other" as const,
+    name: t("reportForm.addCategory"),
+  };
+
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, t("reportForm.titleMin"))
+      .max(150, t("reportForm.titleMax"))
+      .required(t("reportForm.titleRequired")),
+    description: Yup.string()
+      .min(10, t("reportForm.descriptionMin"))
+      .required(t("reportForm.descriptionRequired")),
+    locationText: Yup.string().required(t("reportForm.locationRequired")),
+    newCategoryName: Yup.string()
+      .min(2, t("reportForm.categoryNameMin"))
+      .max(50, t("reportForm.categoryNameMax")),
+  });
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -111,9 +113,7 @@ export default function ReportForm() {
     try {
       const exists = await checkCategoryExists(name.trim());
       if (exists) {
-        setNewCategoryError(
-          "This category already exists. Please select it from the list.",
-        );
+        setNewCategoryError(t("reportForm.categoryExists"));
       } else {
         setNewCategoryError("");
       }
@@ -144,9 +144,7 @@ export default function ReportForm() {
           const newCategory = await createCategory(values.newCategoryName);
           finalCategoryIds.push(newCategory.id);
         } catch {
-          throw new Error(
-            "This category already exists. Please select it from the list or choose a different name.",
-          );
+          throw new Error(t("reportForm.categoryExistsFull"));
         }
       }
 
@@ -169,7 +167,7 @@ export default function ReportForm() {
       return report;
     },
     onSuccess: () => {
-      setMessage("Report created successfully!");
+      setMessage(t("reportForm.success"));
       setIsError(false);
       setMedias([]);
       setPreview([]);
@@ -178,7 +176,7 @@ export default function ReportForm() {
       setNewCategoryError("");
     },
     onError: (error: any) => {
-      setMessage(error?.message || "Error creating report. Please try again.");
+      setMessage(error?.message || t("reportForm.error"));
       setIsError(true);
     },
   });
