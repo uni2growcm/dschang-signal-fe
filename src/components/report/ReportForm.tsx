@@ -13,6 +13,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import FormTextField from "../forms/shared/FormTextField";
 import SnackBar from "../snackBar/SnackBar";
+import { PATHS } from "../../routes/PATHS";
 import {
   createReport,
   uploadMedia,
@@ -22,6 +23,7 @@ import {
 } from "../../services";
 import styles from "./ReportForm.module.css";
 import { MdCloudUpload } from "react-icons/md";
+import { useNavigate } from "react-router";
 
 const OTHER_OPTION = { id: "other" as const, name: "+ Add new category" };
 
@@ -43,9 +45,9 @@ const validationSchema = Yup.object({
     .max(150, "Title must be at most 150 characters")
     .required("Title is required"),
   description: Yup.string()
-  .min(10, "Description must be at least 10 characters")
-  .required("Description is required"),
-  
+    .min(10, "Description must be at least 10 characters")
+    .required("Description is required"),
+
   locationText: Yup.string().required("Location is required"),
   newCategoryName: Yup.string()
     .min(2, "Category name must be at least 2 characters")
@@ -57,18 +59,20 @@ export default function ReportForm() {
   const [preview, setPreview] = useState<string[]>([]);
   const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<
+    CategoryOption[]
+  >([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
-
+  const navigate = useNavigate();
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
 
   const categoryOptions: CategoryOption[] = (categories as any[]).map(
-    (cat: any) => ({ id: cat.id, name: cat.name })
+    (cat: any) => ({ id: cat.id, name: cat.name }),
   );
 
   const allSelected = [
@@ -78,7 +82,7 @@ export default function ReportForm() {
 
   const handleCategoryChange = (
     _: React.SyntheticEvent,
-    newValue: CategoryOption[]
+    newValue: CategoryOption[],
   ) => {
     const otherOption = newValue.find((v) => v.id === "other");
     const withoutOther = newValue.filter((v) => v.id !== "other");
@@ -91,7 +95,7 @@ export default function ReportForm() {
           .replace('+ Add "', "")
           .replace('" as new category', "");
         window.dispatchEvent(
-          new CustomEvent("prefill-category", { detail: extracted })
+          new CustomEvent("prefill-category", { detail: extracted }),
         );
       }
     } else {
@@ -108,7 +112,7 @@ export default function ReportForm() {
       const exists = await checkCategoryExists(name.trim());
       if (exists) {
         setNewCategoryError(
-          "This category already exists. Please select it from the list."
+          "This category already exists. Please select it from the list.",
         );
       } else {
         setNewCategoryError("");
@@ -141,7 +145,7 @@ export default function ReportForm() {
           finalCategoryIds.push(newCategory.id);
         } catch {
           throw new Error(
-            "This category already exists. Please select it from the list or choose a different name."
+            "This category already exists. Please select it from the list or choose a different name.",
           );
         }
       }
@@ -172,6 +176,9 @@ export default function ReportForm() {
       setSelectedCategories([]);
       setShowNewCategory(false);
       setNewCategoryError("");
+      navigate(PATHS.INDEX, {
+        state: { filter: "mine" },
+      });
     },
     onError: (error: any) => {
       setMessage(error?.message || "Error creating report. Please try again.");
@@ -211,13 +218,21 @@ export default function ReportForm() {
         validationSchema={validationSchema}
         onSubmit={(values) => mutation.mutate(values)}
       >
-        {({ values, handleChange, handleBlur, errors, touched, setFieldValue }) => {
+        {({
+          values,
+          handleChange,
+          handleBlur,
+          errors,
+          touched,
+          setFieldValue,
+        }) => {
           useEffect(() => {
             const handler = (e: Event) => {
               setFieldValue("newCategoryName", (e as CustomEvent).detail);
             };
             window.addEventListener("prefill-category", handler);
-            return () => window.removeEventListener("prefill-category", handler);
+            return () =>
+              window.removeEventListener("prefill-category", handler);
           }, [setFieldValue]);
 
           return (
@@ -308,12 +323,12 @@ export default function ReportForm() {
                     const filtered = options.filter(
                       (opt) =>
                         opt.id !== "other" &&
-                        opt.name.toLowerCase().includes(trimmed)
+                        opt.name.toLowerCase().includes(trimmed),
                     );
                     if (
                       trimmed.length > 0 &&
                       !categoryOptions.some(
-                        (cat) => cat.name.toLowerCase() === trimmed
+                        (cat) => cat.name.toLowerCase() === trimmed,
                       )
                     ) {
                       return [
