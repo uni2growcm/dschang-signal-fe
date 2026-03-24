@@ -3,9 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import ReportCard from "../../components/report/ReportCard";
 import PaginationControls from "../../components/pagination/PaginationControls";
-import { isAuth } from "../../utils/utils";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
+import { isAuth } from "../../utils/utils";
 import {
   useAuthenticatedUserReports,
   usePublicReports,
@@ -25,34 +25,44 @@ export default function Home() {
   const [filter, setFilter] = useState<FilterType>(
     location.state?.filter || "public",
   );
+  const [authenticated, setAuthenticated] = useState<boolean>(isAuth());
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAuthenticated(isAuth());
+    };
+    globalThis.addEventListener("storage", handleStorageChange);
+    return () => globalThis.removeEventListener("storage", handleStorageChange);
+  }, []);
   const {
     data: myReportsData,
     isLoading: privateLoading,
     isError: privateError,
   } = useAuthenticatedUserReports(page);
+  const { t } = useTranslation();
 
   const {
     data: publicReportsData,
     isLoading: publicLoading,
     isError: publicError,
   } = usePublicReports(page);
-  const { t } = useTranslation();
+
   const isLoading = privateLoading || publicLoading;
   const hasError = privateError || publicError;
 
   const displayedReports = useMemo(() => {
-    if (!isAuth()) return publicReportsData?.reports ?? [];
+    if (!authenticated) return publicReportsData?.reports ?? [];
     return filter === "mine"
       ? (myReportsData?.reports ?? [])
       : (publicReportsData?.reports ?? []);
-  }, [filter, myReportsData, publicReportsData]);
+  }, [filter, myReportsData, publicReportsData, authenticated]);
 
   const totalPages = useMemo(() => {
-    if (!isAuth()) return publicReportsData?.totalPages ?? 0;
+    if (!authenticated) return publicReportsData?.totalPages ?? 0;
     return filter === "mine"
       ? (myReportsData?.totalPages ?? 0)
       : (publicReportsData?.totalPages ?? 0);
-  }, [filter, myReportsData, publicReportsData]);
+  }, [filter, myReportsData, publicReportsData, authenticated]);
 
   const handleFilterChange = (newFilter: FilterType) => {
     setFilter(newFilter);
@@ -92,7 +102,7 @@ export default function Home() {
       />
       <Grow in timeout={1000}>
         <div className="container flex flex-col gap-5 my-10 max-lg:px-5">
-          {isAuth() && (
+          {authenticated && (
             <div className="flex justify-between items-center">
               <div className="flex gap-2 bg-white rounded-full shadow-sm p-1 border border-gray-200">
                 <button

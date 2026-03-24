@@ -1,4 +1,4 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import axios from "axios";
 import { Form, Formik } from "formik";
 import { useState } from "react";
@@ -16,6 +16,7 @@ interface RegisterFormValues {
   email: string;
   fullName: string;
   password: string;
+  confirmPassword: string;
 }
 
 export default function RegisterForm() {
@@ -51,7 +52,7 @@ export default function RegisterForm() {
 
   return (
     <Formik
-      initialValues={{ email: "", fullName: "", password: "" }}
+      initialValues={{ email: "", fullName: "", password: "", confirmPassword: ""}}
       validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
@@ -113,7 +114,7 @@ export default function RegisterForm() {
                 helperText={touched.fullName && errors.fullName}
               />
 
-              <TextField
+              <FormTextField
                 label={t("register.email")}
                 name="email"
                 type="email"
@@ -124,7 +125,7 @@ export default function RegisterForm() {
                 helperText={touched.email && errors.email}
               />
 
-              <TextField
+              <FormTextField
                 label={t("register.password")}
                 name="password"
                 type="password"
@@ -133,6 +134,17 @@ export default function RegisterForm() {
                 onBlur={handleBlur}
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
+              />
+
+              <FormTextField
+                label={t('register.confirmPassword')}
+                name="confirmPassword"
+                type="password"
+                value={values.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                helperText={touched.confirmPassword && errors.confirmPassword}
               />
             </div>
 
