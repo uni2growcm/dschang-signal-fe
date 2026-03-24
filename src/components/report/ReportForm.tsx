@@ -11,7 +11,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MdCloudUpload } from "react-icons/md";
+import { PATHS } from "../../routes/PATHS";
 import * as Yup from "yup";
 import {
   checkCategoryExists,
@@ -23,6 +23,8 @@ import {
 import FormTextField from "../forms/shared/FormTextField";
 import SnackBar from "../snackBar/SnackBar";
 import styles from "./ReportForm.module.css";
+import { MdCloudUpload } from "react-icons/md";
+import { useNavigate } from "react-router";
 
 interface CategoryOption {
   id: number | string;
@@ -35,7 +37,6 @@ interface ReportFormValues {
   locationText: string;
   newCategoryName: string;
 }
-
 export default function ReportForm() {
   const [medias, setMedias] = useState<File[]>([]);
   const [preview, setPreview] = useState<string[]>([]);
@@ -68,6 +69,7 @@ export default function ReportForm() {
       .max(50, t("reportForm.categoryNameMax")),
   });
 
+  const navigate = useNavigate();
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -174,6 +176,9 @@ export default function ReportForm() {
       setSelectedCategories([]);
       setShowNewCategory(false);
       setNewCategoryError("");
+      navigate(PATHS.INDEX, {
+        state: { filter: "mine" },
+      });
     },
     onError: (error: any) => {
       setMessage(error?.message || t("reportForm.error"));
