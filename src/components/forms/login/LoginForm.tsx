@@ -4,7 +4,6 @@ import {
   Divider,
   FormControlLabel,
   Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
@@ -134,7 +133,7 @@ export default function LoginForm() {
                 helperText={touched.email && errors.email}
               />
 
-              <TextField
+              <FormTextField
                 label={t("login.password")}
                 name="password"
                 type="password"

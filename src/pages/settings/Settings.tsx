@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { DangerZoneSection } from "../../components/settings/contentSettings/DangerZoneSection";
 import { GeneralSection } from "../../components/settings/contentSettings/GeneralSection";
 import { ModerationSection } from "../../components/settings/contentSettings/ModerationSection";

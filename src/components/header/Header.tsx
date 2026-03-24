@@ -9,12 +9,12 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
 import { MdClose, MdLogout, MdMenu } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import { authApi } from "../../services";
 import { useMe } from "../../services/user";
@@ -27,7 +27,11 @@ import HeaderLink from "./HeaderLink";
 
 export default function Header() {
   const { t } = useTranslation();
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN),
+  );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -47,7 +51,10 @@ export default function Header() {
     },
     onSuccess: () => {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
-      window.location.href = PATHS.INDEX;
+      globalThis.dispatchEvent(new Event("storage"));
+      setToken(null);
+      queryClient.clear();
+      navigate(PATHS.INDEX);
     },
     onError: (error) => {
       console.error("Logout failed:", error);
