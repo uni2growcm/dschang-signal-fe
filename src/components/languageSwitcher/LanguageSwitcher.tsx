@@ -15,7 +15,7 @@ const LanguageSwitcher = () => {
   };
 
   return (
-    <FormControl size="small" variant="outlined" sx={{ minWidth: 100 }}>
+    <FormControl size="small" variant="outlined" sx={{ minWidth: 60 }}>
       <Select
         variant="outlined"
         value={i18n.language}
