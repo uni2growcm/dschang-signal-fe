@@ -1,26 +1,26 @@
 import {
+  Autocomplete,
   Box,
   Button,
-  Typography,
-  CircularProgress,
   Chip,
-  Autocomplete,
+  CircularProgress,
   TextField,
+  Typography,
 } from "@mui/material";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import FormTextField from "../forms/shared/FormTextField";
-import SnackBar from "../snackBar/SnackBar";
+import { useTranslation } from "react-i18next";
 import { PATHS } from "../../routes/PATHS";
 import {
-  createReport,
-  uploadMedia,
-  getCategories,
-  createCategory,
   checkCategoryExists,
+  createCategory,
+  createReport,
+  getCategories,
+  uploadMedia,
 } from "../../services";
+import FormTextField from "../forms/shared/FormTextField";
+import SnackBar from "../snackBar/SnackBar";
 import styles from "./ReportForm.module.css";
 import { MdCloudUpload } from "react-icons/md";
 import { useNavigate } from "react-router";
@@ -65,6 +65,27 @@ export default function ReportForm() {
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
+  const { t } = useTranslation();
+
+  const OTHER_OPTION = {
+    id: "other" as const,
+    name: t("reportForm.addCategory"),
+  };
+
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, t("reportForm.titleMin"))
+      .max(150, t("reportForm.titleMax"))
+      .required(t("reportForm.titleRequired")),
+    description: Yup.string()
+      .min(10, t("reportForm.descriptionMin"))
+      .required(t("reportForm.descriptionRequired")),
+    locationText: Yup.string().required(t("reportForm.locationRequired")),
+    newCategoryName: Yup.string()
+      .min(2, t("reportForm.categoryNameMin"))
+      .max(50, t("reportForm.categoryNameMax")),
+  });
+
   const navigate = useNavigate();
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -111,9 +132,7 @@ export default function ReportForm() {
     try {
       const exists = await checkCategoryExists(name.trim());
       if (exists) {
-        setNewCategoryError(
-          "This category already exists. Please select it from the list.",
-        );
+        setNewCategoryError(t("reportForm.categoryExists"));
       } else {
         setNewCategoryError("");
       }
@@ -144,9 +163,7 @@ export default function ReportForm() {
           const newCategory = await createCategory(values.newCategoryName);
           finalCategoryIds.push(newCategory.id);
         } catch {
-          throw new Error(
-            "This category already exists. Please select it from the list or choose a different name.",
-          );
+          throw new Error(t("reportForm.categoryExistsFull"));
         }
       }
 
@@ -169,7 +186,7 @@ export default function ReportForm() {
       return report;
     },
     onSuccess: () => {
-      setMessage("Report created successfully!");
+      setMessage(t("reportForm.success"));
       setIsError(false);
       setMedias([]);
       setPreview([]);
@@ -181,7 +198,7 @@ export default function ReportForm() {
       });
     },
     onError: (error: any) => {
-      setMessage(error?.message || "Error creating report. Please try again.");
+      setMessage(error?.message || t("reportForm.error"));
       setIsError(true);
     },
   });
@@ -203,8 +220,9 @@ export default function ReportForm() {
     <div className={styles.formWrapper}>
       <div className={styles.formHeader}>
         <Typography variant="body2" color="#666">
-          Describe the issue you observed in your area.{" "}
-          <span style={{ color: "#e53935" }}>*</span> Required fields
+          {t("reportForm.headerDescription")}{" "}
+          <span style={{ color: "#e53935" }}>*</span>{" "}
+          {`${t("reportForm.requiredFields")} *`}
         </Typography>
       </div>
 
@@ -239,7 +257,7 @@ export default function ReportForm() {
             <Form>
               <div className={styles.formInputs}>
                 <FormTextField
-                  label="Title *"
+                  label={`${t("reportForm.title")} *`}
                   name="title"
                   value={values.title}
                   onChange={handleChange}
@@ -249,7 +267,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Description *"
+                  label={`${t("reportForm.description")} *`}
                   name="description"
                   value={values.description}
                   onChange={handleChange}
@@ -261,7 +279,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label="Location *"
+                  label={`${t("reportForm.location")} *`}
                   name="locationText"
                   value={values.locationText}
                   onChange={handleChange}
@@ -273,7 +291,7 @@ export default function ReportForm() {
                 {allSelected.length > 0 && (
                   <div className={styles.selectedCategories}>
                     <Typography variant="caption" color="#999">
-                      Selected categories
+                      {t("reportForm.selectedCategories")}
                     </Typography>
                     <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
                       {allSelected.map((cat) => (
@@ -356,7 +374,7 @@ export default function ReportForm() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Category (optional)"
+                      label={t("reportForm.categoryOptional")}
                       error={Boolean(categoryError)}
                       helperText={categoryError}
                       sx={{
@@ -375,7 +393,7 @@ export default function ReportForm() {
                   <Box display="flex" gap={1} alignItems="flex-start">
                     <Box flex={1}>
                       <FormTextField
-                        label="New category name *"
+                        label={`${t("reportForm.newCategory")} *`}
                         name="newCategoryName"
                         value={values.newCategoryName}
                         onChange={handleChange}
@@ -410,9 +428,11 @@ export default function ReportForm() {
 
                 <Box>
                   <Typography variant="body2" color="#666" mb={1}>
-                    Attach photos or videos{" "}
+                    {" "}
+                    {t("reportForm.attachMedia")}{" "}
                     <span style={{ color: "#999", fontSize: 12 }}>
-                      (optional)
+                      {" "}
+                      ({t("reportForm.optional")})
                     </span>
                   </Typography>
                   <label className={styles.uploadZone}>
@@ -425,7 +445,8 @@ export default function ReportForm() {
                     />
                     <MdCloudUpload size={28} color="#7c4dff" />
                     <Typography variant="body2" color="#7c4dff" mt={0.5}>
-                      Click to select files
+                      {" "}
+                      {t("reportForm.selectFiles")}
                     </Typography>
                   </label>
                 </Box>
@@ -474,7 +495,7 @@ export default function ReportForm() {
                   {mutation.isPending ? (
                     <CircularProgress size={20} color="inherit" />
                   ) : (
-                    "Submit Report"
+                    t("reportForm.submit")
                   )}
                 </Button>
               </div>

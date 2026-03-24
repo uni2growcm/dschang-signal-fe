@@ -1,24 +1,34 @@
-import { useParams, Navigate, useNavigate } from "react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  CircularProgress, Typography, Autocomplete,
-  TextField, Chip, Box, Button,
+  Autocomplete,
+  Box,
+  Chip,
+  CircularProgress,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import {
+  useMutation,
+  useQuery,
+  useQuery as useQueryCategories,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { Form, Formik } from "formik";
 import { useState } from "react";
-import Header from "../../components/header/Header";
+import { useTranslation } from "react-i18next";
+import { MdCloudUpload } from "react-icons/md";
+import { Link, Navigate, useNavigate, useParams } from "react-router";
+import * as Yup from "yup";
 import FormTextField from "../../components/forms/shared/FormTextField";
 import SnackBar from "../../components/snackBar/SnackBar";
-import { Link } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import {
-  getReportById, updateReport, uploadMedia,
-  deleteMedia, getCategories,
+  deleteMedia,
+  getCategories,
+  getReportById,
+  updateReport,
+  uploadMedia,
 } from "../../services";
 import { useMe } from "../../services/user";
-import { useQuery as useQueryCategories } from "@tanstack/react-query";
-import { MdCloudUpload } from "react-icons/md";
 import styles from "./CreateReportPage.module.css";
 
 interface CategoryOption {
@@ -26,23 +36,28 @@ interface CategoryOption {
   name: string;
 }
 
-const validationSchema = Yup.object({
-  title: Yup.string()
-    .min(3, "Title must be at least 3 characters")
-    .max(150, "Title must be at most 150 characters")
-    .required("Title is required"),
-  description: Yup.string()
-    .min(10, "Description must be at least 10 characters")
-    .required("Description is required"),
-  locationText: Yup.string().required("Location is required"),
-});
-
 export default function EditReportPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: report, isLoading, isError } = useQuery({
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, t("reportForm.titleMin"))
+      .max(150, t("reportForm.titleMax"))
+      .required(t("reportForm.titleRequired")),
+    description: Yup.string()
+      .min(10, t("reportForm.descriptionMin"))
+      .required(t("reportForm.descriptionRequired")),
+    locationText: Yup.string().required(t("reportForm.locationRequired")),
+  });
+
+  const {
+    data: report,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["report", id],
     queryFn: () => getReportById(Number(id)),
     enabled: !!id,
@@ -56,11 +71,14 @@ export default function EditReportPage() {
   });
 
   const categoryOptions: CategoryOption[] = (allCategories as any[]).map(
-    (cat: any) => ({ id: cat.id, name: cat.name })
+    (cat: any) => ({ id: cat.id, name: cat.name }),
   );
 
-  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>(() =>
-    report?.categories?.map((c: any) => ({ id: c.id, name: c.name })) ?? []
+  const [selectedCategories, setSelectedCategories] = useState<
+    CategoryOption[]
+  >(
+    () =>
+      report?.categories?.map((c: any) => ({ id: c.id, name: c.name })) ?? [],
   );
 
   const [newMediaFiles, setNewMediaFiles] = useState<File[]>([]);
@@ -68,9 +86,10 @@ export default function EditReportPage() {
   const [deletingMediaId, setDeletingMediaId] = useState<number | null>(null);
 
   const isOwner = currentUser?.id === report?.createdBy?.id;
-  const canEdit = isOwner
-    && report?.moderationStatus === "PENDING_REVIEW"
-    && report?.reportStatus === "PENDING";
+  const canEdit =
+    isOwner &&
+    report?.moderationStatus === "PENDING_REVIEW" &&
+    report?.reportStatus === "PENDING";
 
   const deleteMediaMutation = useMutation({
     mutationFn: (mediaId: number) => deleteMedia(mediaId),
@@ -81,20 +100,25 @@ export default function EditReportPage() {
   });
 
   const mutation = useMutation({
-    mutationFn: async (values: { title: string; description: string; locationText: string }) => {
-      
+    mutationFn: async (values: {
+      title: string;
+      description: string;
+      locationText: string;
+    }) => {
       await updateReport(Number(id), {
         ...values,
         categoryIds: selectedCategories.map((c) => Number(c.id)),
       });
-     
+
       for (const file of newMediaFiles) {
         await uploadMedia(Number(id), file);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["report", id] });
-      queryClient.invalidateQueries({ queryKey: ["getAuthenticatedUserReports"] });
+      queryClient.invalidateQueries({
+        queryKey: ["getAuthenticatedUserReports"],
+      });
       navigate(PATHS.REPORT_DETAILS.replace(":id", String(id)));
     },
   });
@@ -115,7 +139,6 @@ export default function EditReportPage() {
   if (isLoading) {
     return (
       <div className={styles.pageContainer}>
-        <Header />
         <div className="flex justify-center items-center flex-1 mt-20">
           <CircularProgress />
         </div>
@@ -124,11 +147,13 @@ export default function EditReportPage() {
   }
 
   if (isError || !report) return <Navigate to="/not-found" replace />;
-  if (!canEdit) return <Navigate to={PATHS.REPORT_DETAILS.replace(":id", String(id))} replace />;
+  if (!canEdit)
+    return (
+      <Navigate to={PATHS.REPORT_DETAILS.replace(":id", String(id))} replace />
+    );
 
   return (
     <div className={styles.pageContainer}>
-      <Header />
       <div className={styles.contentWrapper}>
         <Link
           to={PATHS.REPORT_DETAILS.replace(":id", String(id))}
@@ -138,10 +163,20 @@ export default function EditReportPage() {
         </Link>
 
         <div className={styles.pageHeader}>
-          <Typography sx={{ fontSize: 28, fontWeight: 700, color: "#1a1a2e", textAlign: "center" }}>
+          <Typography
+            sx={{
+              fontSize: 28,
+              fontWeight: 700,
+              color: "#1a1a2e",
+              textAlign: "center",
+            }}
+          >
             Edit Report
           </Typography>
-          <Typography variant="body2" sx={{ color: "#666", mt: 0.5, textAlign: "center" }}>
+          <Typography
+            variant="body2"
+            sx={{ color: "#666", mt: 0.5, textAlign: "center" }}
+          >
             Update your report details
           </Typography>
         </div>
@@ -157,8 +192,6 @@ export default function EditReportPage() {
         >
           {({ values, handleChange, handleBlur, errors, touched }) => (
             <Form className="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-md">
-
-             
               <FormTextField
                 label="Title *"
                 name="title"
@@ -189,7 +222,6 @@ export default function EditReportPage() {
                 helperText={touched.locationText && errors.locationText}
               />
 
-             
               <Autocomplete
                 multiple
                 options={categoryOptions}
@@ -204,7 +236,11 @@ export default function EditReportPage() {
                       size="small"
                       {...getTagProps({ index })}
                       key={option.id}
-                      sx={{ backgroundColor: "#f3eeff", color: "#7c4dff", border: "1px solid #e0d7ff" }}
+                      sx={{
+                        backgroundColor: "#f3eeff",
+                        color: "#7c4dff",
+                        border: "1px solid #e0d7ff",
+                      }}
                     />
                   ))
                 }
@@ -222,12 +258,14 @@ export default function EditReportPage() {
                 )}
               />
 
-              
               {report.medias?.length > 0 && (
                 <Box>
                   <Typography variant="body2" color="#666" mb={1}>
                     Existing media
-                    <span style={{ color: "#999", fontSize: 12 }}> (click ✕ to remove)</span>
+                    <span style={{ color: "#999", fontSize: 12 }}>
+                      {" "}
+                      (click ✕ to remove)
+                    </span>
                   </Typography>
                   <Box display="flex" gap={1} flexWrap="wrap">
                     {report.medias.map((media: any) => {
@@ -238,15 +276,27 @@ export default function EditReportPage() {
                             <img
                               src={fullUrl}
                               alt="media"
-                              style={{ width: 100, height: 100, objectFit: "cover", borderRadius: 8 }}
+                              style={{
+                                width: 100,
+                                height: 100,
+                                objectFit: "cover",
+                                borderRadius: 8,
+                              }}
                             />
                           ) : (
                             <Box
                               sx={{
-                                width: 100, height: 100, borderRadius: 1,
-                                bgcolor: "#f3eeff", display: "flex",
-                                alignItems: "center", justifyContent: "center",
-                                fontSize: 12, color: "#7c4dff", p: 1, textAlign: "center"
+                                width: 100,
+                                height: 100,
+                                borderRadius: 1,
+                                bgcolor: "#f3eeff",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 12,
+                                color: "#7c4dff",
+                                p: 1,
+                                textAlign: "center",
                               }}
                             >
                               📄 {media.originalName ?? "file"}
@@ -260,9 +310,13 @@ export default function EditReportPage() {
                               deleteMediaMutation.mutate(media.id);
                             }}
                             sx={{
-                              position: "absolute", top: -8, right: -8,
-                              cursor: "pointer", backgroundColor: "#e53935",
-                              color: "white", fontWeight: 700,
+                              position: "absolute",
+                              top: -8,
+                              right: -8,
+                              cursor: "pointer",
+                              backgroundColor: "#e53935",
+                              color: "white",
+                              fontWeight: 700,
                               "& .MuiChip-label": { px: 1 },
                             }}
                           />
@@ -273,20 +327,31 @@ export default function EditReportPage() {
                 </Box>
               )}
 
-             
               <Box>
                 <Typography variant="body2" color="#666" mb={1}>
                   Add new media
-                  <span style={{ color: "#999", fontSize: 12 }}> (optional)</span>
+                  <span style={{ color: "#999", fontSize: 12 }}>
+                    {" "}
+                    (optional)
+                  </span>
                 </Typography>
-                <label style={{
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  justifyContent: "center", border: "2px dashed #c0a9f5",
-                  borderRadius: 8, padding: "16px", cursor: "pointer",
-                  backgroundColor: "#faf7ff",
-                }}>
+                <label
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "2px dashed #c0a9f5",
+                    borderRadius: 8,
+                    padding: "16px",
+                    cursor: "pointer",
+                    backgroundColor: "#faf7ff",
+                  }}
+                >
                   <input
-                    type="file" multiple accept="image/*,video/*"
+                    type="file"
+                    multiple
+                    accept="image/*,video/*"
                     onChange={handleNewMediaChange}
                     style={{ display: "none" }}
                   />
@@ -304,15 +369,29 @@ export default function EditReportPage() {
                           <img
                             src={newMediaPreviews[i]}
                             alt={file.name}
-                            style={{ width: 100, height: 100, objectFit: "cover", borderRadius: 8 }}
+                            style={{
+                              width: 100,
+                              height: 100,
+                              objectFit: "cover",
+                              borderRadius: 8,
+                            }}
                           />
                         ) : (
-                          <Box sx={{
-                            width: 100, height: 100, borderRadius: 1,
-                            bgcolor: "#f3eeff", display: "flex",
-                            alignItems: "center", justifyContent: "center",
-                            fontSize: 12, color: "#7c4dff", p: 1, textAlign: "center"
-                          }}>
+                          <Box
+                            sx={{
+                              width: 100,
+                              height: 100,
+                              borderRadius: 1,
+                              bgcolor: "#f3eeff",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 12,
+                              color: "#7c4dff",
+                              p: 1,
+                              textAlign: "center",
+                            }}
+                          >
                             📄 {file.name}
                           </Box>
                         )}
@@ -321,9 +400,13 @@ export default function EditReportPage() {
                           size="small"
                           onClick={() => removeNewMedia(i)}
                           sx={{
-                            position: "absolute", top: -8, right: -8,
-                            cursor: "pointer", backgroundColor: "#e53935",
-                            color: "white", fontWeight: 700,
+                            position: "absolute",
+                            top: -8,
+                            right: -8,
+                            cursor: "pointer",
+                            backgroundColor: "#e53935",
+                            color: "white",
+                            fontWeight: 700,
                             "& .MuiChip-label": { px: 1 },
                           }}
                         />
@@ -335,7 +418,8 @@ export default function EditReportPage() {
 
               {mutation.isError && (
                 <p className="text-red-500 text-sm text-center">
-                  {(mutation.error as Error)?.message || "Failed to update report"}
+                  {(mutation.error as Error)?.message ||
+                    "Failed to update report"}
                 </p>
               )}
 
