@@ -81,3 +81,18 @@ export const useCategories = (filters: CategoriesFilters = {}) => {
   });
 };
 
+export const useAllReports = (page: number) =>{
+  return useQuery<PaginatedReports>({
+    queryKey: ['getAllReports', page],
+    queryFn: () =>
+      reportApi
+        .getAllReportsRaw({page: page -1, size: PAGE_SIZE})
+        .then(async (raw) =>{
+          const reports = await raw.value()
+          const totalCount = Number(raw.raw.headers.get('X-Total-Count') ?? 0)
+          const totalPages = Math.ceil(totalCount/PAGE_SIZE)
+          return {reports, totalCount, totalPages}
+        })
+  })
+}
+
