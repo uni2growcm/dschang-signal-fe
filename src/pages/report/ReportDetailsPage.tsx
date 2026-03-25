@@ -14,6 +14,7 @@ import { PATHS } from "../../routes/PATHS";
 import { deleteReport, getReportById } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
+import { ReportModerationStatusEnum, type Report } from "../../api";
 
 export default function ReportDetailsPage() {
   const { t } = useTranslation();
@@ -64,8 +65,8 @@ export default function ReportDetailsPage() {
   }
 
   if (isError || !report) {
-  return <Navigate to={PATHS.NOT_FOUND} replace />;
-}
+    return <Navigate to={PATHS.NOT_FOUND} replace />;
+  }
 
   return (
     <div className={styles.pageContainer}>
@@ -171,6 +172,25 @@ export default function ReportDetailsPage() {
             <span>Moderation: {report.moderationStatus || "N/A"}</span>
             {report.createdBy && (
               <span>Reported by: {report.createdBy.fullName || "Unknown"}</span>
+            )}
+            {report.createdBy?.fullName == currentUser?.fullName && (
+              <div className="flex items-end flex-col gap-1">
+                {report.moderationStatus !=
+                  ReportModerationStatusEnum.PendingReview && (
+                  <span>
+                    Reviewed at:{" "}
+                    {report.reviewedAt
+                      ? new Date(report.reviewedAt).toLocaleString()
+                      : "N/A"}
+                  </span>
+                )}
+                {report.moderationStatus ==
+                  ReportModerationStatusEnum.Rejected && (
+                  <span>
+                    Rejection reason: {report.rejectionReason || "N/A"}
+                  </span>
+                )}
+              </div>
             )}
           </div>
           <div className={styles.categories}>
