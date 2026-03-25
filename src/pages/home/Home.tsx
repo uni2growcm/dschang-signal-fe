@@ -13,6 +13,7 @@ import {
   usePublicReports,
 } from "../../services/report";
 import { isAuth } from "../../utils/utils";
+import { IoMdClose } from "react-icons/io";
 
 type FilterType = "public" | "mine";
 type ReportStatus = "PENDING" | "IN_PROGRESS" | "RESOLVED";
@@ -48,8 +49,8 @@ const formatModerationStatus = (status: ModerationStatus) =>
 const getCategoryTranslationKey = (categoryName: string) => {
   const normalized = categoryName
     .trim()
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/[_-]+/g, " ")
+    .replaceAll(/\s+/g, " ")
     .toLowerCase();
 
   const words = normalized.split(" ");
@@ -134,7 +135,9 @@ export default function Home() {
     return sourceReports.filter((report) => {
       const matchesCategory =
         selectedCategory === "" ||
-        report.categories?.some((category) => category.name === selectedCategory);
+        report.categories?.some(
+          (category) => category.name === selectedCategory,
+        );
       const matchesStatus =
         selectedStatus === "" || report.reportStatus === selectedStatus;
       const matchesModerationStatus =
@@ -143,7 +146,12 @@ export default function Home() {
 
       return matchesCategory && matchesStatus && matchesModerationStatus;
     });
-  }, [selectedCategory, selectedModerationStatus, selectedStatus, sourceReports]);
+  }, [
+    selectedCategory,
+    selectedModerationStatus,
+    selectedStatus,
+    sourceReports,
+  ]);
 
   const totalPages = useMemo(() => {
     if (!authenticated) {
@@ -182,14 +190,12 @@ export default function Home() {
     setShowError(false);
   }, [hasError]);
 
-  useEffect(() => {
-    if (
-      selectedCategory !== "" &&
-      !availableCategories.some((category) => category.name === selectedCategory)
-    ) {
-      setSelectedCategory("");
-    }
-  }, [availableCategories, selectedCategory]);
+  if (
+    selectedCategory !== "" &&
+    !availableCategories.some((category) => category.name === selectedCategory)
+  ) {
+    setSelectedCategory("");
+  }
 
   const handleFilterChange = (nextFilter: FilterType) => {
     setFilter(nextFilter);
@@ -262,7 +268,7 @@ export default function Home() {
         <div className="container my-10 flex flex-col gap-5 max-lg:px-5">
           {authenticated && (
             <div className="flex items-center justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
-              <div className="flex gap-2 rounded-full border border-gray-200 bg-white p-1 shadow-sm">
+              <div className="flex gap-2 rounded-full border border-gray-200 bg-white p-1 shadow-sm w-fit">
                 <button
                   type="button"
                   onClick={() => handleFilterChange("public")}
@@ -296,8 +302,8 @@ export default function Home() {
             </div>
           )}
 
-          <div className="flex flex-wrap items-end gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
-            <div className="flex min-w-[160px] flex-col gap-0.5">
+          <div className="flex flex-wrap gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm items-baseline-last">
+            <div className="flex min-w-40 flex-col gap-0.5">
               <label className="text-xs font-medium text-gray-400">
                 {t("home.category")}
               </label>
@@ -315,7 +321,7 @@ export default function Home() {
               </select>
             </div>
 
-            <div className="flex min-w-[140px] flex-col gap-0.5">
+            <div className="flex min-w-36 flex-col gap-0.5">
               <label className="text-xs font-medium text-gray-400">
                 {t("home.status")}
               </label>
@@ -334,7 +340,7 @@ export default function Home() {
             </div>
 
             {isAdmin && (
-              <div className="flex min-w-[180px] flex-col gap-0.5">
+              <div className="flex min-w-44 flex-col gap-0.5">
                 <label className="text-xs font-medium text-gray-400">
                   {t("home.moderationStatus")}
                 </label>
@@ -359,7 +365,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="text-xs font-medium text-primary transition-all hover:underline"
+                className="text-xs font-medium text-primary transition-all hover:underline hover:cursor-pointer"
               >
                 {t("home.clearFiltersAction")}
               </button>
@@ -373,9 +379,9 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setSelectedCategory("")}
-                      className="transition-colors hover:text-red-500"
+                      className="transition-colors hover:text-red-500 hover:cursor-pointer"
                     >
-                      x
+                      <IoMdClose />
                     </button>
                   </span>
                 )}
@@ -385,9 +391,9 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setSelectedStatus("")}
-                      className="transition-colors hover:text-red-500"
+                      className="transition-colors hover:text-red-500 hover:cursor-pointer"
                     >
-                      x
+                      <IoMdClose />
                     </button>
                   </span>
                 )}
@@ -399,9 +405,9 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setSelectedModerationStatus("")}
-                      className="transition-colors hover:text-red-500"
+                      className="transition-colors hover:text-red-500 hover:cursor-pointer"
                     >
-                      x
+                      <IoMdClose />
                     </button>
                   </span>
                 )}
@@ -423,7 +429,7 @@ export default function Home() {
                   onClick={handleClearFilters}
                   className="mt-1 text-sm text-primary hover:underline"
                 >
-                 {t("home.clearFilters")}
+                  {t("home.clearFilters")}
                 </button>
               )}
             </div>
@@ -433,7 +439,9 @@ export default function Home() {
             <PaginationControls
               page={page}
               totalPages={totalPages}
-              onNext={() => setPage((current) => Math.min(totalPages, current + 1))}
+              onNext={() =>
+                setPage((current) => Math.min(totalPages, current + 1))
+              }
               onPrev={() => setPage((current) => Math.max(1, current - 1))}
             />
           )}
