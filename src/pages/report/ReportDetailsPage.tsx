@@ -15,6 +15,20 @@ import { deleteReport, getReportById } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
 
+const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
+  status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
+
+const formatModerationStatus = (
+  status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+) =>
+  status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
+
 export default function ReportDetailsPage() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -66,6 +80,42 @@ export default function ReportDetailsPage() {
   if (isError || !report) {
   return <Navigate to={PATHS.NOT_FOUND} replace />;
 }
+
+  const getTranslatedStatusLabel = (status?: "PENDING" | "IN_PROGRESS" | "RESOLVED") => {
+    if (!status) {
+      return "UNKNOWN";
+    }
+
+    switch (status) {
+      case "PENDING":
+        return t("home.statusPending");
+      case "IN_PROGRESS":
+        return t("home.statusInProgress");
+      case "RESOLVED":
+        return t("home.statusResolved");
+      default:
+        return formatStatus(status);
+    }
+  };
+
+  const getTranslatedModerationStatusLabel = (
+    status?: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+  ) => {
+    if (!status) {
+      return "N/A";
+    }
+
+    switch (status) {
+      case "PENDING_REVIEW":
+        return t("home.moderationPendingReview");
+      case "ACCEPTED":
+        return t("home.moderationAccepted");
+      case "REJECTED":
+        return t("home.moderationRejected");
+      default:
+        return formatModerationStatus(status);
+    }
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -158,7 +208,7 @@ export default function ReportDetailsPage() {
                     : styles.resolved
               }`}
             >
-              {report.reportStatus || "UNKNOWN"}
+              {getTranslatedStatusLabel(report.reportStatus)}
             </span>
           </div>
           <p className={styles.description}>
@@ -169,7 +219,7 @@ export default function ReportDetailsPage() {
               Created at:{" "}
               {report.createdAt ? new Date(report.createdAt).toLocaleString() : "N/A"}
             </span>
-            <span>Moderation: {report.moderationStatus || "N/A"}</span>
+            <span>Moderation: {getTranslatedModerationStatusLabel(report.moderationStatus)}</span>
             {report.createdBy && (
               <span>Reported by: {report.createdBy.fullName || "Unknown"}</span>
             )}

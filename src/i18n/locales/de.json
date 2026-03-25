@@ -146,7 +146,22 @@
     "filterPublic": "Öffentlich",
     "filterMine": "Meine Berichte",
     "createReport": "Bericht erstellen",
-    "noReports": "Keine Berichte gefunden"
+    "noReports": "Keine Berichte gefunden",
+    "noReports_View":"Keine Berichte für diese Ansicht gefunden.",
+    "clearFilters": "Filter zurücksetzen, um alle Berichte zu sehen",
+    "clearFiltersAction": "Filter löschen",
+    "allStatuses": "Alle Status",
+    "allModerationStatuses": "Alle Moderationsstatus",
+    "allCategories": "Alle Kategorien",
+    "category": "Kategorie",
+    "status": "Status",
+    "moderationStatus": "Moderationsstatus",
+    "statusPending": "Ausstehend",
+    "statusInProgress": "In Bearbeitung",
+    "statusResolved": "Gelöst",
+    "moderationPendingReview": "Wartet auf Prüfung",
+    "moderationAccepted": "Akzeptiert",
+    "moderationRejected": "Abgelehnt"
   },
   "settings": {
     "backHome": "← Zurück zur Startseite",

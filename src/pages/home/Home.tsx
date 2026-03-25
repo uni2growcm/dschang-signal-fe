@@ -2,6 +2,7 @@ import { Backdrop, CircularProgress, Grow } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
+import { useMe } from "../../services/user";
 import PaginationControls from "../../components/pagination/PaginationControls";
 import ReportCard from "../../components/report/ReportCard";
 import SnackBar from "../../components/snackBar/SnackBar";
@@ -15,6 +16,7 @@ import { isAuth } from "../../utils/utils";
 
 type FilterType = "public" | "mine";
 type ReportStatus = "PENDING" | "IN_PROGRESS" | "RESOLVED";
+type ModerationStatus = "PENDING_REVIEW" | "ACCEPTED" | "REJECTED";
 type CategoryOption = {
   id: number;
   name: string;
@@ -24,6 +26,11 @@ type HomeLocationState = {
 };
 
 const REPORT_STATUSES: ReportStatus[] = ["PENDING", "IN_PROGRESS", "RESOLVED"];
+const MODERATION_STATUSES: ModerationStatus[] = [
+  "PENDING_REVIEW",
+  "ACCEPTED",
+  "REJECTED",
+];
 const PAGE_SIZE = 10;
 
 const formatStatus = (status: ReportStatus) =>
@@ -32,19 +39,44 @@ const formatStatus = (status: ReportStatus) =>
     .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
     .join(" ");
 
+const formatModerationStatus = (status: ModerationStatus) =>
+  status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
+
+const getCategoryTranslationKey = (categoryName: string) => {
+  const normalized = categoryName
+    .trim()
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
+  const words = normalized.split(" ");
+
+  return words
+    .map((word, index) =>
+      index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
+    )
+    .join("");
+};
+
 export default function Home() {
   const { t } = useTranslation();
   const location = useLocation() as { state?: HomeLocationState };
   const [page, setPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedModerationStatus, setSelectedModerationStatus] = useState("");
   const [filter, setFilter] = useState<FilterType>(
     location.state?.filter || "public",
   );
   const [authenticated, setAuthenticated] = useState<boolean>(isAuth());
   const [showError, setShowError] = useState(false);
+  const { data: currentUser } = useMe();
+  const isAdmin = currentUser?.role === "ADMIN";
 
-  const { data: categories = [] } = useCategories();
+  const { data: categories = [] } = useCategories({ enabled: isAdmin });
   const {
     data: myReportsData,
     isLoading: privateLoading,
@@ -65,8 +97,6 @@ export default function Home() {
     return () => globalThis.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const isPublicView = !authenticated || filter === "public";
-
   const sourceReports = useMemo(() => {
     if (!authenticated) {
       return publicReportsData?.reports ?? [];
@@ -77,6 +107,29 @@ export default function Home() {
       : (publicReportsData?.reports ?? []);
   }, [authenticated, filter, myReportsData, publicReportsData]);
 
+  const availableCategories = useMemo<CategoryOption[]>(() => {
+    if (isAdmin) {
+      return categories as CategoryOption[];
+    }
+
+    const categoryMap = new Map<string, CategoryOption>();
+
+    sourceReports.forEach((report) => {
+      report.categories?.forEach((category) => {
+        if (typeof category.id === "number" && category.name) {
+          categoryMap.set(category.name, {
+            id: category.id,
+            name: category.name,
+          });
+        }
+      });
+    });
+
+    return Array.from(categoryMap.values()).sort((first, second) =>
+      first.name.localeCompare(second.name),
+    );
+  }, [categories, isAdmin, sourceReports]);
+
   const displayedReports = useMemo(() => {
     return sourceReports.filter((report) => {
       const matchesCategory =
@@ -84,10 +137,13 @@ export default function Home() {
         report.categories?.some((category) => category.name === selectedCategory);
       const matchesStatus =
         selectedStatus === "" || report.reportStatus === selectedStatus;
+      const matchesModerationStatus =
+        selectedModerationStatus === "" ||
+        report.moderationStatus === selectedModerationStatus;
 
-      return matchesCategory && matchesStatus;
+      return matchesCategory && matchesStatus && matchesModerationStatus;
     });
-  }, [selectedCategory, selectedStatus, sourceReports]);
+  }, [selectedCategory, selectedModerationStatus, selectedStatus, sourceReports]);
 
   const totalPages = useMemo(() => {
     if (!authenticated) {
@@ -111,7 +167,10 @@ export default function Home() {
       : publicError
     : publicError;
 
-  const hasActiveFilters = selectedCategory !== "" || selectedStatus !== "";
+  const hasActiveFilters =
+    selectedCategory !== "" ||
+    selectedStatus !== "" ||
+    selectedModerationStatus !== "";
 
   useEffect(() => {
     if (hasError) {
@@ -123,6 +182,15 @@ export default function Home() {
     setShowError(false);
   }, [hasError]);
 
+  useEffect(() => {
+    if (
+      selectedCategory !== "" &&
+      !availableCategories.some((category) => category.name === selectedCategory)
+    ) {
+      setSelectedCategory("");
+    }
+  }, [availableCategories, selectedCategory]);
+
   const handleFilterChange = (nextFilter: FilterType) => {
     setFilter(nextFilter);
     setPage(1);
@@ -131,6 +199,38 @@ export default function Home() {
   const handleClearFilters = () => {
     setSelectedCategory("");
     setSelectedStatus("");
+    setSelectedModerationStatus("");
+  };
+
+  const getTranslatedCategoryLabel = (categoryName: string) =>
+    t(`categories.${getCategoryTranslationKey(categoryName)}`, {
+      defaultValue: categoryName,
+    });
+
+  const getTranslatedStatusLabel = (status: ReportStatus) => {
+    switch (status) {
+      case "PENDING":
+        return t("home.statusPending");
+      case "IN_PROGRESS":
+        return t("home.statusInProgress");
+      case "RESOLVED":
+        return t("home.statusResolved");
+      default:
+        return formatStatus(status);
+    }
+  };
+
+  const getTranslatedModerationStatusLabel = (status: ModerationStatus) => {
+    switch (status) {
+      case "PENDING_REVIEW":
+        return t("home.moderationPendingReview");
+      case "ACCEPTED":
+        return t("home.moderationAccepted");
+      case "REJECTED":
+        return t("home.moderationRejected");
+      default:
+        return formatModerationStatus(status);
+    }
   };
 
   if (isLoading) {
@@ -196,84 +296,118 @@ export default function Home() {
             </div>
           )}
 
-          {isPublicView && (
-            <div className="flex flex-wrap items-end gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
-              <div className="flex min-w-[160px] flex-col gap-0.5">
-                <label className="text-xs font-medium text-gray-400">
-                  Category
-                </label>
-                <select
-                  value={selectedCategory}
-                  onChange={(event) => setSelectedCategory(event.target.value)}
-                  className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="">All categories</option>
-                  {(categories as CategoryOption[]).map((category) => (
-                    <option key={category.id} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex min-w-[140px] flex-col gap-0.5">
-                <label className="text-xs font-medium text-gray-400">
-                  Status
-                </label>
-                <select
-                  value={selectedStatus}
-                  onChange={(event) => setSelectedStatus(event.target.value)}
-                  className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="">All statuses</option>
-                  {REPORT_STATUSES.map((status) => (
-                    <option key={status} value={status}>
-                      {formatStatus(status)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {hasActiveFilters && (
-                <button
-                  type="button"
-                  onClick={handleClearFilters}
-                  className="text-xs font-medium text-primary transition-all hover:underline"
-                >
-                  Clear filters
-                </button>
-              )}
-
-              {hasActiveFilters && (
-                <div className="flex flex-wrap gap-2">
-                  {selectedCategory && (
-                    <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
-                      {selectedCategory}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedCategory("")}
-                        className="transition-colors hover:text-red-500"
-                      >
-                        x
-                      </button>
-                    </span>
-                  )}
-                  {selectedStatus && (
-                    <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
-                      {formatStatus(selectedStatus as ReportStatus)}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedStatus("")}
-                        className="transition-colors hover:text-red-500"
-                      >
-                        x
-                      </button>
-                    </span>
-                  )}
-                </div>
-              )}
+          <div className="flex flex-wrap items-end gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
+            <div className="flex min-w-[160px] flex-col gap-0.5">
+              <label className="text-xs font-medium text-gray-400">
+                {t("home.category")}
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(event) => setSelectedCategory(event.target.value)}
+                className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="">{t("home.allCategories")}</option>
+                {availableCategories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {getTranslatedCategoryLabel(category.name)}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
+
+            <div className="flex min-w-[140px] flex-col gap-0.5">
+              <label className="text-xs font-medium text-gray-400">
+                {t("home.status")}
+              </label>
+              <select
+                value={selectedStatus}
+                onChange={(event) => setSelectedStatus(event.target.value)}
+                className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="">{t("home.allStatuses")}</option>
+                {REPORT_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {getTranslatedStatusLabel(status)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {isAdmin && (
+              <div className="flex min-w-[180px] flex-col gap-0.5">
+                <label className="text-xs font-medium text-gray-400">
+                  {t("home.moderationStatus")}
+                </label>
+                <select
+                  value={selectedModerationStatus}
+                  onChange={(event) =>
+                    setSelectedModerationStatus(event.target.value)
+                  }
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">{t("home.allModerationStatuses")}</option>
+                  {MODERATION_STATUSES.map((status) => (
+                    <option key={status} value={status}>
+                      {getTranslatedModerationStatusLabel(status)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="text-xs font-medium text-primary transition-all hover:underline"
+              >
+                {t("home.clearFiltersAction")}
+              </button>
+            )}
+
+            {hasActiveFilters && (
+              <div className="flex flex-wrap gap-2">
+                {selectedCategory && (
+                  <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
+                    {getTranslatedCategoryLabel(selectedCategory)}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCategory("")}
+                      className="transition-colors hover:text-red-500"
+                    >
+                      x
+                    </button>
+                  </span>
+                )}
+                {selectedStatus && (
+                  <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
+                    {getTranslatedStatusLabel(selectedStatus as ReportStatus)}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStatus("")}
+                      className="transition-colors hover:text-red-500"
+                    >
+                      x
+                    </button>
+                  </span>
+                )}
+                {selectedModerationStatus && (
+                  <span className="flex items-center gap-1 rounded-full border border-purple-100 bg-purple-50 px-2 py-0.5 text-xs text-primary">
+                    {getTranslatedModerationStatusLabel(
+                      selectedModerationStatus as ModerationStatus,
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedModerationStatus("")}
+                      className="transition-colors hover:text-red-500"
+                    >
+                      x
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
 
           {displayedReports.length > 0 ? (
             displayedReports.map((report) => (
@@ -282,14 +416,14 @@ export default function Home() {
           ) : (
             <div className="flex flex-col items-center gap-2 py-16 text-center text-gray-500">
               <span className="text-4xl">{t("home.noReports")}</span>
-              <p className="font-medium">No reports found for this view.</p>
+              <p className="font-medium">{t("home.noReports_View")}</p>
               {hasActiveFilters && (
                 <button
                   type="button"
                   onClick={handleClearFilters}
                   className="mt-1 text-sm text-primary hover:underline"
                 >
-                  Clear filters to see all reports
+                 {t("home.clearFilters")}
                 </button>
               )}
             </div>

@@ -16,6 +16,10 @@ export interface PublicReportsFilters {
   size?: number;
 }
 
+export interface CategoriesFilters {
+  enabled?: boolean;
+}
+
 const getTotalCount = (headerValue: string | null) => {
   const parsedValue = Number(headerValue ?? 0);
   return Number.isFinite(parsedValue) ? parsedValue : 0;
@@ -67,10 +71,13 @@ export const usePublicReports = (filters: PublicReportsFilters = {}) => {
   });
 };
 
-export const useCategories = () => {
+export const useCategories = (filters: CategoriesFilters = {}) => {
+  const { enabled = true } = filters;
+
   return useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+    enabled,
   });
 };
 

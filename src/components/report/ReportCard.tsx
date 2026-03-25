@@ -1,4 +1,5 @@
 import { Avatar, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { CiMenuKebab } from "react-icons/ci";
 import { Link } from "react-router";
 import type { Report } from "../../api";
@@ -12,10 +13,26 @@ const formatStatus = (status: NonNullable<Report["reportStatus"]>) =>
     .join(" ");
 
 export default function ReportCard({ report }: Readonly<{ report: Report }>) {
+  const { t } = useTranslation();
   const statusStyles: Record<Exclude<Report["reportStatus"], undefined>, string> = {
     PENDING: "bg-yellow-100 text-yellow-700",
     IN_PROGRESS: "bg-blue-100 text-blue-700",
     RESOLVED: "bg-green-100 text-green-700",
+  };
+
+  const getTranslatedStatusLabel = (
+    status: NonNullable<Report["reportStatus"]>,
+  ) => {
+    switch (status) {
+      case "PENDING":
+        return t("home.statusPending");
+      case "IN_PROGRESS":
+        return t("home.statusInProgress");
+      case "RESOLVED":
+        return t("home.statusResolved");
+      default:
+        return formatStatus(status);
+    }
   };
 
   return (
@@ -36,7 +53,7 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
         <div className="flex items-center gap-4">
           {report.reportStatus && (
             <span className={`rounded-full border px-3 text-sm ${statusStyles[report.reportStatus]}`}>
-              {formatStatus(report.reportStatus)}
+              {getTranslatedStatusLabel(report.reportStatus)}
             </span>
           )}
           <IconButton size="small">
