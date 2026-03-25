@@ -146,7 +146,22 @@
     "filterPublic": "Public",
     "filterMine": "My Reports",
     "createReport": "Create Report",
-    "noReports": "No reports found"
+    "noReports": "No reports found",
+    "noReports_View":"No reports found for this view.",
+    "clearFilters": "Clear filters to see all reports",
+    "clearFiltersAction": "Clear filters",
+    "allStatuses": "All statuses",
+    "allModerationStatuses": "All moderation statuses",
+    "allCategories": "All categories",
+    "category": "Category",
+    "status": "Status",
+    "moderationStatus": "Moderation status",
+    "statusPending": "Pending",
+    "statusInProgress": "In Progress",
+    "statusResolved": "Resolved",
+    "moderationPendingReview": "Pending Review",
+    "moderationAccepted": "Accepted",
+    "moderationRejected": "Rejected"
   },
   "settings": {
     "backHome": "← Back to Home",

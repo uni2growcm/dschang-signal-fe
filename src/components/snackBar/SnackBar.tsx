@@ -1,18 +1,20 @@
 import { Alert, Snackbar } from "@mui/material";
 
-interface ISnackBar {
+interface SnackBarProps {
   open: boolean;
   message: string;
   severity: "success" | "error" | "warning" | "info";
-  position?: "bottom-left" | "bottom-right"; 
+  position?: "bottom-left" | "bottom-right";
+  onClose?: () => void;
 }
 
 export default function SnackBar({
   open,
   message,
   severity,
-  position = "bottom-left", 
-}: ISnackBar) {
+  position = "bottom-left",
+  onClose,
+}: Readonly<SnackBarProps>) {
   return (
     <Snackbar
       anchorOrigin={{
@@ -21,9 +23,11 @@ export default function SnackBar({
       }}
       open={open}
       autoHideDuration={5000}
-      onClose={() => {}}
+      onClose={onClose}
     >
-      <Alert severity={severity}>{message}</Alert>
+      <Alert severity={severity} onClose={onClose}>
+        {message}
+      </Alert>
     </Snackbar>
   );
 }

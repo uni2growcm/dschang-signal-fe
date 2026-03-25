@@ -1,18 +1,19 @@
 import { Typography } from "@mui/material";
-import ReportForm from "../../components/report/ReportForm";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import ReportForm from "../../components/report/ReportForm";
 import { PATHS } from "../../routes/PATHS";
 import styles from "./CreateReportPage.module.css";
-import { useTranslation } from "react-i18next";
 
 export default function CreateReportPage() {
   const { t } = useTranslation();
+
   return (
     <div className={styles.pageContainer}>
       <div className={styles.contentWrapper}>
         <Link
           to={PATHS.INDEX}
-          className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
+          className="w-fit rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90"
         >
           ← {t("reportPage.backHome")}
         </Link>

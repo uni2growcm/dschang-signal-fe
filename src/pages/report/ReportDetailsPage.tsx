@@ -15,6 +15,20 @@ import { deleteReport, getReportById } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
 
+const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
+  status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
+
+const formatModerationStatus = (
+  status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+) =>
+  status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
+
 export default function ReportDetailsPage() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -29,7 +43,7 @@ export default function ReportDetailsPage() {
   } = useQuery({
     queryKey: ["report", id],
     queryFn: () => getReportById(Number(id)),
-    enabled: !!id,
+    enabled: Boolean(id),
   });
 
   const { data: currentUser } = useMe();
@@ -37,10 +51,10 @@ export default function ReportDetailsPage() {
   const deleteMutation = useMutation({
     mutationFn: () => deleteReport(Number(id)),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["getAuthenticatedUserReports"],
       });
-      queryClient.invalidateQueries({ queryKey: ["getPublicReports"] });
+      void queryClient.invalidateQueries({ queryKey: ["getPublicReports"] });
       navigate(PATHS.INDEX);
     },
   });
@@ -56,7 +70,7 @@ export default function ReportDetailsPage() {
   if (isLoading) {
     return (
       <div className={styles.pageContainer}>
-        <div className="flex justify-center items-center flex-1 mt-20">
+        <div className="mt-20 flex flex-1 items-center justify-center">
           <CircularProgress />
         </div>
       </div>
@@ -67,13 +81,49 @@ export default function ReportDetailsPage() {
   return <Navigate to={PATHS.NOT_FOUND} replace />;
 }
 
+  const getTranslatedStatusLabel = (status?: "PENDING" | "IN_PROGRESS" | "RESOLVED") => {
+    if (!status) {
+      return "UNKNOWN";
+    }
+
+    switch (status) {
+      case "PENDING":
+        return t("home.statusPending");
+      case "IN_PROGRESS":
+        return t("home.statusInProgress");
+      case "RESOLVED":
+        return t("home.statusResolved");
+      default:
+        return formatStatus(status);
+    }
+  };
+
+  const getTranslatedModerationStatusLabel = (
+    status?: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+  ) => {
+    if (!status) {
+      return "N/A";
+    }
+
+    switch (status) {
+      case "PENDING_REVIEW":
+        return t("home.moderationPendingReview");
+      case "ACCEPTED":
+        return t("home.moderationAccepted");
+      case "REJECTED":
+        return t("home.moderationRejected");
+      default:
+        return formatModerationStatus(status);
+    }
+  };
+
   return (
     <div className={styles.pageContainer}>
       <div className={styles.contentWrapper}>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <Link
             to={PATHS.INDEX}
-            className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
+            className="w-fit rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90"
           >
             {t("reportDetails.backHome")}
           </Link>
@@ -82,7 +132,7 @@ export default function ReportDetailsPage() {
             {canEdit && (
               <Link
                 to={PATHS.EDIT_REPORT.replace(":id", String(report.id))}
-                className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
+                className="w-fit rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90"
               >
                 {t("reportDetails.editReport")}
               </Link>
@@ -90,8 +140,9 @@ export default function ReportDetailsPage() {
 
             {canDelete && (
               <button
+                type="button"
                 onClick={() => setDeleteDialogOpen(true)}
-                className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all"
+                className="rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90"
               >
                 {t("reportDetails.deleteReport")}
               </button>
@@ -109,18 +160,20 @@ export default function ReportDetailsPage() {
               </DialogContent>
               <DialogActions>
                 <button
+                  type="button"
                   onClick={() => setDeleteDialogOpen(false)}
-                  className="px-4 py-2 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-100 transition-all"
+                  className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100"
                 >
                   {t("reportDetails.no")}
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setDeleteDialogOpen(false);
                     deleteMutation.mutate();
                   }}
                   disabled={deleteMutation.isPending}
-                  className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
+                  className="rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
                 >
                   {t("reportDetails.yesDelete")}
                 </button>
@@ -130,7 +183,7 @@ export default function ReportDetailsPage() {
         </div>
 
         {deleteMutation.isError && (
-          <p className="text-red-500 text-sm text-center">
+          <p className="text-center text-sm text-red-500">
             {(deleteMutation.error as Error)?.message ||
               t("reportDetails.deleteError")}
           </p>
@@ -155,7 +208,7 @@ export default function ReportDetailsPage() {
                     : styles.resolved
               }`}
             >
-              {report.reportStatus || "UNKNOWN"}
+              {getTranslatedStatusLabel(report.reportStatus)}
             </span>
           </div>
           <p className={styles.description}>
@@ -164,20 +217,18 @@ export default function ReportDetailsPage() {
           <div className={styles.meta}>
             <span>
               Created at:{" "}
-              {report.createdAt
-                ? new Date(report.createdAt).toLocaleString()
-                : "N/A"}
+              {report.createdAt ? new Date(report.createdAt).toLocaleString() : "N/A"}
             </span>
-            <span>Moderation: {report.moderationStatus || "N/A"}</span>
+            <span>Moderation: {getTranslatedModerationStatusLabel(report.moderationStatus)}</span>
             {report.createdBy && (
               <span>Reported by: {report.createdBy.fullName || "Unknown"}</span>
             )}
           </div>
           <div className={styles.categories}>
             {report.categories?.length ? (
-              report.categories.map((cat: any) => (
-                <span key={cat.id} className={styles.categoryChip}>
-                  #{cat.name || "Unnamed"}
+              report.categories.map((category) => (
+                <span key={category.id} className={styles.categoryChip}>
+                  #{category.name || "Unnamed"}
                 </span>
               ))
             ) : (
@@ -188,12 +239,12 @@ export default function ReportDetailsPage() {
 
         <div className={styles.mediaContainer}>
           {report.medias?.length ? (
-            report.medias.map((media: any) => {
-              const fullUrl = media?.url
-                ? `http://localhost:8080${media.url}`
-                : "";
+            report.medias.map((media) => {
+              const fullUrl = media?.url ? `http://localhost:8080${media.url}` : "";
 
-              if (!fullUrl) return null;
+              if (!fullUrl) {
+                return null;
+              }
 
               if (media.mimeType?.startsWith("image")) {
                 return (
@@ -202,12 +253,13 @@ export default function ReportDetailsPage() {
                     src={fullUrl}
                     alt="media"
                     className={styles.media}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
+                    onError={(event) => {
+                      (event.target as HTMLImageElement).style.display = "none";
                     }}
                   />
                 );
               }
+
               if (media.mimeType?.startsWith("audio")) {
                 return (
                   <audio key={media.id} controls className={styles.audio}>
@@ -215,6 +267,7 @@ export default function ReportDetailsPage() {
                   </audio>
                 );
               }
+
               return (
                 <a
                   key={media.id}
@@ -223,7 +276,7 @@ export default function ReportDetailsPage() {
                   rel="noreferrer"
                   className={styles.documentLink}
                 >
-                  📄 Download document
+                  Download document
                 </a>
               );
             })
