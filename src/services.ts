@@ -8,11 +8,12 @@ import {
   type Middleware,
 } from './api';
 import { API_URL } from './utils/env';
-import { LOCAL_STORAGE_KEYS } from './utils/localStorage';
+import { getToken } from './utils/localStorage';
+import { handleUnauthorized } from './utils/handleUnauthorized';
 
 const addTokenToHeadersMiddleware: Middleware = {
   pre: async (request) => {
-    const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+    const token = getToken();
     if (token) {
       request.init.headers = {
         ...request.init.headers,
@@ -20,6 +21,16 @@ const addTokenToHeadersMiddleware: Middleware = {
       };
     }
   },
+
+post: async (context) => {
+  const isAuthEndpoint =
+    context.url.includes('/logout') ||
+    context.url.includes('/login');
+  if (context.response.status === 401 && !isAuthEndpoint) {
+    await handleUnauthorized();
+  }
+  return context.response;
+},
 };
 
 const apiConfig = new Configuration({
@@ -34,36 +45,28 @@ export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
 
 export const getReportById = async (id: number) => {
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
-  
+  const token = getToken();
+
   if (!token) {
-    try {  
+    try {
       const response = await fetch(`${API_URL.dev}/reports/public/${id}`);
-      
-      if (response.status === 404) {  
-        throw new Error('REPORT_NOT_FOUND');
-      }
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch public report');
-      }
-      
+      if (response.status === 404) throw new Error('REPORT_NOT_FOUND');
+      if (!response.ok) throw new Error('Failed to fetch public report');
       const report = await response.json();
       return { ...report, medias: [] };
-      
-    } catch (error) {  
+    } catch (error) {
       console.error('Error fetching public report:', error);
       throw error;
     }
   }
-  
-  try {  
+
+  try {
     const [report, medias] = await Promise.all([
       reportApi.getReportById({ id }),
-      mediaApi.getReportMedias({ reportId: id })
+      mediaApi.getReportMedias({ reportId: id }),
     ]);
     return { ...report, medias };
-  } catch (error) {  
+  } catch (error) {
     console.error('Error fetching private report:', error);
     throw new Error('Failed to fetch report details');
   }
@@ -75,7 +78,7 @@ export const createReport = async (data: {
   locationText: string;
   categoryIds: number[];
 }) => {
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+  const token = getToken();
   const response = await fetch(`${API_URL.dev}/reports`, {
     method: 'POST',
     headers: {
@@ -84,6 +87,10 @@ export const createReport = async (data: {
     },
     body: JSON.stringify(data),
   });
+  if (response.status === 401) {
+    await handleUnauthorized();
+    return;
+  }
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || 'Failed to create report');
@@ -92,14 +99,18 @@ export const createReport = async (data: {
 };
 
 export const uploadMedia = async (reportId: number, file: File) => {
+  const token = getToken();
   const formData = new FormData();
   formData.append('file', file);
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
   const response = await fetch(`${API_URL.dev}/reports/${reportId}/media`, {
     method: 'POST',
     body: formData,
     headers: { Authorization: `Bearer ${token}` },
   });
+  if (response.status === 401) {
+    await handleUnauthorized();
+    return;
+  }
   if (!response.ok) throw new Error('Media upload failed');
   return response.json();
 };
@@ -109,7 +120,7 @@ export const getCategories = async () => {
 };
 
 export const createCategory = async (name: string) => {
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+  const token = getToken();
   const normalizedName =
     name.trim().charAt(0).toUpperCase() + name.trim().slice(1).toLowerCase();
   const response = await fetch(`${API_URL.dev}/categories`, {
@@ -120,15 +131,24 @@ export const createCategory = async (name: string) => {
     },
     body: JSON.stringify({ name: normalizedName }),
   });
+  if (response.status === 401) {
+    await handleUnauthorized();
+    return;
+  }
   if (!response.ok) throw new Error('Category creation failed');
   return response.json();
 };
 
 export const checkCategoryExists = async (name: string): Promise<boolean> => {
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
-  const categories = await fetch(`${API_URL.dev}/categories`, {
+  const token = getToken();
+  const response = await fetch(`${API_URL.dev}/categories`, {
     headers: { Authorization: `Bearer ${token}` },
-  }).then((r) => r.json());
+  });
+  if (response.status === 401) {
+    await handleUnauthorized();
+    return false;
+  }
+  const categories = await response.json();
   return categories.some(
     (cat: any) => cat.name.toLowerCase() === name.toLowerCase(),
   );
@@ -141,6 +161,7 @@ export const deleteReport = async (id: number): Promise<void> => {
 export const deleteMedia = async (mediaId: number): Promise<void> => {
   await mediaApi.deleteMedia({ mediaId });
 };
+
 export const updateReport = async (
   id: number,
   data: {

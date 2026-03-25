@@ -181,13 +181,12 @@ export default function Home() {
     selectedModerationStatus !== "";
 
   useEffect(() => {
-    if (hasError) {
+    if (!hasError) return;
+    const timer = setTimeout(() => {
       setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 5000);
-      return () => clearTimeout(timer);
-    }
-
-    setShowError(false);
+      setTimeout(() => setShowError(false), 5000);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [hasError]);
 
   if (

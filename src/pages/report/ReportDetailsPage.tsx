@@ -20,6 +20,7 @@ import {
 } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
+import { ReportModerationStatusEnum, type Report } from "../../api";
 
 const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
   status
@@ -428,6 +429,25 @@ export default function ReportDetailsPage() {
                 {t("reportDetails.reportedBy")}:{" "}
                 {report.createdBy.fullName || t("reportDetails.unknown")}
               </span>
+            )}
+            {report.createdBy?.fullName == currentUser?.fullName && (
+              <div className="flex items-end flex-col gap-1">
+                {report.moderationStatus !=
+                  ReportModerationStatusEnum.PendingReview && (
+                  <span>
+                    Reviewed at:{" "}
+                    {report.reviewedAt
+                      ? new Date(report.reviewedAt).toLocaleString()
+                      : "N/A"}
+                  </span>
+                )}
+                {report.moderationStatus ==
+                  ReportModerationStatusEnum.Rejected && (
+                  <span>
+                    Rejection reason: {report.rejectionReason || "N/A"}
+                  </span>
+                )}
+              </div>
             )}
           </div>
           {report.rejectionReason && (
