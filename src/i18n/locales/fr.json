@@ -146,7 +146,22 @@
     "filterPublic": "Public",
     "filterMine": "Mes signalements",
     "createReport": "Créer un signalement",
-    "noReports": "Aucun signalement trouvé"
+    "noReports": "Aucun signalement trouvé",
+    "noReports_View":"Aucun signalement trouvé pour cette vue.",
+    "clearFilters": "Effacer les filtres pour voir tous les signalements",
+    "clearFiltersAction": "Effacer les filtres",
+    "allStatuses": "Tous les statuts",
+    "allModerationStatuses": "Tous les statuts de modération",
+    "allCategories": "Toutes les catégories",
+    "category": "Catégorie",
+    "status": "Statut",
+    "moderationStatus": "Statut de modération",
+    "statusPending": "En attente",
+    "statusInProgress": "En cours",
+    "statusResolved": "Résolu",
+    "moderationPendingReview": "En attente de révision",
+    "moderationAccepted": "Accepté",
+    "moderationRejected": "Rejeté"
   },
   "settings": {
     "backHome": "← Retour à l'accueil",

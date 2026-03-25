@@ -8,11 +8,19 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { Form, Formik, type FormikHelpers } from "formik";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type SyntheticEvent,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { PATHS } from "../../routes/PATHS";
+import { MdCloudUpload } from "react-icons/md";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { PATHS } from "../../routes/PATHS";
 import {
   checkCategoryExists,
   createCategory,
@@ -23,8 +31,6 @@ import {
 import FormTextField from "../forms/shared/FormTextField";
 import SnackBar from "../snackBar/SnackBar";
 import styles from "./ReportForm.module.css";
-import { MdCloudUpload } from "react-icons/md";
-import { useNavigate } from "react-router";
 
 interface CategoryOption {
   id: number | string;
@@ -37,18 +43,27 @@ interface ReportFormValues {
   locationText: string;
   newCategoryName: string;
 }
+
+const initialValues: ReportFormValues = {
+  title: "",
+  description: "",
+  locationText: "",
+  newCategoryName: "",
+};
+
 export default function ReportForm() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const [medias, setMedias] = useState<File[]>([]);
-  const [preview, setPreview] = useState<string[]>([]);
-  const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<
-    CategoryOption[]
-  >([]);
+  const [isError, setIsError] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>(
+    [],
+  );
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
-  const { t } = useTranslation();
+  const [categoryInput, setCategoryInput] = useState("");
 
   const OTHER_OPTION = {
     id: "other" as const,
@@ -65,138 +80,170 @@ export default function ReportForm() {
       .required(t("reportForm.descriptionRequired")),
     locationText: Yup.string().required(t("reportForm.locationRequired")),
     newCategoryName: Yup.string()
+      .trim()
       .min(2, t("reportForm.categoryNameMin"))
       .max(50, t("reportForm.categoryNameMax")),
   });
 
-  const navigate = useNavigate();
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
 
-  const categoryOptions: CategoryOption[] = (categories as any[]).map(
-    (cat: any) => ({ id: cat.id, name: cat.name }),
+  const categoryOptions = useMemo<CategoryOption[]>(() => {
+    return (categories as Array<{ id: number | string; name: string }>).map(
+      (category) => ({ id: category.id, name: category.name }),
+    );
+  }, [categories]);
+
+  const previewUrls = useMemo(
+    () => medias.map((file) => URL.createObjectURL(file)),
+    [medias],
   );
 
-  const allSelected = [
-    ...selectedCategories,
-    ...(showNewCategory ? [OTHER_OPTION] : []),
-  ];
-
-  const handleCategoryChange = (
-    _: React.SyntheticEvent,
-    newValue: CategoryOption[],
-  ) => {
-    const otherOption = newValue.find((v) => v.id === "other");
-    const withoutOther = newValue.filter((v) => v.id !== "other");
-    setSelectedCategories(withoutOther);
-
-    if (otherOption) {
-      setShowNewCategory(true);
-      if (otherOption.name.startsWith('+ Add "')) {
-        const extracted = otherOption.name
-          .replace('+ Add "', "")
-          .replace('" as new category', "");
-        window.dispatchEvent(
-          new CustomEvent("prefill-category", { detail: extracted }),
-        );
-      }
-    } else {
-      setShowNewCategory(false);
-      setNewCategoryError("");
-    }
-
-    setCategoryError("");
-  };
-
-  const handleNewCategoryBlur = async (name: string) => {
-    if (!name.trim() || name.trim().length < 2) return;
-    try {
-      const exists = await checkCategoryExists(name.trim());
-      if (exists) {
-        setNewCategoryError(t("reportForm.categoryExists"));
-      } else {
-        setNewCategoryError("");
-      }
-    } catch {
-      // Silently ignore check errors
-    }
-  };
-
-  const removeCategory = (id: number | string) => {
-    if (id === "other") {
-      setShowNewCategory(false);
-      setNewCategoryError("");
-    } else {
-      setSelectedCategories((prev) => prev.filter((cat) => cat.id !== id));
-    }
-  };
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls]);
 
   const mutation = useMutation({
     mutationFn: async (values: ReportFormValues) => {
-      if (newCategoryError) {
-        throw new Error(newCategoryError);
-      }
+      let finalCategoryIds = selectedCategories
+        .map((category) => Number(category.id))
+        .filter((id) => Number.isFinite(id));
 
-      let finalCategoryIds: number[] = [];
+      if (showNewCategory) {
+        const trimmedCategoryName = values.newCategoryName.trim();
 
-      if (showNewCategory && values.newCategoryName.trim()) {
-        try {
-          const newCategory = await createCategory(values.newCategoryName);
-          finalCategoryIds.push(newCategory.id);
-        } catch {
+        if (trimmedCategoryName.length < 2) {
+          setNewCategoryError(t("reportForm.categoryNameMin"));
+          throw new Error(t("reportForm.categoryNameMin"));
+        }
+
+        const exists = await checkCategoryExists(trimmedCategoryName);
+        if (exists) {
+          setNewCategoryError(t("reportForm.categoryExists"));
           throw new Error(t("reportForm.categoryExistsFull"));
         }
+
+        const createdCategory = (await createCategory(trimmedCategoryName)) as {
+          id?: number;
+        };
+
+        if (typeof createdCategory.id !== "number") {
+          throw new Error(t("reportForm.error"));
+        }
+
+        finalCategoryIds = [...finalCategoryIds, createdCategory.id];
       }
 
-      const existingIds = selectedCategories
-        .filter((cat) => cat.id !== "other")
-        .map((cat) => Number(cat.id));
-      finalCategoryIds = [...finalCategoryIds, ...existingIds];
-
-      const report = await createReport({
-        title: values.title,
-        description: values.description,
-        locationText: values.locationText,
+      const report = (await createReport({
+        title: values.title.trim(),
+        description: values.description.trim(),
+        locationText: values.locationText.trim(),
         categoryIds: finalCategoryIds,
-      });
+      })) as { id?: number };
 
-      const reportId = report.id!;
-      for (const file of medias) {
-        await uploadMedia(reportId, file);
+      if (typeof report.id !== "number") {
+        throw new Error(t("reportForm.error"));
       }
+
+      await Promise.all(medias.map((file) => uploadMedia(report.id as number, file)));
+
       return report;
     },
     onSuccess: () => {
       setMessage(t("reportForm.success"));
       setIsError(false);
       setMedias([]);
-      setPreview([]);
       setSelectedCategories([]);
       setShowNewCategory(false);
+      setCategoryError("");
       setNewCategoryError("");
+      setCategoryInput("");
       navigate(PATHS.INDEX, {
         state: { filter: "mine" },
       });
     },
-    onError: (error: any) => {
-      setMessage(error?.message || t("reportForm.error"));
+    onError: (error: unknown) => {
+      const errorMessage =
+        error instanceof Error && error.message ? error.message : t("reportForm.error");
+
+      setMessage(errorMessage);
       setIsError(true);
     },
   });
 
-  const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files ?? []);
-    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-    setMedias((prev) => [...prev, ...newFiles]);
-    setPreview((prev) => [...prev, ...newPreviews]);
-    e.target.value = "";
+  const handleMediaChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) {
+      return;
+    }
+
+    setMedias((current) => [...current, ...files]);
+    event.target.value = "";
   };
 
-  const removeMedia = (index: number) => {
-    setMedias((prev) => prev.filter((_, i) => i !== index));
-    setPreview((prev) => prev.filter((_, i) => i !== index));
+  const removeMedia = (indexToRemove: number) => {
+    setMedias((current) => current.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleNewCategoryBlur = async (name: string) => {
+    if (!showNewCategory) {
+      return;
+    }
+
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2) {
+      return;
+    }
+
+    try {
+      const exists = await checkCategoryExists(trimmedName);
+      if (exists) {
+        setNewCategoryError(t("reportForm.categoryExists"));
+        return;
+      }
+    } catch {
+      return;
+    }
+
+    setNewCategoryError("");
+  };
+
+  const removeCategory = (
+    id: number | string,
+    setFieldValue: FormikHelpers<ReportFormValues>["setFieldValue"],
+  ) => {
+    if (id === "other") {
+      setShowNewCategory(false);
+      setNewCategoryError("");
+      setCategoryInput("");
+      void setFieldValue("newCategoryName", "");
+      return;
+    }
+
+    setSelectedCategories((current) =>
+      current.filter((category) => category.id !== id),
+    );
+  };
+
+  const resetToast = () => {
+    setMessage("");
+    setIsError(false);
+  };
+
+  const submitForm = async (
+    values: ReportFormValues,
+    helpers: FormikHelpers<ReportFormValues>,
+  ) => {
+    try {
+      await mutation.mutateAsync(values);
+      helpers.resetForm();
+    } catch {
+      return;
+    }
   };
 
   return (
@@ -205,36 +252,57 @@ export default function ReportForm() {
         <Typography variant="body2" color="#666">
           {t("reportForm.headerDescription")}{" "}
           <span style={{ color: "#e53935" }}>*</span>{" "}
-          {`${t("reportForm.requiredFields")} *`}
+          {t("reportForm.requiredFields")}
         </Typography>
       </div>
 
       <Formik
-        initialValues={{
-          title: "",
-          description: "",
-          locationText: "",
-          newCategoryName: "",
-        }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => mutation.mutate(values)}
+        onSubmit={submitForm}
       >
         {({
           values,
-          handleChange,
-          handleBlur,
           errors,
           touched,
+          handleBlur,
+          handleChange,
+          isSubmitting,
           setFieldValue,
         }) => {
-          useEffect(() => {
-            const handler = (e: Event) => {
-              setFieldValue("newCategoryName", (e as CustomEvent).detail);
-            };
-            window.addEventListener("prefill-category", handler);
-            return () =>
-              window.removeEventListener("prefill-category", handler);
-          }, [setFieldValue]);
+          const allSelected = [
+            ...selectedCategories,
+            ...(showNewCategory ? [OTHER_OPTION] : []),
+          ];
+
+          const handleCategoryChange = (
+            _: SyntheticEvent,
+            newValue: CategoryOption[],
+          ) => {
+            const selectedOther = newValue.find((option) => option.id === "other");
+            const withoutOther = newValue.filter((option) => option.id !== "other");
+
+            setSelectedCategories(withoutOther);
+            setCategoryError("");
+
+            if (!selectedOther) {
+              setShowNewCategory(false);
+              setNewCategoryError("");
+              setCategoryInput("");
+              void setFieldValue("newCategoryName", "");
+              return;
+            }
+
+            setShowNewCategory(true);
+
+            if (selectedOther.name.startsWith('+ Add "')) {
+              const extractedName = selectedOther.name
+                .replace('+ Add "', "")
+                .replace('" as new category', "");
+              void setFieldValue("newCategoryName", extractedName);
+              setCategoryInput(extractedName);
+            }
+          };
 
           return (
             <Form>
@@ -245,7 +313,7 @@ export default function ReportForm() {
                   value={values.title}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.title && Boolean(errors.title)}
+                  error={Boolean(touched.title && errors.title)}
                   helperText={touched.title && errors.title}
                 />
 
@@ -255,7 +323,7 @@ export default function ReportForm() {
                   value={values.description}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.description && Boolean(errors.description)}
+                  error={Boolean(touched.description && errors.description)}
                   helperText={touched.description && errors.description}
                   multiline
                   rows={4}
@@ -267,7 +335,7 @@ export default function ReportForm() {
                   value={values.locationText}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.locationText && Boolean(errors.locationText)}
+                  error={Boolean(touched.locationText && errors.locationText)}
                   helperText={touched.locationText && errors.locationText}
                 />
 
@@ -277,16 +345,16 @@ export default function ReportForm() {
                       {t("reportForm.selectedCategories")}
                     </Typography>
                     <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
-                      {allSelected.map((cat) => (
+                      {allSelected.map((category) => (
                         <Chip
-                          key={cat.id}
+                          key={String(category.id)}
                           label={
-                            cat.id === "other"
-                              ? values.newCategoryName || "+ Add new category"
-                              : cat.name
+                            category.id === "other"
+                              ? values.newCategoryName || t("reportForm.addCategory")
+                              : category.name
                           }
                           size="small"
-                          onDelete={() => removeCategory(cat.id)}
+                          onDelete={() => removeCategory(category.id, setFieldValue)}
                           sx={{
                             backgroundColor: "#f5f5f5",
                             color: "#555",
@@ -305,55 +373,55 @@ export default function ReportForm() {
                 <Autocomplete
                   multiple
                   options={[...categoryOptions, OTHER_OPTION]}
-                  getOptionLabel={(option) => option.name}
                   value={allSelected}
+                  inputValue={categoryInput}
+                  onInputChange={(_, value) => setCategoryInput(value)}
                   onChange={handleCategoryChange}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
                   disableCloseOnSelect
                   renderTags={() => null}
-                  componentsProps={{
-                    popper: {
-                      placement: "bottom",
-                      modifiers: [{ name: "flip", enabled: false }],
-                    },
-                  }}
-                  filterOptions={(options, { inputValue }) => {
-                    const trimmed = inputValue.trim().toLowerCase();
+                  getOptionLabel={(option) => option.name}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  filterOptions={(options, params) => {
+                    const input = params.inputValue.trim();
+                    const normalizedInput = input.toLowerCase();
                     const filtered = options.filter(
-                      (opt) =>
-                        opt.id !== "other" &&
-                        opt.name.toLowerCase().includes(trimmed),
+                      (option) =>
+                        option.id !== "other" &&
+                        option.name.toLowerCase().includes(normalizedInput),
                     );
+
                     if (
-                      trimmed.length > 0 &&
+                      input.length > 0 &&
                       !categoryOptions.some(
-                        (cat) => cat.name.toLowerCase() === trimmed,
+                        (category) => category.name.toLowerCase() === normalizedInput,
                       )
                     ) {
                       return [
                         ...filtered,
                         {
                           id: "other",
-                          name: `+ Add "${inputValue.trim()}" as new category`,
+                          name: `+ Add "${input}" as new category`,
                         },
                       ];
                     }
+
                     return [...filtered, OTHER_OPTION];
                   }}
-                  renderOption={(props, option) => (
-                    <li
-                      {...props}
-                      key={String(option.id)}
-                      style={{
-                        color: option.id === "other" ? "#7c4dff" : "inherit",
-                        fontStyle: option.id === "other" ? "italic" : "normal",
-                      }}
-                    >
-                      {option.name}
-                    </li>
-                  )}
+                  renderOption={(props, option) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li
+                        {...optionProps}
+                        key={key}
+                        style={{
+                          color: option.id === "other" ? "#7c4dff" : "inherit",
+                          fontStyle: option.id === "other" ? "italic" : "normal",
+                        }}
+                      >
+                        {option.name}
+                      </li>
+                    );
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -379,12 +447,18 @@ export default function ReportForm() {
                         label={`${t("reportForm.newCategory")} *`}
                         name="newCategoryName"
                         value={values.newCategoryName}
-                        onChange={handleChange}
-                        onBlur={(e) => {
-                          handleBlur(e);
-                          handleNewCategoryBlur(e.target.value);
+                        onChange={(event) => {
+                          setNewCategoryError("");
+                          handleChange(event);
                         }}
-                        error={Boolean(newCategoryError)}
+                        onBlur={async (event) => {
+                          handleBlur(event);
+                          await handleNewCategoryBlur(event.target.value);
+                        }}
+                        error={Boolean(
+                          newCategoryError ||
+                            (touched.newCategoryName && errors.newCategoryName),
+                        )}
                         helperText={
                           newCategoryError ||
                           (touched.newCategoryName && errors.newCategoryName)
@@ -392,11 +466,8 @@ export default function ReportForm() {
                       />
                     </Box>
                     <Button
-                      onClick={() => {
-                        setShowNewCategory(false);
-                        setNewCategoryError("");
-                        setFieldValue("newCategoryName", "");
-                      }}
+                      type="button"
+                      onClick={() => removeCategory("other", setFieldValue)}
                       sx={{
                         mt: 0.5,
                         minWidth: 0,
@@ -404,17 +475,15 @@ export default function ReportForm() {
                         "&:hover": { color: "#e53935" },
                       }}
                     >
-                      ✕
+                      x
                     </Button>
                   </Box>
                 )}
 
                 <Box>
                   <Typography variant="body2" color="#666" mb={1}>
-                    {" "}
                     {t("reportForm.attachMedia")}{" "}
                     <span style={{ color: "#999", fontSize: 12 }}>
-                      {" "}
                       ({t("reportForm.optional")})
                     </span>
                   </Typography>
@@ -428,19 +497,18 @@ export default function ReportForm() {
                     />
                     <MdCloudUpload size={28} color="#7c4dff" />
                     <Typography variant="body2" color="#7c4dff" mt={0.5}>
-                      {" "}
                       {t("reportForm.selectFiles")}
                     </Typography>
                   </label>
                 </Box>
 
-                {preview.length > 0 && (
+                {medias.length > 0 && (
                   <Box display="flex" gap={1} flexWrap="wrap">
-                    {medias.map((file, i) => (
-                      <Box key={i} position="relative">
+                    {medias.map((file, index) => (
+                      <Box key={`${file.name}-${index}`} position="relative">
                         {file.type.startsWith("image/") ? (
                           <img
-                            src={preview[i]}
+                            src={previewUrls[index]}
                             alt={file.name}
                             className={styles.previewImage}
                           />
@@ -452,9 +520,9 @@ export default function ReportForm() {
                           </Box>
                         )}
                         <Chip
-                          label="×"
+                          label="x"
                           size="small"
-                          onClick={() => removeMedia(i)}
+                          onClick={() => removeMedia(index)}
                           className={styles.removeChip}
                         />
                       </Box>
@@ -465,7 +533,9 @@ export default function ReportForm() {
                 <Button
                   type="submit"
                   variant="contained"
-                  disabled={mutation.isPending || Boolean(newCategoryError)}
+                  disabled={
+                    mutation.isPending || isSubmitting || Boolean(newCategoryError)
+                  }
                   fullWidth
                   sx={{
                     backgroundColor: "#7c4dff",
@@ -488,10 +558,11 @@ export default function ReportForm() {
       </Formik>
 
       <SnackBar
-        open={!!message}
+        open={Boolean(message)}
         message={message}
         severity={isError ? "error" : "success"}
         position="bottom-right"
+        onClose={resetToast}
       />
     </div>
   );

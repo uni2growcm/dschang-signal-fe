@@ -146,7 +146,22 @@
     "filterPublic": "Pubblico",
     "filterMine": "Le mie segnalazioni",
     "createReport": "Crea una segnalazione",
-    "noReports": "Nessuna segnalazione trovata"
+    "noReports": "Nessuna segnalazione trovata",
+    "noReports_View":"Nessuna segnalazione trovata per questa vista.",
+    "clearFilters": "Cancella i filtri per vedere tutte le segnalazioni",
+    "clearFiltersAction": "Cancella i filtri",
+    "allStatuses": "Tutti gli stati",
+    "allModerationStatuses": "Tutti gli stati di moderazione",
+    "allCategories": "Tutte le categorie",
+    "category": "Categoria",
+    "status": "Stato",
+    "moderationStatus": "Stato di moderazione",
+    "statusPending": "In attesa",
+    "statusInProgress": "In corso",
+    "statusResolved": "Risolto",
+    "moderationPendingReview": "In attesa di revisione",
+    "moderationAccepted": "Accettato",
+    "moderationRejected": "Rifiutato"
   },
   "settings": {
     "backHome": "← Torna alla home",
