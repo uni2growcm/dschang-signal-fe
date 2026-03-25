@@ -155,3 +155,28 @@ export const updateReport = async (
     reportRequest: data,
   });
 };
+
+export const updateModerationStatus = async (
+  id: number,
+  data: {
+    status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED";
+    rejectionReason?: string;
+  },
+) => {
+  return await reportApi.updateModerationStatus({
+    id,
+    updateModerationStatusRequest: data,
+  });
+};
+
+export const updateReportStatus = async (
+  id: number,
+  data: {
+    status: "PENDING" | "IN_PROGRESS" | "RESOLVED";
+  },
+) => {
+  return await reportApi.updateReportStatus({
+    id,
+    updateReportStatusRequest: data,
+  });
+};

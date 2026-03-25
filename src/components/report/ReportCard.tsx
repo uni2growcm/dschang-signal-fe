@@ -19,6 +19,14 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
     IN_PROGRESS: "bg-blue-100 text-blue-700",
     RESOLVED: "bg-green-100 text-green-700",
   };
+  const moderationStyles: Record<
+    "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+    string
+  > = {
+    PENDING_REVIEW: "bg-gray-100 text-gray-700",
+    ACCEPTED: "bg-emerald-100 text-emerald-700",
+    REJECTED: "bg-red-100 text-red-700",
+  };
 
   const getTranslatedStatusLabel = (
     status: NonNullable<Report["reportStatus"]>,
@@ -34,6 +42,26 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
         return formatStatus(status);
     }
   };
+
+  const getTranslatedModerationStatusLabel = (
+    status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+  ) => {
+    switch (status) {
+      case "PENDING_REVIEW":
+        return t("home.moderationPendingReview");
+      case "ACCEPTED":
+        return t("home.moderationAccepted");
+      case "REJECTED":
+        return t("home.moderationRejected");
+      default:
+        return status;
+    }
+  };
+
+  const isRejected = report.moderationStatus === "REJECTED";
+  const showModerationBadge =
+    report.moderationStatus === "REJECTED" ||
+    report.moderationStatus === "PENDING_REVIEW";
 
   return (
     <div className="min-w-80 w-full items-start rounded-lg bg-white p-3 shadow-md">
@@ -51,11 +79,19 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {report.reportStatus && (
+          {showModerationBadge && report.moderationStatus ? (
+            <span
+              className={`rounded-full border px-3 text-sm ${
+                moderationStyles[report.moderationStatus]
+              }`}
+            >
+              {getTranslatedModerationStatusLabel(report.moderationStatus)}
+            </span>
+          ) : report.reportStatus ? (
             <span className={`rounded-full border px-3 text-sm ${statusStyles[report.reportStatus]}`}>
               {getTranslatedStatusLabel(report.reportStatus)}
             </span>
-          )}
+          ) : null}
           <IconButton size="small">
             <CiMenuKebab />
           </IconButton>
@@ -63,6 +99,14 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
       </div>
       <h2 className="mb-2">{report.title}</h2>
       <p className="mb-4 leading-none text-gray-700">{report.description}</p>
+      {isRejected && report.rejectionReason && (
+        <div className="mb-4 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <span className="font-medium">
+            {t("reportDetails.rejectionReason")}:
+          </span>{" "}
+          {report.rejectionReason}
+        </div>
+      )}
       <p className="text-sm text-gray-500">{report.locationText}</p>
       <div className="mt-3 flex justify-end">
         <Link
