@@ -1,3 +1,4 @@
+// LoginForm.tsx
 import {
   Box,
   Button,
@@ -6,6 +7,7 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
+import { useGoogleLogin } from "@react-oauth/google"; // Ajoute cet import
 import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useState } from "react";
@@ -33,7 +35,10 @@ export default function LoginForm() {
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false); // Ajoute cet état
   const navigate = useNavigate();
+
+  // Mutation pour le login classique
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const response = await authApi.login({
@@ -73,6 +78,60 @@ export default function LoginForm() {
         setIsError(false);
         setSuccess(false);
       }, 1500);
+    },
+  });
+
+  // Mutation pour le login Google (à ajouter dans ton authApi)
+  const googleLoginMutation = useMutation({
+    mutationFn: async (googleToken: string) => {
+      // Appelle ton endpoint Google (à créer côté backend)
+      const response = await fetch("http://localhost:8080/api/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: googleToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Google login failed");
+      }
+
+      return response.json();
+    },
+    onSuccess: (response) => {
+      if (response.token) {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
+        setSuccess(true);
+        setTimeout(() => {
+          navigate(PATHS.INDEX);
+        }, 2000);
+      }
+    },
+    onError: () => {
+      setErrorMessage(t("login.googleLoginFailed"));
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+    },
+    onSettled: () => {
+      setIsGoogleLoading(false);
+    },
+  });
+
+  // Configuration de Google Login
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      setIsGoogleLoading(true);
+      googleLoginMutation.mutate(tokenResponse.access_token);
+    },
+    onError: () => {
+      setErrorMessage(t("login.googleLoginFailed"));
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
     },
   });
 
@@ -221,10 +280,12 @@ export default function LoginForm() {
               </Divider>
             </Box>
 
+            {/* Bouton Google modifié */}
             <Button
               variant="outlined"
               fullWidth
-              disabled={success}
+              disabled={success || isGoogleLoading}
+              onClick={() => handleGoogleLogin()}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -245,7 +306,9 @@ export default function LoginForm() {
             >
               <FcGoogle size={25} />
               <span className="text-inherit font-medium text-lg">
-                {t("login.continueGoogle")}
+                {isGoogleLoading
+                  ? t("login.loading")
+                  : t("login.continueGoogle")}
               </span>
             </Button>
 
