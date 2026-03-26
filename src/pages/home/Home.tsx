@@ -94,7 +94,7 @@ export default function Home() {
     data: allReportsData,
     isLoading: allReportsLoading,
     isError: allReportsError,
-  } = useAllReports(page)
+  } = useAllReports(page, isAdmin)
 
   useEffect(() => {
     const handleStorageChange = () => {
