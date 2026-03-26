@@ -153,7 +153,7 @@ export const UsersSection = () => {
           textAlign="center"
           py={3}
         >
-          No users found
+          {t("usersSection.noUser")}
         </Typography>
       ) : (
         <Stack spacing={0}>

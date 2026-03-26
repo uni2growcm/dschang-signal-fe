@@ -147,7 +147,7 @@
     "filterMine": "My Reports",
     "createReport": "Create Report",
     "noReports": "No reports found",
-    "noReports_View":"No reports found for this view.",
+    "noReports_View": "No reports found for this view.",
     "clearFilters": "Clear filters to see all reports",
     "clearFiltersAction": "Clear filters",
     "allStatuses": "All statuses",
@@ -162,11 +162,6 @@
     "moderationPendingReview": "Pending Review",
     "moderationAccepted": "Accepted",
     "moderationRejected": "Rejected"
-  },
-  "settings": {
-    "backHome": "← Back to Home",
-    "title": "Settings",
-    "description": "Manage your project configuration and preferences"
   },
   "reportDetails": {
     "backHome": "← Back to Home",
@@ -195,6 +190,77 @@
     "description": "Manage registered users and their roles",
     "searchPlaceholder": "Search by full name...",
     "roleUpdated": "User role updated successfully",
-    "roleUpdateError": "You cannot authorize yourself. Please ask another admin to update your role."
+    "roleUpdateError": "You cannot authorize yourself. Please ask another admin to update your role.",
+    "noUser": "No user found"
+  },
+  "settings": {
+    "backHome": "← Back to Home",
+    "title": "Settings",
+    "description": "Manage your project configuration and preferences",
+    "moderation": {
+      "title": "Moderation",
+      "description": "Configure content moderation and approval rules",
+      "approvalMode": {
+        "title": "Post approval mode",
+        "manual": "Manual approval required",
+        "auto": "Auto approve all posts",
+        "verified": "Auto-approve for verified users only"
+      },
+      "filters": {
+        "title": "Content filters",
+        "profanity": "Filter profanity and offensive language",
+        "spam": "Block spam and repeated submissions",
+        "imageRequired": "Require image attachments for reports",
+        "location": "Enable location tagging"
+      },
+      "maxSignals": {
+        "title": "Max signals per user per day",
+        "helper": "Set to 0 for unlimited"
+      }
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "description": "Irreversible actions — proceed with caution",
+      "resetSignals": {
+        "title": "Reset all signals",
+        "description": "Permanently delete all signals and associated data",
+        "button": "Reset data"
+      },
+      "deleteProject": {
+        "title": "Delete project",
+        "description": "Permanently remove this project and all its data",
+        "button": "Delete project"
+      },
+      "notifications": {
+        "notDeveloped": "This feature has not been developed yet.",
+        "notAuthorized": "This action is not authorized."
+      }
+    },
+    "general": {
+      "title": "General",
+      "description": "Basic project information and configuration",
+      "projectName": "Project name",
+      "userEmail": "User email",
+      "fullName": "Full name",
+      "password": "Password",
+      "placeholders": {
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm new password"
+      },
+      "buttons": {
+        "updatePassword": "Update password",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "saveChanges": "Save changes",
+        "saving": "Saving..."
+      },
+      "notifications": {
+        "updateSuccess": "Profile updated successfully",
+        "updateError": "Failed to update profile. Please try again.",
+        "passwordSuccess": "Password updated successfully",
+        "passwordError": "Failed to update password. Please check your current password."
+      }
+    }
   }
 }

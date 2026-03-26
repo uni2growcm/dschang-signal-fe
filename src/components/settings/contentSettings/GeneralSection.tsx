@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -11,24 +11,25 @@ import {
   CircularProgress,
   Alert,
   Snackbar,
-} from '@mui/material';
+} from "@mui/material";
 import {
   SettingsOutlined,
   Visibility,
   VisibilityOff,
-} from '@mui/icons-material';
-import { SettingsSection } from '../SharedSettingsComponents/SettingsSection';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { userApi } from '../../../services';
-import { Formik, Form, type FormikProps } from 'formik';
+} from "@mui/icons-material";
+import { SettingsSection } from "../SharedSettingsComponents/SettingsSection";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { userApi } from "../../../services";
+import { Formik, Form, type FormikProps } from "formik";
+import { useTranslation } from "react-i18next";
 import {
   generalValidationSchema,
   passwordValidationSchema,
-} from './generalValidationSchema';
+} from "./generalValidationSchema";
 
 interface Notification {
   message: string;
-  severity: 'success' | 'error';
+  severity: "success" | "error";
 }
 
 export const GeneralSection = () => {
@@ -37,11 +38,10 @@ export const GeneralSection = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [isProfileDirty, setIsProfileDirty] = useState(false);
   const [notification, setNotification] = useState<Notification | null>(null);
-
-  const showNotification = (message: string, severity: 'success' | 'error') => {
+  const { t } = useTranslation();
+  const showNotification = (message: string, severity: "success" | "error") => {
     setNotification({ message, severity });
   };
 
@@ -49,7 +49,7 @@ export const GeneralSection = () => {
     useRef<FormikProps<{ email: string; fullName: string }>>(null);
 
   const { data: currentUser, isLoading } = useQuery({
-    queryKey: ['currentUser'],
+    queryKey: ["currentUser"],
     queryFn: () => userApi.getCurrentUser(),
   });
 
@@ -57,11 +57,17 @@ export const GeneralSection = () => {
     mutationFn: ({ email, fullName }: { email: string; fullName: string }) =>
       userApi.updateProfile({ updateProfileRequest: { email, fullName } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-      showNotification('Profile updated successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      showNotification(
+        t("settings.general.notifications.updateSuccess"),
+        "success",
+      );
     },
     onError: () => {
-      showNotification('Failed to update profile. Please try again.', 'error');
+      showNotification(
+        t("settings.general.notifications.updateError"),
+        "error",
+      );
     },
   });
 
@@ -77,12 +83,15 @@ export const GeneralSection = () => {
         updatePasswordRequest: { currentPassword, newPassword },
       }),
     onSuccess: () => {
-      showNotification('Password updated successfully', 'success');
+      showNotification(
+        t("settings.general.notifications.passwordSuccess"),
+        "success",
+      );
     },
     onError: () => {
       showNotification(
-        'Failed to update password. Please check your current password.',
-        'error',
+        t("settings.general.notifications.passwordError"),
+        "error",
       );
     },
   });
@@ -98,20 +107,20 @@ export const GeneralSection = () => {
   return (
     <SettingsSection
       icon={<SettingsOutlined />}
-      title="General"
-      description="Basic project information and configuration"
+      title={t("settings.general.title")}
+      description={t("settings.general.description")}
     >
       <Snackbar
         open={!!notification}
         autoHideDuration={5000}
         onClose={() => setNotification(null)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={() => setNotification(null)}
           severity={notification?.severity}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {notification?.message}
         </Alert>
@@ -125,7 +134,7 @@ export const GeneralSection = () => {
             mb={0.5}
             display="block"
           >
-            Project name
+            {t("settings.general.projectName")}
           </Typography>
           <TextField value="Dschang's Signal" size="small" disabled fullWidth />
         </Box>
@@ -134,34 +143,26 @@ export const GeneralSection = () => {
           innerRef={generalFormRef}
           enableReinitialize
           initialValues={{
-            email: currentUser?.email ?? '',
-            fullName: currentUser?.fullName ?? '',
+            email: currentUser?.email ?? "",
+            fullName: currentUser?.fullName ?? "",
           }}
           validationSchema={generalValidationSchema}
           onSubmit={(values, { setSubmitting }) => {
-            console.log('Update profile:', values);
+            console.log("Update profile:", values);
             updateProfileMutation.mutate(
               { email: values.email, fullName: values.fullName },
               { onSettled: () => setSubmitting(false) },
             );
           }}
         >
-          {({
-            values,
-            handleChange,
-            handleBlur,
-            errors,
-            touched,
-            dirty,
-            isSubmitting,
-          }) => {
+          {({ values, handleChange, handleBlur, errors, touched, dirty }) => {
             if (dirty !== isProfileDirty) setIsProfileDirty(dirty);
             return (
               <Form>
                 <Box
                   display="flex"
                   gap={2}
-                  flexDirection={{ xs: 'column', sm: 'row' }}
+                  flexDirection={{ xs: "column", sm: "row" }}
                 >
                   <Box flex={1}>
                     <Typography
@@ -170,7 +171,7 @@ export const GeneralSection = () => {
                       mb={0.5}
                       display="block"
                     >
-                      User email
+                      {t("settings.general.userEmail")}
                     </Typography>
                     <TextField
                       name="email"
@@ -190,7 +191,7 @@ export const GeneralSection = () => {
                       mb={0.5}
                       display="block"
                     >
-                      Full name
+                      {t("settings.general.fullName")}
                     </Typography>
                     <TextField
                       name="fullName"
@@ -211,13 +212,13 @@ export const GeneralSection = () => {
 
         <Formik
           initialValues={{
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: '',
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
           }}
           validationSchema={passwordValidationSchema}
           onSubmit={(values, { setSubmitting, resetForm }) => {
-            console.log('Update pasword', values);
+            console.log("Update pasword", values);
             updatePasswordMutation.mutate(
               {
                 currentPassword: values.currentPassword,
@@ -254,19 +255,21 @@ export const GeneralSection = () => {
                     mb={0.5}
                     display="block"
                   >
-                    Password
+                    {t("settings.general.password")}
                   </Typography>
                   <Box
                     display="flex"
                     gap={1}
                     alignItems="flex-start"
-                    flexDirection={{ xs: 'column', sm: 'row' }}
+                    flexDirection={{ xs: "column", sm: "row" }}
                   >
                     <Box flex={1} width="100%">
                       <TextField
                         name="currentPassword"
-                        type={showCurrentPassword ? 'text' : 'password'}
-                        placeholder="Current password"
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder={t(
+                          "settings.general.placeholders.currentPassword",
+                        )}
                         value={values.currentPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -284,7 +287,7 @@ export const GeneralSection = () => {
                             <InputAdornment position="end">
                               <IconButton
                                 size="small"
-                                sx={{ color: '#7C4DFF' }}
+                                sx={{ color: "#7C4DFF" }}
                                 onClick={() =>
                                   setShowCurrentPassword((p) => !p)
                                 }
@@ -305,18 +308,18 @@ export const GeneralSection = () => {
                       variant="contained"
                       size="small"
                       sx={{
-                        backgroundColor: '#7C4DFF',
-                        color: '#fff',
-                        '&:hover': { backgroundColor: '#6C3FEF' },
-                        whiteSpace: 'nowrap',
+                        backgroundColor: "#7C4DFF",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "#6C3FEF" },
+                        whiteSpace: "nowrap",
                         height: 40,
-                        mt: { xs: 0, sm: '1px' },
-                        width: { xs: '100%', sm: 'auto' },
+                        mt: { xs: 0, sm: "1px" },
+                        width: { xs: "100%", sm: "auto" },
                       }}
                       onClick={() => setShowPasswordFields(true)}
                       disabled={!values.currentPassword || showPasswordFields}
                     >
-                      Update password
+                      {t("settings.general.buttons.updatePassword")}
                     </Button>
                   </Box>
                 </Box>
@@ -334,8 +337,10 @@ export const GeneralSection = () => {
                       </Typography>
                       <TextField
                         name="newPassword"
-                        type={showNewPassword ? 'text' : 'password'}
-                        placeholder="New password"
+                        type={showNewPassword ? "text" : "password"}
+                        placeholder={t(
+                          "settings.general.placeholders.newPassword",
+                        )}
                         value={values.newPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -350,7 +355,7 @@ export const GeneralSection = () => {
                             <InputAdornment position="end">
                               <IconButton
                                 size="small"
-                                sx={{ color: '#7C4DFF' }}
+                                sx={{ color: "#7C4DFF" }}
                                 onClick={() => setShowNewPassword((p) => !p)}
                                 edge="end"
                               >
@@ -373,12 +378,14 @@ export const GeneralSection = () => {
                         mb={0.5}
                         display="block"
                       >
-                        Confirm new password
+                        {t("settings.general.buttons.confirm")}
                       </Typography>
                       <TextField
                         name="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder="Confirm new password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder={t(
+                          "settings.general.placeholders.confirmPassword",
+                        )}
                         value={values.confirmPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -396,7 +403,7 @@ export const GeneralSection = () => {
                             <InputAdornment position="end">
                               <IconButton
                                 size="small"
-                                sx={{ color: '#7C4DFF' }}
+                                sx={{ color: "#7C4DFF" }}
                                 onClick={() =>
                                   setShowConfirmPassword((p) => !p)
                                 }
@@ -416,8 +423,8 @@ export const GeneralSection = () => {
 
                     <Box
                       display="flex"
-                      justifyContent={{ xs: 'stretch', sm: 'flex-end' }}
-                      flexDirection={{ xs: 'column-reverse', sm: 'row' }}
+                      justifyContent={{ xs: "stretch", sm: "flex-end" }}
+                      flexDirection={{ xs: "column-reverse", sm: "row" }}
                       gap={1}
                       pt={1}
                     >
@@ -433,7 +440,7 @@ export const GeneralSection = () => {
                           setShowConfirmPassword(false);
                         }}
                       >
-                        Cancel
+                        {t("settings.general.buttons.saveChanges")}
                       </Button>
                       <Button
                         type="submit"
@@ -445,7 +452,8 @@ export const GeneralSection = () => {
                           !values.newPassword ||
                           !values.confirmPassword ||
                           values.newPassword !== values.confirmPassword ||
-                          values.currentPassword.length < 6 || values.currentPassword === values.newPassword
+                          values.currentPassword.length < 6 ||
+                          values.currentPassword === values.newPassword
                         }
                         startIcon={
                           updatePasswordMutation.isPending ? (
@@ -453,13 +461,13 @@ export const GeneralSection = () => {
                           ) : null
                         }
                         sx={{
-                          backgroundColor: '#7C4DFF',
-                          '&:hover': { backgroundColor: '#6C3FEF' },
+                          backgroundColor: "#7C4DFF",
+                          "&:hover": { backgroundColor: "#6C3FEF" },
                         }}
                       >
                         {updatePasswordMutation.isPending
-                          ? 'Saving...'
-                          : 'Confirm'}
+                          ? t("settings.general.buttons.saving")
+                          : t("settings.general.buttons.confirm")}
                       </Button>
                     </Box>
                   </Stack>
@@ -477,7 +485,7 @@ export const GeneralSection = () => {
               size="small"
               onClick={() => generalFormRef.current?.resetForm()}
             >
-              Cancel
+              {t("settings.general.buttons.cancel")}
             </Button>
             <Button
               variant="contained"
@@ -489,12 +497,14 @@ export const GeneralSection = () => {
                 ) : null
               }
               sx={{
-                backgroundColor: '#7C4DFF',
-                '&:hover': { backgroundColor: '#6C3FEF' },
+                backgroundColor: "#7C4DFF",
+                "&:hover": { backgroundColor: "#6C3FEF" },
               }}
               onClick={() => generalFormRef.current?.submitForm()}
             >
-              {updateProfileMutation.isPending ? 'Saving...' : 'Save changes'}
+              {updateProfileMutation.isPending
+                ? t("settings.general.buttons.saving")
+                : t("settings.general.buttons.saveChanges")}
             </Button>
           </Box>
         )}
