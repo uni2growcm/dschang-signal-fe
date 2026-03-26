@@ -6,6 +6,7 @@ import {
   UserApi,
   Configuration,
   type Middleware,
+  type CategoryResponse,
 } from './api';
 import { API_URL } from './utils/env';
 import { getToken } from './utils/localStorage';
@@ -150,7 +151,7 @@ export const checkCategoryExists = async (name: string): Promise<boolean> => {
   }
   const categories = await response.json();
   return categories.some(
-    (cat: any) => cat.name.toLowerCase() === name.toLowerCase(),
+    (cat: CategoryResponse) => cat.name!.toLowerCase() === name.toLowerCase(),
   );
 };
 
@@ -196,8 +197,8 @@ export const updateReportStatus = async (
     status: "PENDING" | "IN_PROGRESS" | "RESOLVED";
   },
 ) => {
-  return await reportApi.updateReportStatus({
-    id,
-    updateReportStatusRequest: data,
-  });
+    return await reportApi.updateReportStatus({
+      id,
+      updateReportStatusRequest: data,
+    });
 };

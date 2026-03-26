@@ -113,7 +113,7 @@
     "title": "Titolo",
     "description": "Descrizione",
     "location": "Posizione",
-    "categoryOptional": "Categoria (opzionale)",
+    "categoryOptional": "Categorie (opzionale)",
     "selectedCategories": "Categorie selezionate",
     "newCategory": "Nome della nuova categoria",
     "attachMedia": "Allega foto o video",
@@ -147,7 +147,7 @@
     "filterMine": "Le mie segnalazioni",
     "createReport": "Crea una segnalazione",
     "noReports": "Nessuna segnalazione trovata",
-    "noReports_View":"Nessuna segnalazione trovata per questa vista.",
+    "noReports_View": "Nessuna segnalazione trovata per questa vista.",
     "clearFilters": "Cancella i filtri per vedere tutte le segnalazioni",
     "clearFiltersAction": "Cancella i filtri",
     "allStatuses": "Tutti gli stati",
@@ -203,7 +203,8 @@
     "noMedia": "Nessun media disponibile",
     "downloadDocument": "📄 Scarica documento",
     "unknownStatus": "SCONOSCIUTO",
-    "unnamed": "Senza nome"
+    "unnamed": "Senza nome",
+    "reviewedAt": "Revisionato il"
   },
   "usersSection": {
     "title": "Elenco utenti",

@@ -147,7 +147,7 @@
     "filterMine": "Meine Berichte",
     "createReport": "Bericht erstellen",
     "noReports": "Keine Berichte gefunden",
-    "noReports_View":"Keine Berichte für diese Ansicht gefunden.",
+    "noReports_View": "Keine Berichte für diese Ansicht gefunden.",
     "clearFilters": "Filter zurücksetzen, um alle Berichte zu sehen",
     "clearFiltersAction": "Filter löschen",
     "allStatuses": "Alle Status",
@@ -203,7 +203,8 @@
     "noMedia": "Kein Medium verfügbar",
     "downloadDocument": "📄 Dokument herunterladen",
     "unknownStatus": "UNBEKANNT",
-    "unnamed": "Ohne Namen"
+    "unnamed": "Ohne Namen",
+    "reviewedAt": "Überprüft am"
   },
   "usersSection": {
     "title": "Benutzerliste",

@@ -20,7 +20,7 @@ import {
 } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
-import { ReportModerationStatusEnum, type Report } from "../../api";
+import { ReportModerationStatusEnum, type CategoryResponse, type MediaResponse } from "../../api";
 
 const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
   status
@@ -47,9 +47,8 @@ export default function ReportDetailsPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [selectedReportStatus, setSelectedReportStatus] = useState<ReportStatus>(
-    "PENDING",
-  );
+  const [selectedReportStatus, setSelectedReportStatus] =
+    useState<ReportStatus>("PENDING");
 
   const {
     data: report,
@@ -72,7 +71,9 @@ export default function ReportDetailsPage() {
   const invalidateReportQueries = async () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["report", id] }),
-      queryClient.invalidateQueries({ queryKey: ["getAuthenticatedUserReports"] }),
+      queryClient.invalidateQueries({
+        queryKey: ["getAuthenticatedUserReports"],
+      }),
       queryClient.invalidateQueries({ queryKey: ["getPublicReports"] }),
     ]);
   };
@@ -116,8 +117,7 @@ export default function ReportDetailsPage() {
     isOwner &&
     report?.moderationStatus === "PENDING_REVIEW" &&
     report?.reportStatus === "PENDING";
-  const canModerate =
-    isAdmin && report?.moderationStatus === "PENDING_REVIEW";
+  const canModerate = isAdmin && report?.moderationStatus === "PENDING_REVIEW";
   const canChangeReportStatus =
     isAdmin && report?.moderationStatus === "ACCEPTED";
 
@@ -175,7 +175,8 @@ export default function ReportDetailsPage() {
 
   const adminLoading =
     moderationMutation.isPending || reportStatusMutation.isPending;
-  const displayPendingReviewStatus = report.moderationStatus === "PENDING_REVIEW";
+  const displayPendingReviewStatus =
+    report.moderationStatus === "PENDING_REVIEW";
   const displayRejectedStatus = report.moderationStatus === "REJECTED";
 
   return (
@@ -243,7 +244,9 @@ export default function ReportDetailsPage() {
           </div>
         </div>
 
-        {(deleteMutation.isError || moderationMutation.isError || reportStatusMutation.isError) && (
+        {(deleteMutation.isError ||
+          moderationMutation.isError ||
+          reportStatusMutation.isError) && (
           <p className="text-center text-sm text-red-500">
             {(deleteMutation.error as Error | null)?.message ||
               adminErrorMessage ||
@@ -288,14 +291,16 @@ export default function ReportDetailsPage() {
 
               {canChangeReportStatus && (
                 <div className="flex flex-wrap items-end gap-3">
-                  <div className="flex min-w-[200px] flex-col gap-1">
+                  <div className="flex min-w-52 flex-col gap-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t("reportDetails.changeReportStatus")}
                     </label>
                     <select
                       value={selectedReportStatus}
                       onChange={(event) =>
-                        setSelectedReportStatus(event.target.value as ReportStatus)
+                        setSelectedReportStatus(
+                          event.target.value as ReportStatus,
+                        )
                       }
                       className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                     >
@@ -303,7 +308,9 @@ export default function ReportDetailsPage() {
                       <option value="IN_PROGRESS">
                         {t("home.statusInProgress")}
                       </option>
-                      <option value="RESOLVED">{t("home.statusResolved")}</option>
+                      <option value="RESOLVED">
+                        {t("home.statusResolved")}
+                      </option>
                     </select>
                   </div>
                   <button
@@ -314,7 +321,8 @@ export default function ReportDetailsPage() {
                       })
                     }
                     disabled={
-                      adminLoading || selectedReportStatus === report.reportStatus
+                      adminLoading ||
+                      selectedReportStatus === report.reportStatus
                     }
                     className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
                   >
@@ -334,7 +342,10 @@ export default function ReportDetailsPage() {
           </div>
         )}
 
-        <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)}>
+        <Dialog
+          open={rejectDialogOpen}
+          onClose={() => setRejectDialogOpen(false)}
+        >
           <DialogTitle>{t("reportDetails.rejectTitle")}</DialogTitle>
           <DialogContent>
             <DialogContentText sx={{ mb: 2 }}>
@@ -392,20 +403,20 @@ export default function ReportDetailsPage() {
                   ? "bg-red-100 text-red-700"
                   : displayPendingReviewStatus
                     ? "bg-gray-100 text-gray-700"
-                  : report.reportStatus === "PENDING"
-                  ? styles.pending
-                  : report.reportStatus === "IN_PROGRESS"
-                    ? styles.inProgress
-                    : styles.resolved
+                    : report.reportStatus === "PENDING"
+                      ? styles.pending
+                      : report.reportStatus === "IN_PROGRESS"
+                        ? styles.inProgress
+                        : styles.resolved
               }`}
             >
               {displayRejectedStatus
                 ? getTranslatedModerationStatusLabel("REJECTED")
                 : displayPendingReviewStatus
                   ? getTranslatedModerationStatusLabel("PENDING_REVIEW")
-                : getTranslatedStatusLabel(
-                    report.reportStatus as ReportStatus | undefined,
-                  )}
+                  : getTranslatedStatusLabel(
+                      report.reportStatus as ReportStatus | undefined,
+                    )}
             </span>
           </div>
           <p className={styles.description}>
@@ -435,7 +446,7 @@ export default function ReportDetailsPage() {
                 {report.moderationStatus !=
                   ReportModerationStatusEnum.PendingReview && (
                   <span>
-                    Reviewed at:{" "}
+                {t("reportDetails.reviewedAt")}:{" "}
                     {report.reviewedAt
                       ? new Date(report.reviewedAt).toLocaleString()
                       : "N/A"}
@@ -443,24 +454,17 @@ export default function ReportDetailsPage() {
                 )}
                 {report.moderationStatus ==
                   ReportModerationStatusEnum.Rejected && (
-                  <span>
-                    Rejection reason: {report.rejectionReason || "N/A"}
+                  <span className="text-red-700 text-end">
+                    {t("reportDetails.rejectionReason")}:{" "}
+                    {report.rejectionReason}
                   </span>
                 )}
               </div>
             )}
           </div>
-          {report.rejectionReason && (
-            <div className="mt-3 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
-              <span className="font-medium">
-                {t("reportDetails.rejectionReason")}:
-              </span>{" "}
-              {report.rejectionReason}
-            </div>
-          )}
           <div className={styles.categories}>
             {report.categories?.length ? (
-              report.categories.map((category) => (
+              report.categories.map((category: CategoryResponse) => (
                 <span key={category.id} className={styles.categoryChip}>
                   #{category.name || t("reportDetails.unnamed")}
                 </span>
@@ -475,8 +479,10 @@ export default function ReportDetailsPage() {
 
         <div className={styles.mediaContainer}>
           {report.medias?.length ? (
-            report.medias.map((media) => {
-              const fullUrl = media?.url ? `http://localhost:8080${media.url}` : "";
+            report.medias.map((media: MediaResponse) => {
+              const fullUrl = media?.url
+                ? `http://localhost:8080${media.url}`
+                : "";
 
               if (!fullUrl) {
                 return null;

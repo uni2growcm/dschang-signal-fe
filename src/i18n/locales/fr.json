@@ -113,7 +113,7 @@
     "title": "Titre",
     "description": "Description",
     "location": "Localisation",
-    "categoryOptional": "Catégorie (optionnelle)",
+    "categoryOptional": "Catégories (optionnelle)",
     "selectedCategories": "Catégories sélectionnées",
     "newCategory": "Nom de la nouvelle catégorie",
     "attachMedia": "Joindre des photos ou vidéos",
@@ -147,7 +147,7 @@
     "filterMine": "Mes signalements",
     "createReport": "Créer un signalement",
     "noReports": "Aucun signalement trouvé",
-    "noReports_View":"Aucun signalement trouvé pour cette vue.",
+    "noReports_View": "Aucun signalement trouvé pour cette vue.",
     "clearFilters": "Effacer les filtres pour voir tous les signalements",
     "clearFiltersAction": "Effacer les filtres",
     "allStatuses": "Tous les statuts",
@@ -203,7 +203,8 @@
     "noMedia": "Aucun média disponible",
     "downloadDocument": "📄 Télécharger le document",
     "unknownStatus": "INCONNU",
-    "unnamed": "Sans nom"
+    "unnamed": "Sans nom",
+    "reviewedAt": "Révisé le"
   },
   "usersSection": {
     "title": "Liste des utilisateurs",

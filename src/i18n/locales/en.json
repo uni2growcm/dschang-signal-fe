@@ -113,7 +113,7 @@
     "title": "Title",
     "description": "Description",
     "location": "Location",
-    "categoryOptional": "Category (optional)",
+    "categoryOptional": "Categories (optional)",
     "selectedCategories": "Selected categories",
     "newCategory": "New category name",
     "attachMedia": "Attach photos or videos",
@@ -147,7 +147,7 @@
     "filterMine": "My Reports",
     "createReport": "Create Report",
     "noReports": "No reports found",
-    "noReports_View":"No reports found for this view.",
+    "noReports_View": "No reports found for this view.",
     "clearFilters": "Clear filters to see all reports",
     "clearFiltersAction": "Clear filters",
     "allStatuses": "All statuses",
@@ -203,7 +203,8 @@
     "noMedia": "No media available",
     "downloadDocument": "📄 Download document",
     "unknownStatus": "UNKNOWN",
-    "unnamed": "Unnamed"
+    "unnamed": "Unnamed",
+    "reviewedAt": "Reviewed at"
   },
   "usersSection": {
     "title": "List of Users",
