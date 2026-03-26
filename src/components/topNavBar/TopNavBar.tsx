@@ -8,7 +8,6 @@ import {
   Badge,
 } from '@mui/material';
 import { NotificationsOutlined } from '@mui/icons-material';
-// import { useNavigate } from 'react-router';
 import Logo from '../logo/Logo';
 import { useQuery } from '@tanstack/react-query';
 import { userApi } from '../../services';
@@ -16,7 +15,6 @@ import { userApi } from '../../services';
 const UNREAD_NOTIFICATIONS = 3;
 
 export default function TopNavBar() {
-  // const navigate = useNavigate();
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
@@ -103,10 +101,6 @@ export default function TopNavBar() {
               <NotificationsOutlined sx={{ color: 'text.secondary' }} />
             </Badge>
           </IconButton>
-
-          {/* <IconButton size="small" onClick={() => navigate('/settings')}>
-            <SettingsOutlined sx={{ color: 'text.secondary' }} />
-          </IconButton> */}
         </Box>
       </Toolbar>
     </AppBar>
