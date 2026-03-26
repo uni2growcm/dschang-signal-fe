@@ -1,4 +1,3 @@
-// LoginForm.tsx
 import {
   Box,
   Button,
@@ -7,7 +6,7 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { useGoogleLogin } from "@react-oauth/google"; // Ajoute cet import
+import { useGoogleLogin } from "@react-oauth/google";
 import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useState } from "react";
@@ -35,10 +34,9 @@ export default function LoginForm() {
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false); // Ajoute cet état
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Mutation pour le login classique
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const response = await authApi.login({
@@ -81,10 +79,8 @@ export default function LoginForm() {
     },
   });
 
-  // Mutation pour le login Google (à ajouter dans ton authApi)
   const googleLoginMutation = useMutation({
     mutationFn: async (googleToken: string) => {
-      // Appelle ton endpoint Google (à créer côté backend)
       const response = await fetch("http://localhost:8080/api/auth/google", {
         method: "POST",
         headers: {
@@ -120,7 +116,6 @@ export default function LoginForm() {
     },
   });
 
-  // Configuration de Google Login
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       setIsGoogleLoading(true);
@@ -279,8 +274,6 @@ export default function LoginForm() {
                 {t("login.or")}
               </Divider>
             </Box>
-
-            {/* Bouton Google modifié */}
             <Button
               variant="outlined"
               fullWidth
