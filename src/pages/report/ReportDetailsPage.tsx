@@ -322,16 +322,16 @@ export default function ReportDetailsPage() {
                 );
               }
 
-              // Vidéos
+              
               if (media.mimeType?.startsWith("video")) {
                 const handleVideoClick = (e: React.MouseEvent) => {
                   e.stopPropagation();
                   const videoElement = e.currentTarget as HTMLVideoElement;
 
-                  // Arrêter complètement la vidéo miniature
+                 
                   videoElement.pause();
                   videoElement.currentTime = 0;
-                  // Supprimer la source pour libérer la mémoire
+                 
                   videoElement.src = "";
                   videoElement.load();
 
