@@ -159,7 +159,7 @@ export default function EditReportPage() {
           to={PATHS.REPORT_DETAILS.replace(":id", String(id))}
           className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all w-fit"
         >
-          ← Back to Report
+          {t('editReport.back-to-report')}
         </Link>
 
         <div className={styles.pageHeader}>
@@ -171,13 +171,13 @@ export default function EditReportPage() {
               textAlign: "center",
             }}
           >
-            Edit Report
+            {t('editReport.title')}
           </Typography>
           <Typography
             variant="body2"
             sx={{ color: "#666", mt: 0.5, textAlign: "center" }}
           >
-            Update your report details
+            {t('editReport.update-details')}
           </Typography>
         </div>
 
@@ -193,7 +193,8 @@ export default function EditReportPage() {
           {({ values, handleChange, handleBlur, errors, touched }) => (
             <Form className="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-md">
               <FormTextField
-                label="Title *"
+                label={t('editReport.report-title')}
+                required
                 name="title"
                 value={values.title}
                 onChange={handleChange}
@@ -202,7 +203,7 @@ export default function EditReportPage() {
                 helperText={touched.title && errors.title}
               />
               <FormTextField
-                label="Description *"
+                label={t('editReport.description')}
                 name="description"
                 value={values.description}
                 onChange={handleChange}
@@ -213,7 +214,8 @@ export default function EditReportPage() {
                 rows={4}
               />
               <FormTextField
-                label="Location *"
+                label={t('editReport.location')}
+                required
                 name="locationText"
                 value={values.locationText}
                 onChange={handleChange}
@@ -247,7 +249,7 @@ export default function EditReportPage() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Categories (optional)"
+                    label={t('editReport.categories-optional')}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "8px",
@@ -261,10 +263,10 @@ export default function EditReportPage() {
               {report.medias?.length > 0 && (
                 <Box>
                   <Typography variant="body2" color="#666" mb={1}>
-                    Existing media
+                    {t('editReport.existing-media')}
                     <span style={{ color: "#999", fontSize: 12 }}>
                       {" "}
-                      (click ✕ to remove)
+                      {t('editReport.click-to-remove')}
                     </span>
                   </Typography>
                   <Box display="flex" gap={1} flexWrap="wrap">
@@ -329,10 +331,10 @@ export default function EditReportPage() {
 
               <Box>
                 <Typography variant="body2" color="#666" mb={1}>
-                  Add new media
+                  {t('editReport.add-new-media')}
                   <span style={{ color: "#999", fontSize: 12 }}>
                     {" "}
-                    (optional)
+                    {t('editReport.optional')}
                   </span>
                 </Typography>
                 <label
@@ -357,7 +359,7 @@ export default function EditReportPage() {
                   />
                   <MdCloudUpload size={28} color="#7c4dff" />
                   <Typography variant="body2" color="#7c4dff" mt={0.5}>
-                    Click to select files
+                    {t('editReport.click-to-select-files')}
                   </Typography>
                 </label>
 
@@ -419,7 +421,7 @@ export default function EditReportPage() {
               {mutation.isError && (
                 <p className="text-red-500 text-sm text-center">
                   {(mutation.error as Error)?.message ||
-                    "Failed to update report"}
+                    t('editReport.failed-to-update-report')}
                 </p>
               )}
 
@@ -428,7 +430,7 @@ export default function EditReportPage() {
                 disabled={mutation.isPending}
                 className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
               >
-                {mutation.isPending ? "Saving..." : "Save Changes"}
+                {mutation.isPending ? "Saving..." : t('editReport.save-changes')}
               </button>
             </Form>
           )}
@@ -436,7 +438,7 @@ export default function EditReportPage() {
 
         <SnackBar
           open={mutation.isSuccess}
-          message="Report updated successfully!"
+          message={t('editReport.report-updated-successfully')}
           severity="success"
         />
       </div>

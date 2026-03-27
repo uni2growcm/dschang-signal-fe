@@ -11,9 +11,9 @@ import { LOCAL_STORAGE_KEYS } from "../utils/localStorage";
 import { PATHS } from "./PATHS";
 import Layout from "../components/layout/Layout";
 
-const isAuthenticated: boolean = !!localStorage.getItem(
-  LOCAL_STORAGE_KEYS.TOKEN,
-);
+const checkAuth = () => {
+  return !!localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+};
 
 export const clientsRoutes = createBrowserRouter([
   {
@@ -27,6 +27,12 @@ export const clientsRoutes = createBrowserRouter([
       {
         path: PATHS.CREATE_REPORT,
         Component: CreateReportPage,
+        loader: () => {
+          if (!checkAuth()) {
+            return redirect(PATHS.LOGIN);
+          }
+          return null;
+        },
       },
       {
         path: PATHS.REPORT_DETAILS,
@@ -35,10 +41,22 @@ export const clientsRoutes = createBrowserRouter([
       {
         path: PATHS.EDIT_REPORT,
         Component: EditReportPage,
+        loader: () => {
+          if (!checkAuth()) {
+            return redirect(PATHS.LOGIN);
+          }
+          return null;
+        },
       },
       {
         path: PATHS.SETTINGS,
         Component: Settings,
+        loader: () => {
+          if (!checkAuth()) {
+            return redirect(PATHS.LOGIN);
+          }
+          return null;
+        },
       },
     ],
   },
@@ -46,14 +64,20 @@ export const clientsRoutes = createBrowserRouter([
     path: PATHS.LOGIN,
     Component: LoginPage,
     loader: () => {
-      if (isAuthenticated) throw redirect(PATHS.INDEX);
+      if (checkAuth()) {
+        return redirect(PATHS.INDEX);
+      }
+      return null;
     },
   },
   {
     path: PATHS.REGISTER,
     Component: RegisterPage,
     loader: () => {
-      if (isAuthenticated) throw redirect(PATHS.INDEX);
+      if (checkAuth()) {
+        return redirect(PATHS.INDEX);
+      }
+      return null;
     },
   },
   { path: PATHS.NOT_FOUND, Component: NotFound },

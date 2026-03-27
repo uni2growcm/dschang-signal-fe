@@ -1,6 +1,7 @@
 import { MdOutlineWifiTethering } from "react-icons/md";
 import { Link } from "react-router";
 import { PATHS } from "../../routes/PATHS";
+import { useTranslation } from "react-i18next";
 
 export default function Logo({
   hideText = false,
@@ -13,6 +14,7 @@ export default function Logo({
   col?: boolean;
   textStyle?: string;
 }>) {
+  const { t } = useTranslation();
   return (
     <Link
       to={PATHS.INDEX}
@@ -25,14 +27,14 @@ export default function Logo({
         <span
           className={`text-2xl max-lg:text-lg font-bold tracking-wide max-sm:hidden ${hideText ? "hidden" : ""} max-sm:text-inherit sm:text-white ${textStyle}`}
         >
-          Dschang's Signal
+          {t("common.appName")}
         </span>
       )}
       {col && (
         <span
           className={`sm:hidden max-sm:text-2xl max-lg:text-xl font-bold tracking-wide max-sm:text-black sm:text-white`}
         >
-          Dschang's Signal
+          {t("common.appName")}
         </span>
       )}
     </Link>
