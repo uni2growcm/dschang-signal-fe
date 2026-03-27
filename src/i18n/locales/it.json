@@ -147,7 +147,7 @@
     "filterMine": "Le mie segnalazioni",
     "createReport": "Crea una segnalazione",
     "noReports": "Nessuna segnalazione trovata",
-    "noReports_View":"Nessuna segnalazione trovata per questa vista.",
+    "noReports_View": "Nessuna segnalazione trovata per questa vista.",
     "clearFilters": "Cancella i filtri per vedere tutte le segnalazioni",
     "clearFiltersAction": "Cancella i filtri",
     "allStatuses": "Tutti gli stati",
@@ -162,11 +162,6 @@
     "moderationPendingReview": "In attesa di revisione",
     "moderationAccepted": "Accettato",
     "moderationRejected": "Rifiutato"
-  },
-  "settings": {
-    "backHome": "← Torna alla home",
-    "title": "Impostazioni",
-    "description": "Gestisci la configurazione del tuo progetto e le preferenze"
   },
   "reportDetails": {
     "backHome": "← Torna alla home",
@@ -195,6 +190,77 @@
     "description": "Gestisci gli utenti registrati e i loro ruoli",
     "searchPlaceholder": "Cerca per nome completo...",
     "roleUpdated": "Ruolo utente aggiornato con successo",
-    "roleUpdateError": "Non puoi autorizzare te stesso. Chiedi a un altro admin di aggiornare il tuo ruolo."
+    "roleUpdateError": "Non puoi autorizzare te stesso. Chiedi a un altro admin di aggiornare il tuo ruolo.",
+    "noUser": "Nessun utente trovato"
+  },
+  "settings": {
+    "backHome": "← Torna alla home",
+    "title": "Impostazioni",
+    "description": "Gestisci la configurazione del tuo progetto e le preferenze",
+    "moderation": {
+      "title": "Moderazione",
+      "description": "Configura la moderazione dei contenuti e le regole di approvazione",
+      "approvalMode": {
+        "title": "Modalità di approvazione dei post",
+        "manual": "Approvazione manuale richiesta",
+        "auto": "Approva automaticamente tutti i post",
+        "verified": "Approvazione automatica solo per utenti verificati"
+      },
+      "filters": {
+        "title": "Filtri dei contenuti",
+        "profanity": "Filtra linguaggio offensivo",
+        "spam": "Blocca spam e invii ripetuti",
+        "imageRequired": "Richiedi immagini per le segnalazioni",
+        "location": "Abilita geolocalizzazione"
+      },
+      "maxSignals": {
+        "title": "Numero massimo di segnalazioni per utente al giorno",
+        "helper": "Imposta 0 per illimitato"
+      }
+    },
+    "danger": {
+      "title": "Zona pericolosa",
+      "description": "Azioni irreversibili — procedere con cautela",
+      "resetSignals": {
+        "title": "Reimposta tutti i segnali",
+        "description": "Elimina definitivamente tutti i segnali e i dati associati",
+        "button": "Reimposta"
+      },
+      "deleteProject": {
+        "title": "Elimina progetto",
+        "description": "Elimina definitivamente questo progetto e tutti i dati",
+        "button": "Elimina progetto"
+      },
+      "notifications": {
+        "notDeveloped": "Questa funzionalità non è ancora disponibile.",
+        "notAuthorized": "Questa azione non è autorizzata."
+      }
+    },
+    "general": {
+      "title": "Generale",
+      "description": "Informazioni e configurazione di base del progetto",
+      "projectName": "Nome progetto",
+      "userEmail": "Email utente",
+      "fullName": "Nome completo",
+      "password": "Password",
+      "placeholders": {
+        "currentPassword": "Password attuale",
+        "newPassword": "Nuova password",
+        "confirmPassword": "Conferma password"
+      },
+      "buttons": {
+        "updatePassword": "Aggiorna password",
+        "cancel": "Annulla",
+        "confirm": "Conferma",
+        "saveChanges": "Salva modifiche",
+        "saving": "Salvataggio..."
+      },
+      "notifications": {
+        "updateSuccess": "Profilo aggiornato con successo",
+        "updateError": "Errore durante l'aggiornamento del profilo",
+        "passwordSuccess": "Password aggiornata con successo",
+        "passwordError": "Errore durante l'aggiornamento della password"
+      }
+    }
   }
 }

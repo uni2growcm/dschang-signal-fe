@@ -147,7 +147,7 @@
     "filterMine": "Meine Berichte",
     "createReport": "Bericht erstellen",
     "noReports": "Keine Berichte gefunden",
-    "noReports_View":"Keine Berichte für diese Ansicht gefunden.",
+    "noReports_View": "Keine Berichte für diese Ansicht gefunden.",
     "clearFilters": "Filter zurücksetzen, um alle Berichte zu sehen",
     "clearFiltersAction": "Filter löschen",
     "allStatuses": "Alle Status",
@@ -162,11 +162,6 @@
     "moderationPendingReview": "Wartet auf Prüfung",
     "moderationAccepted": "Akzeptiert",
     "moderationRejected": "Abgelehnt"
-  },
-  "settings": {
-    "backHome": "← Zurück zur Startseite",
-    "title": "Einstellungen",
-    "description": "Verwalten Sie Ihre Projektkonfiguration und Einstellungen"
   },
   "reportDetails": {
     "backHome": "← Zurück zur Startseite",
@@ -195,6 +190,77 @@
     "description": "Verwalten Sie registrierte Benutzer und ihre Rollen",
     "searchPlaceholder": "Nach vollständigem Namen suchen...",
     "roleUpdated": "Benutzerrolle erfolgreich aktualisiert",
-    "roleUpdateError": "Sie können sich selbst nicht autorisieren. Bitte bitten Sie einen anderen Admin, Ihre Rolle zu aktualisieren."
+    "roleUpdateError": "Sie können sich selbst nicht autorisieren. Bitte bitten Sie einen anderen Admin, Ihre Rolle zu aktualisieren.",
+    "noUser": "Kein Benutzer gefunden"
+  },
+  "settings": {
+    "backHome": "← Zurück zur Startseite",
+    "title": "Einstellungen",
+    "description": "Verwalten Sie Ihre Projektkonfiguration und Einstellungen",
+    "moderation": {
+      "title": "Moderation",
+      "description": "Inhaltsmoderation und Genehmigungsregeln konfigurieren",
+      "approvalMode": {
+        "title": "Freigabemodus für Beiträge",
+        "manual": "Manuelle Freigabe erforderlich",
+        "auto": "Alle Beiträge automatisch freigeben",
+        "verified": "Automatische Freigabe nur für verifizierte Benutzer"
+      },
+      "filters": {
+        "title": "Inhaltsfilter",
+        "profanity": "Beleidigende Sprache filtern",
+        "spam": "Spam und wiederholte Einsendungen blockieren",
+        "imageRequired": "Bilder für Meldungen erforderlich machen",
+        "location": "Standortkennzeichnung aktivieren"
+      },
+      "maxSignals": {
+        "title": "Maximale Meldungen pro Benutzer und Tag",
+        "helper": "0 für unbegrenzt setzen"
+      }
+    },
+    "danger": {
+      "title": "Gefahrenzone",
+      "description": "Unumkehrbare Aktionen — mit Vorsicht fortfahren",
+      "resetSignals": {
+        "title": "Alle Signale zurücksetzen",
+        "description": "Alle Signale und Daten dauerhaft löschen",
+        "button": "Zurücksetzen"
+      },
+      "deleteProject": {
+        "title": "Projekt löschen",
+        "description": "Dieses Projekt und alle Daten dauerhaft löschen",
+        "button": "Projekt löschen"
+      },
+      "notifications": {
+        "notDeveloped": "Diese Funktion ist noch nicht implementiert.",
+        "notAuthorized": "Diese Aktion ist nicht erlaubt."
+      }
+    },
+    "general": {
+      "title": "Allgemein",
+      "description": "Grundlegende Projektinformationen und Konfiguration",
+      "projectName": "Projektname",
+      "userEmail": "Benutzer-E-Mail",
+      "fullName": "Vollständiger Name",
+      "password": "Passwort",
+      "placeholders": {
+        "currentPassword": "Aktuelles Passwort",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Passwort bestätigen"
+      },
+      "buttons": {
+        "updatePassword": "Passwort ändern",
+        "cancel": "Abbrechen",
+        "confirm": "Bestätigen",
+        "saveChanges": "Speichern",
+        "saving": "Speichert..."
+      },
+      "notifications": {
+        "updateSuccess": "Profil erfolgreich aktualisiert",
+        "updateError": "Fehler beim Aktualisieren des Profils",
+        "passwordSuccess": "Passwort erfolgreich geändert",
+        "passwordError": "Fehler beim Ändern des Passworts"
+      }
+    }
   }
 }

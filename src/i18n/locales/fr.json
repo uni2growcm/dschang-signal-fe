@@ -147,7 +147,7 @@
     "filterMine": "Mes signalements",
     "createReport": "Créer un signalement",
     "noReports": "Aucun signalement trouvé",
-    "noReports_View":"Aucun signalement trouvé pour cette vue.",
+    "noReports_View": "Aucun signalement trouvé pour cette vue.",
     "clearFilters": "Effacer les filtres pour voir tous les signalements",
     "clearFiltersAction": "Effacer les filtres",
     "allStatuses": "Tous les statuts",
@@ -162,11 +162,6 @@
     "moderationPendingReview": "En attente de révision",
     "moderationAccepted": "Accepté",
     "moderationRejected": "Rejeté"
-  },
-  "settings": {
-    "backHome": "← Retour à l'accueil",
-    "title": "Paramètres",
-    "description": "Gérez votre configuration de projet et vos préférences"
   },
   "reportDetails": {
     "backHome": "← Retour à l'accueil",
@@ -195,6 +190,77 @@
     "description": "Gérez les utilisateurs enregistrés et leurs rôles",
     "searchPlaceholder": "Rechercher par nom complet...",
     "roleUpdated": "Rôle de l'utilisateur mis à jour avec succès",
-    "roleUpdateError": "Vous ne pouvez pas vous autoriser. Veuillez demander à un autre administrateur de mettre à jour votre rôle."
+    "roleUpdateError": "Vous ne pouvez pas vous autoriser. Veuillez demander à un autre administrateur de mettre à jour votre rôle.",
+    "noUser": "Aucun utilisateur trouvé"
+  },
+  "settings": {
+    "backHome": "← Retour à l'accueil",
+    "title": "Paramètres",
+    "description": "Gérez votre configuration de projet et vos préférences",
+    "moderation": {
+      "title": "Modération",
+      "description": "Configurer la modération et les règles d'approbation",
+      "approvalMode": {
+        "title": "Mode d'approbation des publications",
+        "manual": "Approbation manuelle requise",
+        "auto": "Approuver automatiquement toutes les publications",
+        "verified": "Approbation automatique pour les utilisateurs vérifiés uniquement"
+      },
+      "filters": {
+        "title": "Filtres de contenu",
+        "profanity": "Filtrer les propos offensants",
+        "spam": "Bloquer le spam et les soumissions répétées",
+        "imageRequired": "Exiger une image pour les signalements",
+        "location": "Activer la géolocalisation"
+      },
+      "maxSignals": {
+        "title": "Nombre maximum de signalements par utilisateur et par jour",
+        "helper": "Mettre 0 pour illimité"
+      }
+    },
+    "danger": {
+      "title": "Zone dangereuse",
+      "description": "Actions irréversibles — procédez avec prudence",
+      "resetSignals": {
+        "title": "Réinitialiser tous les signaux",
+        "description": "Supprimer définitivement tous les signaux et leurs données",
+        "button": "Réinitialiser"
+      },
+      "deleteProject": {
+        "title": "Supprimer le projet",
+        "description": "Supprimer définitivement ce projet et toutes ses données",
+        "button": "Supprimer le projet"
+      },
+      "notifications": {
+        "notDeveloped": "Cette fonctionnalité n'est pas encore développée.",
+        "notAuthorized": "Cette action n'est pas autorisée."
+      }
+    },
+    "general": {
+      "title": "Général",
+      "description": "Informations et configuration de base du projet",
+      "projectName": "Nom du projet",
+      "userEmail": "Email utilisateur",
+      "fullName": "Nom complet",
+      "password": "Mot de passe",
+      "placeholders": {
+        "currentPassword": "Mot de passe actuel",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmer le nouveau mot de passe"
+      },
+      "buttons": {
+        "updatePassword": "Mettre à jour",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "saveChanges": "Enregistrer",
+        "saving": "Enregistrement..."
+      },
+      "notifications": {
+        "updateSuccess": "Profil mis à jour avec succès",
+        "updateError": "Échec de la mise à jour du profil",
+        "passwordSuccess": "Mot de passe mis à jour avec succès",
+        "passwordError": "Échec de la mise à jour du mot de passe"
+      }
+    }
   }
 }
