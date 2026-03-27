@@ -136,7 +136,12 @@ export const GeneralSection = () => {
           >
             {t("settings.general.projectName")}
           </Typography>
-          <TextField value="Dschang's Signal" size="small" disabled fullWidth />
+          <TextField
+            value={t("common.appName")}
+            size="small"
+            disabled
+            fullWidth
+          />
         </Box>
 
         <Formik
@@ -333,7 +338,7 @@ export const GeneralSection = () => {
                         mb={0.5}
                         display="block"
                       >
-                        New password
+                        {t("settings.general.placeholders.newPassword")}
                       </Typography>
                       <TextField
                         name="newPassword"
