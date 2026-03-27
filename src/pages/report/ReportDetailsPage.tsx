@@ -5,25 +5,24 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  TextField,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate, useParams } from "react-router";
 import { PATHS } from "../../routes/PATHS";
-import { deleteReport, getReportById } from "../../services";
+import {
+  deleteReport,
+  getReportById,
+  updateModerationStatus,
+  updateReportStatus,
+} from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
-import { ReportModerationStatusEnum, type CategoryResponse } from "../../api";
+import { ReportModerationStatusEnum, type CategoryResponse, type MediaResponse } from "../../api";
 import { useMediaViewer } from "../../hooks/useMediaViewer";
 import MediaViewer from "../../components/media/MediaViewer";
-
-interface LocalMedia {
-  id: number;
-  url: string;
-  mimeType: string;
-  originalName?: string;
-}
 
 const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
   status
@@ -39,6 +38,9 @@ const formatModerationStatus = (
     .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
     .join(" ");
 
+type ReportStatus = "PENDING" | "IN_PROGRESS" | "RESOLVED";
+type ModerationStatus = "PENDING_REVIEW" | "ACCEPTED" | "REJECTED";
+
 export default function ReportDetailsPage() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -46,6 +48,10 @@ export default function ReportDetailsPage() {
   const queryClient = useQueryClient();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const viewer = useMediaViewer();
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [selectedReportStatus, setSelectedReportStatus] =
+    useState<ReportStatus>("PENDING");
 
   const {
     data: report,
@@ -59,6 +65,22 @@ export default function ReportDetailsPage() {
 
   const { data: currentUser } = useMe();
 
+  useEffect(() => {
+    if (report?.reportStatus) {
+      setSelectedReportStatus(report.reportStatus as ReportStatus);
+    }
+  }, [report?.reportStatus]);
+
+  const invalidateReportQueries = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["report", id] }),
+      queryClient.invalidateQueries({
+        queryKey: ["getAuthenticatedUserReports"],
+      }),
+      queryClient.invalidateQueries({ queryKey: ["getPublicReports"] }),
+    ]);
+  };
+
   const deleteMutation = useMutation({
     mutationFn: () => deleteReport(Number(id)),
     onSuccess: () => {
@@ -70,13 +92,37 @@ export default function ReportDetailsPage() {
     },
   });
 
+  const moderationMutation = useMutation({
+    mutationFn: (payload: {
+      status: ModerationStatus;
+      rejectionReason?: string;
+    }) => updateModerationStatus(Number(id), payload),
+    onSuccess: async () => {
+      setRejectDialogOpen(false);
+      setRejectionReason("");
+      await invalidateReportQueries();
+    },
+  });
+
+  const reportStatusMutation = useMutation({
+    mutationFn: (payload: { status: ReportStatus }) =>
+      updateReportStatus(Number(id), payload),
+    onSuccess: async () => {
+      await invalidateReportQueries();
+    },
+  });
+
   const isOwner = currentUser?.id === report?.createdBy?.id;
+  const isAdmin = currentUser?.role === "ADMIN";
   const isPending = report?.reportStatus === "PENDING";
   const canDelete = isOwner && isPending;
   const canEdit =
     isOwner &&
     report?.moderationStatus === "PENDING_REVIEW" &&
     report?.reportStatus === "PENDING";
+  const canModerate = isAdmin && report?.moderationStatus === "PENDING_REVIEW";
+  const canChangeReportStatus =
+    isAdmin && report?.moderationStatus === "ACCEPTED";
 
   if (isLoading) {
     return (
@@ -92,11 +138,9 @@ export default function ReportDetailsPage() {
     return <Navigate to={PATHS.NOT_FOUND} replace />;
   }
 
-  const getTranslatedStatusLabel = (
-    status?: "PENDING" | "IN_PROGRESS" | "RESOLVED",
-  ) => {
+  const getTranslatedStatusLabel = (status?: ReportStatus) => {
     if (!status) {
-      return "UNKNOWN";
+      return t("reportDetails.unknownStatus");
     }
 
     switch (status) {
@@ -111,11 +155,9 @@ export default function ReportDetailsPage() {
     }
   };
 
-  const getTranslatedModerationStatusLabel = (
-    status?: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
-  ) => {
+  const getTranslatedModerationStatusLabel = (status?: ModerationStatus) => {
     if (!status) {
-      return "N/A";
+      return t("reportDetails.na");
     }
 
     switch (status) {
@@ -129,6 +171,16 @@ export default function ReportDetailsPage() {
         return formatModerationStatus(status);
     }
   };
+
+  const adminErrorMessage =
+    (moderationMutation.error as Error | null)?.message ||
+    (reportStatusMutation.error as Error | null)?.message;
+
+  const adminLoading =
+    moderationMutation.isPending || reportStatusMutation.isPending;
+  const displayPendingReviewStatus =
+    report.moderationStatus === "PENDING_REVIEW";
+  const displayRejectedStatus = report.moderationStatus === "REJECTED";
 
   return (
     <div className={styles.pageContainer}>
@@ -195,12 +247,148 @@ export default function ReportDetailsPage() {
           </div>
         </div>
 
-        {deleteMutation.isError && (
+        {(deleteMutation.isError ||
+          moderationMutation.isError ||
+          reportStatusMutation.isError) && (
           <p className="text-center text-sm text-red-500">
-            {(deleteMutation.error as Error)?.message ||
-              t("reportDetails.deleteError")}
+            {(deleteMutation.error as Error | null)?.message ||
+              adminErrorMessage ||
+              t("reportDetails.adminActionError")}
           </p>
         )}
+
+        {isAdmin && (
+          <div className="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex flex-col gap-3">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">
+                  {t("reportDetails.adminActions")}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {t("reportDetails.adminActionsDescription")}
+                </p>
+              </div>
+
+              {canModerate && (
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      moderationMutation.mutate({ status: "ACCEPTED" })
+                    }
+                    disabled={adminLoading}
+                    className="rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+                  >
+                    {t("reportDetails.acceptReport")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRejectDialogOpen(true)}
+                    disabled={adminLoading}
+                    className="rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+                  >
+                    {t("reportDetails.rejectReport")}
+                  </button>
+                </div>
+              )}
+
+              {canChangeReportStatus && (
+                <div className="flex flex-wrap items-end gap-3">
+                  <div className="flex min-w-52 flex-col gap-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t("reportDetails.changeReportStatus")}
+                    </label>
+                    <select
+                      value={selectedReportStatus}
+                      onChange={(event) =>
+                        setSelectedReportStatus(
+                          event.target.value as ReportStatus,
+                        )
+                      }
+                      className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <option value="PENDING">{t("home.statusPending")}</option>
+                      <option value="IN_PROGRESS">
+                        {t("home.statusInProgress")}
+                      </option>
+                      <option value="RESOLVED">
+                        {t("home.statusResolved")}
+                      </option>
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      reportStatusMutation.mutate({
+                        status: selectedReportStatus,
+                      })
+                    }
+                    disabled={
+                      adminLoading ||
+                      selectedReportStatus === report.reportStatus
+                    }
+                    className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+                  >
+                    {t("reportDetails.updateStatus")}
+                  </button>
+                </div>
+              )}
+
+              {!canModerate && !canChangeReportStatus && (
+                <p className="text-sm text-gray-500">
+                  {report.moderationStatus === "REJECTED"
+                    ? t("reportDetails.rejectedLockedMessage")
+                    : t("reportDetails.noAdminActionAvailable")}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <Dialog
+          open={rejectDialogOpen}
+          onClose={() => setRejectDialogOpen(false)}
+        >
+          <DialogTitle>{t("reportDetails.rejectTitle")}</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ mb: 2 }}>
+              {t("reportDetails.rejectMessage")}
+            </DialogContentText>
+            <TextField
+              fullWidth
+              multiline
+              minRows={3}
+              value={rejectionReason}
+              onChange={(event) => setRejectionReason(event.target.value)}
+              label={t("reportDetails.rejectionReason")}
+            />
+          </DialogContent>
+          <DialogActions>
+            <button
+              type="button"
+              onClick={() => {
+                setRejectDialogOpen(false);
+                setRejectionReason("");
+              }}
+              className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100"
+            >
+              {t("reportDetails.cancel")}
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                moderationMutation.mutate({
+                  status: "REJECTED",
+                  rejectionReason: rejectionReason.trim() || undefined,
+                })
+              }
+              disabled={adminLoading}
+              className="rounded-full bg-red-500 px-4 py-2 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+            >
+              {t("reportDetails.confirmReject")}
+            </button>
+          </DialogActions>
+        </Dialog>
 
         <div className={styles.card}>
           <div className={styles.header}>
@@ -214,14 +402,24 @@ export default function ReportDetailsPage() {
             </div>
             <span
               className={`${styles.status} ${
-                report.reportStatus === "PENDING"
-                  ? styles.pending
-                  : report.reportStatus === "IN_PROGRESS"
-                    ? styles.inProgress
-                    : styles.resolved
+                displayRejectedStatus
+                  ? "bg-red-100 text-red-700"
+                  : displayPendingReviewStatus
+                    ? "bg-gray-100 text-gray-700"
+                    : report.reportStatus === "PENDING"
+                      ? styles.pending
+                      : report.reportStatus === "IN_PROGRESS"
+                        ? styles.inProgress
+                        : styles.resolved
               }`}
             >
-              {getTranslatedStatusLabel(report.reportStatus)}
+              {displayRejectedStatus
+                ? getTranslatedModerationStatusLabel("REJECTED")
+                : displayPendingReviewStatus
+                  ? getTranslatedModerationStatusLabel("PENDING_REVIEW")
+                  : getTranslatedStatusLabel(
+                      report.reportStatus as ReportStatus | undefined,
+                    )}
             </span>
           </div>
           <p className={styles.description}>
@@ -229,14 +427,16 @@ export default function ReportDetailsPage() {
           </p>
           <div className={styles.meta}>
             <span>
-              {t("reportDetails.created-at")}{" "}
+              {t("reportDetails.createdAt")}:{" "}
               {report.createdAt
                 ? new Date(report.createdAt).toLocaleString()
                 : "N/A"}
             </span>
             <span>
-              {t("reportDetails.moderation")}{" "}
-              {getTranslatedModerationStatusLabel(report.moderationStatus)}
+              {t("reportDetails.moderation")}:{" "}
+              {getTranslatedModerationStatusLabel(
+                report.moderationStatus as ModerationStatus | undefined,
+              )}
             </span>
             {report.createdBy && (
               <span>
@@ -257,9 +457,9 @@ export default function ReportDetailsPage() {
                 )}
                 {report.moderationStatus ==
                   ReportModerationStatusEnum.Rejected && (
-                  <span>
-                    {t("reportDetails.rejection-reason")}{" "}
-                    {report.rejectionReason || "N/A"}
+                  <span className="text-red-700 text-end">
+                    {t("reportDetails.rejectionReason")}:{" "}
+                    {report.rejectionReason}
                   </span>
                 )}
               </div>
@@ -282,7 +482,7 @@ export default function ReportDetailsPage() {
 
         <div className={styles.mediaContainer}>
           {report.medias?.length ? (
-            (report.medias as LocalMedia[]).map((media: LocalMedia) => {
+            report.medias.map((media: MediaResponse) => {
               const fullUrl = media?.url
                 ? `http://localhost:8080${media.url}`
                 : "";
@@ -306,13 +506,13 @@ export default function ReportDetailsPage() {
                           mimeType: media.mimeType || "",
                           fileName: media.originalName,
                         },
-                        (report.medias as LocalMedia[])
+                        (report.medias as MediaResponse[])
                           .filter(
-                            (m: LocalMedia) =>
+                            (m: MediaResponse) =>
                               m.mimeType?.startsWith("image") ||
                               m.mimeType?.startsWith("video"),
                           )
-                          .map((m: LocalMedia) => ({
+                          .map((m: MediaResponse) => ({
                             id: m.id,
                             url: `http://localhost:8080${m.url}`,
                             mimeType: m.mimeType || "",
@@ -346,13 +546,13 @@ export default function ReportDetailsPage() {
                       mimeType: media.mimeType || "",
                       fileName: media.originalName,
                     },
-                    (report.medias as LocalMedia[])
+                    (report.medias as MediaResponse[])
                       .filter(
-                        (m: LocalMedia) =>
+                        (m: MediaResponse) =>
                           m.mimeType?.startsWith("image") ||
                           m.mimeType?.startsWith("video"),
                       )
-                      .map((m: LocalMedia) => ({
+                      .map((m: MediaResponse) => ({
                         id: m.id,
                         url: `http://localhost:8080${m.url}`,
                         mimeType: m.mimeType || "",
