@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -10,34 +10,36 @@ import {
   RadioGroup,
   Radio,
   Checkbox,
-} from '@mui/material'
-import { GavelOutlined } from '@mui/icons-material'
-import { SettingsSection } from '../SharedSettingsComponents/SettingsSection'
+} from "@mui/material";
+import { GavelOutlined } from "@mui/icons-material";
+import { SettingsSection } from "../SharedSettingsComponents/SettingsSection";
+import { useTranslation } from "react-i18next";
 
 export const ModerationSection = () => {
-  const [approvalMode, setApprovalMode] = useState('manual')
-  const [maxSignals, setMaxSignals] = useState('10')
+  const [approvalMode, setApprovalMode] = useState("manual");
+  const [maxSignals, setMaxSignals] = useState("10");
+  const { t } = useTranslation();
   const [filters, setFilters] = useState({
     profanity: true,
     spam: true,
     imageRequired: false,
     locationTagging: false,
-  })
+  });
 
   const handleFilterChange = (key: keyof typeof filters) => {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }))
-  }
+    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   return (
     <SettingsSection
       icon={<GavelOutlined />}
-      title='Moderation'
-      description='Configure content moderation and approval rules'
+      title={t("settings.moderation.title")}
+      description={t("settings.moderation.description")}
     >
       <Stack spacing={3}>
         <Box>
-          <Typography variant='body2' fontWeight='medium' mb={1}>
-            Post approval mode
+          <Typography variant="body2" fontWeight="medium" mb={1}>
+            {t("settings.moderation.approvalMode.title")}
           </Typography>
           <FormControl>
             <RadioGroup
@@ -45,56 +47,56 @@ export const ModerationSection = () => {
               onChange={(e) => setApprovalMode(e.target.value)}
             >
               <FormControlLabel
-                value='manual'
+                value="manual"
                 control={
                   <Radio
-                    size='small'
+                    size="small"
                     sx={{
-                      '&.Mui-checked': {
-                        color: '#7C4DFF',
+                      "&.Mui-checked": {
+                        color: "#7C4DFF",
                       },
                     }}
                   />
                 }
                 label={
-                  <Typography variant='body2'>
-                    Manual approval required
+                  <Typography variant="body2">
+                    {t("settings.moderation.approvalMode.manual")}
                   </Typography>
                 }
               />
               <FormControlLabel
-                value='auto'
+                value="auto"
                 control={
                   <Radio
-                    size='small'
+                    size="small"
                     sx={{
-                      '&.Mui-checked': {
-                        color: '#7C4DFF',
+                      "&.Mui-checked": {
+                        color: "#7C4DFF",
                       },
                     }}
                   />
                 }
                 label={
-                  <Typography variant='body2'>
-                    Auto approve all posts
+                  <Typography variant="body2">
+                    {t("settings.moderation.approvalMode.auto")}
                   </Typography>
                 }
               />
               <FormControlLabel
-                value='verified'
+                value="verified"
                 control={
                   <Radio
-                    size='small'
+                    size="small"
                     sx={{
-                      '&.Mui-checked': {
-                        color: '#7C4DFF',
+                      "&.Mui-checked": {
+                        color: "#7C4DFF",
                       },
                     }}
                   />
                 }
                 label={
-                  <Typography variant='body2'>
-                    Auto-approve for verified users only
+                  <Typography variant="body2">
+                    {t("settings.moderation.approvalMode.verified")}
                   </Typography>
                 }
               />
@@ -105,82 +107,84 @@ export const ModerationSection = () => {
         <Divider />
 
         <Box>
-          <Typography variant='body2' fontWeight='medium' mb={1}>
-            Content filters
+          <Typography variant="body2" fontWeight="medium" mb={1}>
+            {t("settings.moderation.filters.title")}
           </Typography>
           <Stack>
             <FormControlLabel
               control={
                 <Checkbox
-                  size='small'
+                  size="small"
                   sx={{
-                    '&.Mui-checked': {
-                      color: '#7C4DFF',
+                    "&.Mui-checked": {
+                      color: "#7C4DFF",
                     },
                   }}
                   checked={filters.profanity}
-                  onChange={() => handleFilterChange('profanity')}
+                  onChange={() => handleFilterChange("profanity")}
                 />
               }
               label={
-                <Typography variant='body2'>
-                  Filter profanity and offensive language
+                <Typography variant="body2">
+                  {t("settings.moderation.filters.profanity")}
                 </Typography>
               }
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  size='small'
+                  size="small"
                   sx={{
-                    '&.Mui-checked': {
-                      color: '#7C4DFF',
+                    "&.Mui-checked": {
+                      color: "#7C4DFF",
                     },
                   }}
                   checked={filters.spam}
-                  onChange={() => handleFilterChange('spam')}
+                  onChange={() => handleFilterChange("spam")}
                 />
               }
               label={
-                <Typography variant='body2'>
-                  Block spam and repeated submissions
+                <Typography variant="body2">
+                  {t("settings.moderation.filters.spam")}
                 </Typography>
               }
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  size='small'
+                  size="small"
                   sx={{
-                    '&.Mui-checked': {
-                      color: '#7C4DFF',
+                    "&.Mui-checked": {
+                      color: "#7C4DFF",
                     },
                   }}
                   checked={filters.imageRequired}
-                  onChange={() => handleFilterChange('imageRequired')}
+                  onChange={() => handleFilterChange("imageRequired")}
                 />
               }
               label={
-                <Typography variant='body2'>
-                  Require image attachments for reports
+                <Typography variant="body2">
+                  {t("settings.moderation.filters.imageRequired")}
                 </Typography>
               }
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  size='small'
+                  size="small"
                   sx={{
-                    '&.Mui-checked': {
-                      color: '#7C4DFF',
+                    "&.Mui-checked": {
+                      color: "#7C4DFF",
                     },
                   }}
                   checked={filters.locationTagging}
-                  onChange={() => handleFilterChange('locationTagging')}
+                  onChange={() => handleFilterChange("locationTagging")}
                 />
               }
               label={
-                <Typography variant='body2'>Enable location tagging</Typography>
+                <Typography variant="body2">
+                  {t("settings.moderation.filters.location")}
+                </Typography>
               }
             />
           </Stack>
@@ -189,26 +193,26 @@ export const ModerationSection = () => {
         <Divider />
 
         <Box>
-          <Typography variant='body2' fontWeight='medium' mb={1}>
-            Max signals per user per day
+          <Typography variant="body2" fontWeight="medium" mb={1}>
+            {t("settings.moderation.maxSignals.title")}
           </Typography>
           <TextField
             value={maxSignals}
             onChange={(e) => setMaxSignals(e.target.value)}
-            type='number'
-            size='small'
+            type="number"
+            size="small"
             sx={{ width: 100 }}
           />
           <Typography
-            variant='caption'
-            color='text.secondary'
-            display='block'
+            variant="caption"
+            color="text.secondary"
+            display="block"
             mt={0.5}
           >
-            Set to 0 for unlimited
+            {t("settings.moderation.maxSignals.helper")}
           </Typography>
         </Box>
       </Stack>
     </SettingsSection>
-  )
-}
+  );
+};

@@ -1,0 +1,201 @@
+.dialogPaper {
+  background-color: rgba(0, 0, 0, 0.95);
+  margin: 0;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.closeButton,
+.downloadButton {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: white !important;
+}
+
+.closeButton:hover,
+.downloadButton:hover {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0 !important;
+  position: relative;
+}
+
+.mediaContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.navButton {
+  position: fixed !important;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: white !important;
+  z-index: 10;
+}
+
+.navButton:hover {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.prevButton {
+  left: 16px;
+}
+
+.nextButton {
+  right: 16px;
+}
+
+
+.fullImage {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+
+.fullVideo {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+
+.audioContainer {
+  text-align: center;
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  min-width: 400px;
+}
+
+.audioPlayer {
+  width: 100%;
+  max-width: 500px;
+}
+
+
+.documentContainer {
+  text-align: center;
+  padding: 48px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  max-width: 500px;
+}
+
+.documentName {
+  color: white !important;
+  margin-bottom: 16px !important;
+  word-break: break-word;
+}
+
+.documentHint {
+  color: rgba(255, 255, 255, 0.7) !important;
+  margin-bottom: 24px !important;
+}
+
+.documentButton {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.documentButton:hover {
+  background-color: #1565c0;
+}
+
+.unsupportedText {
+  color: white !important;
+  font-size: 18px !important;
+}
+
+
+@media (max-width: 600px) {
+  .audioContainer {
+    min-width: 280px;
+    padding: 24px;
+  }
+  
+  .audioPlayer {
+    max-width: 100%;
+  }
+  
+  .documentContainer {
+    padding: 32px;
+    max-width: 90%;
+  }
+  
+  .navButton {
+    transform: translateY(-50%) scale(0.8);
+  }
+  
+  .prevButton {
+    left: 8px;
+  }
+  
+  .nextButton {
+    right: 8px;
+  }
+}
+
+.videoPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+.playButton {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  font-size: 48px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1976d2;
+}
+
+.playButton:hover {
+  transform: scale(1.1);
+  background-color: white;
+}
+
+.playHint {
+  margin-top: 20px !important;
+  color: white !important;
+  font-size: 14px !important;
+}
