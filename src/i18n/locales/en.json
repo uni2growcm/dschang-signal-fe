@@ -34,7 +34,11 @@
     "quote": "A simple way to report and track issues in our university.",
     "quoter": "Marie Nguemo",
     "quoterTitle": "Community Leader, Dschang",
-    "login-successful": "Login Successful"
+    "login-successful": "Login Successful",
+    "invalid-email": "Invalid email",
+    "email-required": "Email is required",
+    "password-min": "Password must be at least 6 characters",
+    "password-required": "Password is required"
   },
   "register": {
     "title": "Create Account",
@@ -296,6 +300,19 @@
       "require-2fa-for-admin-accounts": "Require 2FA for admin accounts",
       "session-timeout-minutes": "Session timeout (minutes)",
       "automatically-log-out-inactive-users-after-this-duration": "Automatically log out inactive users after this duration"
+    },
+    "validation": {
+      "invalid-email": "Invalid email",
+      "email-required": "Email is required",
+      "fullname-min": "Full name must be at least 2 characters",
+      "fullname-max": "Full name must be less than 50 characters",
+      "fullname-required": "Full name is required",
+      "password-min": "Password must be at least 6 characters",
+      "current-password-required": "Current password is required",
+      "password-different": "New password must be different from current password",
+      "new-password-required": "New password is required",
+      "password-match": "Passwords do not match",
+      "confirm-password-required": "Please confirm your password"
     }
   },
   "report": {
@@ -325,5 +342,16 @@
     "report-updated-successfully": "Report updated successfully!",
     "report-title": "Title",
     "categories-optional": "Categories (optional)"
+  },
+  "validation": {
+    "fullname-min": "Full name must be at least 2 characters",
+    "fullname-max": "Full name must be less than 50 characters",
+    "fullname-required": "Full name is required",
+    "invalid-email": "Invalid email",
+    "email-required": "Email is required",
+    "password-min": "Password must be at least 6 characters",
+    "password-required": "Password is required",
+    "confirm-password-required": "Confirm Password is required",
+    "password-match": "Passwords must match"
   }
 }

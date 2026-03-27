@@ -20,7 +20,7 @@ import SnackBar from "../../snackBar/SnackBar";
 import FormTextField from "../shared/FormTextField";
 import SuccessFade from "../shared/SuccessFade";
 import styles from "./LoginForm.module.css";
-import { loginValidationSchema } from "./schema";
+import { getLoginValidationSchema } from "./schema";
 
 interface LoginFormValues {
   email: string;
@@ -30,6 +30,7 @@ interface LoginFormValues {
 
 export default function LoginForm() {
   const { t } = useTranslation();
+  const validationSchema = getLoginValidationSchema(t);
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -67,6 +68,7 @@ export default function LoginForm() {
           const body = JSON.parse(text);
           errorMessage = body.message || text;
         } catch (e) {
+          console.error(e);
           errorMessage = t("login.unexpectedError");
         }
       }
@@ -86,7 +88,7 @@ export default function LoginForm() {
   return (
     <Formik
       initialValues={{ email: "", password: "", remember: false }}
-      validationSchema={loginValidationSchema}
+      validationSchema={validationSchema}
       onSubmit={loginMutation.mutate}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (

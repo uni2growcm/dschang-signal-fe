@@ -34,7 +34,11 @@
     "quote": "Une manière simple de signaler et suivre les problèmes dans notre université.",
     "quoter": "Marie Nguemo",
     "quoterTitle": "Responsable communautaire, Dschang",
-    "login-successful": "Connexion réussie"
+    "login-successful": "Connexion réussie",
+    "invalid-email": "E-mail invalide",
+    "email-required": "L'e-mail est requis",
+    "password-min": "Le mot de passe doit contenir au moins 6 caractères",
+    "password-required": "Le mot de passe est requis"
   },
   "register": {
     "title": "Créer un compte",
@@ -296,6 +300,19 @@
       "require-2fa-for-admin-accounts": "Exiger 2FA pour les comptes administrateur",
       "session-timeout-minutes": "Délai d'expiration de la session (minutes)",
       "automatically-log-out-inactive-users-after-this-duration": "Déconnectez automatiquement les utilisateurs inactifs après cette durée"
+    },
+    "validation": {
+      "invalid-email": "E-mail invalide",
+      "email-required": "L'e-mail est requis",
+      "fullname-min": "Le nom complet doit comporter au moins 2 caractères",
+      "fullname-max": "Le nom complet doit comporter moins de 50 caractères",
+      "fullname-required": "Le nom complet est requis",
+      "password-min": "Le mot de passe doit contenir au moins 6 caractères",
+      "current-password-required": "Le mot de passe actuel est requis",
+      "password-different": "Le nouveau mot de passe doit être différent du mot de passe actuel",
+      "new-password-required": "Un nouveau mot de passe est requis",
+      "password-match": "Les mots de passe ne correspondent pas",
+      "confirm-password-required": "Veuillez confirmer votre mot de passe"
     }
   },
   "report": {
@@ -324,5 +341,16 @@
     "report-updated-successfully": "Rapport mis à jour avec succès !",
     "report-title": "Titre",
     "categories-optional": "Catégories (facultatif)"
+  },
+  "validation": {
+    "fullname-min": "Le nom complet doit comporter au moins 2 caractères",
+    "fullname-max": "Le nom complet doit comporter moins de 50 caractères",
+    "fullname-required": "Le nom complet est requis",
+    "invalid-email": "E-mail invalide",
+    "email-required": "L'e-mail est requis",
+    "password-min": "Le mot de passe doit contenir au moins 6 caractères",
+    "password-required": "Le mot de passe est requis",
+    "confirm-password-required": "Confirmer que le mot de passe est requis",
+    "password-match": "Les mots de passe doivent correspondre"
   }
 }

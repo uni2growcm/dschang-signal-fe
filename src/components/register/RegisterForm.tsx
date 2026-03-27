@@ -10,7 +10,7 @@ import { authApi } from "../../services";
 import FormTextField from "../forms/shared/FormTextField";
 import SuccessFade from "../forms/shared/SuccessFade";
 import styles from "./RegisterForm.module.css";
-import { registerValidationSchema } from "./registerValidationSchema";
+import { getRegisterValidationSchema } from "./registerValidationSchema";
 
 interface RegisterFormValues {
   email: string;
@@ -21,6 +21,7 @@ interface RegisterFormValues {
 
 export default function RegisterForm() {
   const { t } = useTranslation();
+  const registerValidationSchema = getRegisterValidationSchema(t);
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
 

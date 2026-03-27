@@ -6,54 +6,49 @@ import {
   UserApi,
   Configuration,
   type Middleware,
-} from './api';
-import { API_URL } from './utils/env';
-import { getToken } from './utils/localStorage';
-import { handleUnauthorized } from './utils/handleUnauthorized';
-import i18n from './i18n/i18n';
+} from "./api";
+import { API_URL } from "./utils/env";
+import { getToken } from "./utils/localStorage";
+import { handleUnauthorized } from "./utils/handleUnauthorized";
+import i18n from "./i18n/i18n";
 
 const addTokenToHeadersMiddleware: Middleware = {
   pre: async (request) => {
     const token = getToken();
     request.init.headers = {
       ...request.init.headers,
-      'Accept-Language': i18n.language,
+      "Accept-Language": i18n.language,
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
   },
 
   post: async (context) => {
     const isAuthEndpoint =
-      context.url.includes('/logout') ||
-      context.url.includes('/login');
-    
-    
+      context.url.includes("/logout") || context.url.includes("/login");
+
     if (context.response.status >= 400) {
-      let errorMessage = 'Une erreur est survenue';
-      
+      let errorMessage = "Une erreur est survenue";
+
       try {
         const errorBody = await context.response.clone().json();
         if (errorBody.message) {
           errorMessage = errorBody.message;
         }
-      } catch (e) {
-       
+      } catch {
         try {
           errorMessage = await context.response.clone().text();
-        } catch (e2) {
-          
+        } catch (error) {
+          console.error("Failed to parse error response:", error);
         }
       }
-      
-    
+
       if (context.response.status === 401 && !isAuthEndpoint) {
         await handleUnauthorized();
       }
-      
-    
+
       throw new Error(errorMessage);
     }
-    
+
     return context.response;
   },
 };
@@ -69,23 +64,19 @@ export const reportApi = new ReportApi(apiConfig);
 export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
 
-export { 
+export {
   createReportAPI as createReport,
   uploadMediaAPI as uploadMedia,
   getReportByIdAPI as getReportById,
   deleteReportAPI as deleteReport,
   updateReportAPI as updateReport,
   deleteMediaAPI as deleteMedia,
-} from './services/report';
+} from "./services/report";
 
-
-export { 
+export {
   getCategoriesAPI as getCategories,
   createCategoryAPI as createCategory,
   checkCategoryExistsAPI as checkCategoryExists,
-} from './services/category';
+} from "./services/category";
 
-
-export { 
-  logoutAPI as logout,
-} from './services/auth';
+export { logoutAPI as logout } from "./services/auth";

@@ -34,7 +34,11 @@
     "quote": "Un modo semplice per segnalare e monitorare i problemi nella nostra università.",
     "quoter": "Marie Nguemo",
     "quoterTitle": "Leader della comunità, Dschang",
-    "login-successful": "Accesso riuscito"
+    "login-successful": "Accesso riuscito",
+    "invalid-email": "E-mail non valida",
+    "email-required": "L'e-mail è obbligatoria",
+    "password-min": "La password deve contenere almeno 6 caratteri",
+    "password-required": "È richiesta la password"
   },
   "register": {
     "title": "Crea un account",
@@ -296,6 +300,19 @@
       "require-2fa-for-admin-accounts": "Richiedi 2FA per gli account amministratore",
       "session-timeout-minutes": "Timeout della sessione (minuti)",
       "automatically-log-out-inactive-users-after-this-duration": "Disconnette automaticamente gli utenti inattivi dopo questo periodo"
+    },
+    "validation": {
+      "invalid-email": "E-mail non valida",
+      "email-required": "L'e-mail è obbligatoria",
+      "fullname-min": "Il nome completo deve contenere almeno 2 caratteri",
+      "fullname-max": "Il nome completo deve contenere meno di 50 caratteri",
+      "fullname-required": "È richiesto il nome completo",
+      "password-min": "La password deve contenere almeno 6 caratteri",
+      "current-password-required": "È richiesta la password attuale",
+      "password-different": "La nuova password deve essere diversa dalla password corrente",
+      "new-password-required": "È richiesta una nuova password",
+      "password-match": "Le password non corrispondono",
+      "confirm-password-required": "Per favore conferma la tua password"
     }
   },
   "report": {
@@ -324,5 +341,16 @@
     "report-updated-successfully": "Report aggiornato con successo!",
     "report-title": "Titolo",
     "categories-optional": "Categorie (facoltativo)"
+  },
+  "validation": {
+    "fullname-max": "Il nome completo deve contenere meno di 50 caratteri",
+    "fullname-min": "Il nome completo deve contenere almeno 2 caratteri",
+    "fullname-required": "È richiesto il nome completo",
+    "invalid-email": "E-mail non valida",
+    "email-required": "L'e-mail è obbligatoria",
+    "password-min": "La password deve contenere almeno 6 caratteri",
+    "password-required": "È richiesta la password",
+    "confirm-password-required": "È richiesta la conferma della password",
+    "password-match": "Le password devono essere identiche"
   }
 }
