@@ -19,7 +19,7 @@ function NotFound() {
       </h1>
 
       <h2 className={styles.title}>
-        {isReportNotFound ? t('notFound.reportTitle') : t('notFound.title')}
+        {t('notFound.title')}
       </h2>
 
       <p className={styles.text}>
@@ -27,7 +27,7 @@ function NotFound() {
       </p>
 
       <button className={styles.button} onClick={handleGoBack}>
-        {t('Go Back Home')}
+        {t('notFound.backHome')}
       </button>
     </div>
   );

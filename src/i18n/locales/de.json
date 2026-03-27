@@ -33,7 +33,12 @@
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "quote": "Eine einfache Möglichkeit, Probleme in unserer Universität zu melden und zu verfolgen.",
     "quoter": "Marie Nguemo",
-    "quoterTitle": "Gemeinschaftsleiterin, Dschang"
+    "quoterTitle": "Gemeinschaftsleiterin, Dschang",
+    "login-successful": "Anmeldung erfolgreich",
+    "invalid-email": "Ungültige E-Mail",
+    "email-required": "E-Mail ist erforderlich",
+    "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "password-required": "Passwort ist erforderlich"
   },
   "register": {
     "title": "Konto erstellen",
@@ -117,7 +122,8 @@
     "selectedCategories": "Ausgewählte Kategorien",
     "newCategory": "Name der neuen Kategorie",
     "attachMedia": "Fotos oder Videos anhängen",
-    "optional": "optional",
+    "optional": "(optional)",
+    "add-input-as-new-category": "Fügen Sie „{0}“ als neue Kategorie hinzu",
     "selectFiles": "Klicken Sie, um Dateien auszuwählen",
     "submit": "Bericht einreichen",
     "success": "Bericht erfolgreich erstellt!",
@@ -133,7 +139,9 @@
     "categoryNameMin": "Der Kategoriename muss mindestens 2 Zeichen enthalten",
     "categoryNameMax": "Der Kategoriename darf maximal 50 Zeichen enthalten",
     "categoryExists": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus.",
-    "categoryExistsFull": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus oder wählen Sie einen anderen Namen."
+    "categoryExistsFull": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus oder wählen Sie einen anderen Namen.",
+    "add": "Hinzufügen \"",
+    "as-new-category": "\" als neue Kategorie"
   },
   "reportPage": {
     "title": "Einen Bericht erstellen",
@@ -162,11 +170,6 @@
     "moderationPendingReview": "Wartet auf Prüfung",
     "moderationAccepted": "Akzeptiert",
     "moderationRejected": "Abgelehnt"
-  },
-  "settings": {
-    "backHome": "← Zurück zur Startseite",
-    "title": "Einstellungen",
-    "description": "Verwalten Sie Ihre Projektkonfiguration und Einstellungen"
   },
   "reportDetails": {
     "backHome": "← Zurück zur Startseite",
@@ -204,13 +207,166 @@
     "downloadDocument": "📄 Dokument herunterladen",
     "unknownStatus": "UNBEKANNT",
     "unnamed": "Ohne Namen",
-    "reviewedAt": "Überprüft am"
+    "reviewedAt": "Überprüft am",
+    "no-description-provided": "Keine Beschreibung angegeben",
+    "created-at": "Erstellt am:",
+    "reported-by": "Berichtet von:",
+    "reviewed-at": "Bewertet bei:",
+    "rejection-reason": "Ablehnungsgrund:",
+    "no-categories": "Keine Kategorien",
+    "no-media-available": "Keine Medien verfügbar"
   },
   "usersSection": {
     "title": "Benutzerliste",
     "description": "Verwalten Sie registrierte Benutzer und ihre Rollen",
     "searchPlaceholder": "Nach vollständigem Namen suchen...",
     "roleUpdated": "Benutzerrolle erfolgreich aktualisiert",
-    "roleUpdateError": "Sie können sich selbst nicht autorisieren. Bitte bitten Sie einen anderen Admin, Ihre Rolle zu aktualisieren."
+    "roleUpdateError": "Sie können sich selbst nicht autorisieren. Bitte bitten Sie einen anderen Admin, Ihre Rolle zu aktualisieren.",
+    "noUser": "Kein Benutzer gefunden"
+  },
+  "settings": {
+    "backHome": "← Zurück zur Startseite",
+    "title": "Einstellungen",
+    "description": "Verwalten Sie Ihre Projektkonfiguration und Einstellungen",
+    "moderation": {
+      "title": "Moderation",
+      "description": "Inhaltsmoderation und Genehmigungsregeln konfigurieren",
+      "approvalMode": {
+        "title": "Freigabemodus für Beiträge",
+        "manual": "Manuelle Freigabe erforderlich",
+        "auto": "Alle Beiträge automatisch freigeben",
+        "verified": "Automatische Freigabe nur für verifizierte Benutzer"
+      },
+      "filters": {
+        "title": "Inhaltsfilter",
+        "profanity": "Beleidigende Sprache filtern",
+        "spam": "Spam und wiederholte Einsendungen blockieren",
+        "imageRequired": "Bilder für Meldungen erforderlich machen",
+        "location": "Standortkennzeichnung aktivieren"
+      },
+      "maxSignals": {
+        "title": "Maximale Meldungen pro Benutzer und Tag",
+        "helper": "0 für unbegrenzt setzen"
+      }
+    },
+    "danger": {
+      "title": "Gefahrenzone",
+      "description": "Unumkehrbare Aktionen — mit Vorsicht fortfahren",
+      "resetSignals": {
+        "title": "Alle Signale zurücksetzen",
+        "description": "Alle Signale und Daten dauerhaft löschen",
+        "button": "Zurücksetzen"
+      },
+      "deleteProject": {
+        "title": "Projekt löschen",
+        "description": "Dieses Projekt und alle Daten dauerhaft löschen",
+        "button": "Projekt löschen"
+      },
+      "notifications": {
+        "notDeveloped": "Diese Funktion ist noch nicht implementiert.",
+        "notAuthorized": "Diese Aktion ist nicht erlaubt."
+      }
+    },
+    "general": {
+      "title": "Allgemein",
+      "description": "Grundlegende Projektinformationen und Konfiguration",
+      "projectName": "Projektname",
+      "userEmail": "Benutzer-E-Mail",
+      "fullName": "Vollständiger Name",
+      "password": "Passwort",
+      "placeholders": {
+        "currentPassword": "Aktuelles Passwort",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Passwort bestätigen"
+      },
+      "buttons": {
+        "updatePassword": "Passwort ändern",
+        "cancel": "Abbrechen",
+        "confirm": "Bestätigen",
+        "saveChanges": "Speichern",
+        "saving": "Speichert..."
+      },
+      "notifications": {
+        "updateSuccess": "Profil erfolgreich aktualisiert",
+        "updateError": "Fehler beim Aktualisieren des Profils",
+        "passwordSuccess": "Passwort erfolgreich geändert",
+        "passwordError": "Fehler beim Ändern des Passworts"
+      }
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "choose-what-notifications-to-receive": "Wählen Sie aus, welche Benachrichtigungen Sie erhalten möchten",
+      "receive-email-alerts-for-new-signals": "Erhalten Sie E-Mail-Benachrichtigungen für neue Signale",
+      "weekly-digest": "Wöchentliche Übersicht",
+      "get-push-notifications": "Erhalten Sie Push-Benachrichtigungen auf Ihrem Gerät",
+      "push-notifications": "Push-Benachrichtigungen",
+      "email-notifications": "E-Mail-Benachrichtigungen",
+      "receive-weekly-summary": "Erhalten Sie eine wöchentliche Zusammenfassung aller Aktivitäten",
+      "status-change-alerts": "Benachrichtigungen über Statusänderungen",
+      "notify-when-a-signal-status-is-updated": "Benachrichtigen, wenn ein Signalstatus aktualisiert wird"
+    },
+    "privacy": {
+      "title": "Privatsphäre",
+      "description": "Steuern Sie die Datensichtbarkeit und Zugriffseinstellungen",
+      "public-feed": "Öffentlicher Feed",
+      "allow-anyone-to-view-the-signal-feed-without-logging-in": "Erlauben Sie jedem, den Signal-Feed anzusehen, ohne sich anzumelden",
+      "anonymous-reporting": "Anonyme Berichterstattung",
+      "allow-users-to-submit-signals-without-revealing-their-identity": "Ermöglichen Sie Benutzern das Senden von Signalen, ohne ihre Identität preiszugeben",
+      "two-factor-authentication": "Zwei-Faktor-Authentifizierung",
+      "require-2fa-for-admin-accounts": "Erfordern Sie 2FA für Administratorkonten",
+      "session-timeout-minutes": "Sitzungszeitüberschreitung (Minuten)",
+      "automatically-log-out-inactive-users-after-this-duration": "Melden Sie inaktive Benutzer nach dieser Zeit automatisch ab"
+    },
+    "validation": {
+      "invalid-email": "Ungültige E-Mail",
+      "email-required": "E-Mail ist erforderlich",
+      "fullname-min": "Der vollständige Name muss mindestens 2 Zeichen lang sein",
+      "fullname-max": "Der vollständige Name muss weniger als 50 Zeichen lang sein",
+      "fullname-required": "Der vollständige Name ist erforderlich",
+      "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      "current-password-required": "Aktuelles Passwort ist erforderlich",
+      "password-different": "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden",
+      "new-password-required": "Neues Passwort ist erforderlich",
+      "password-match": "Passwörter stimmen nicht überein",
+      "confirm-password-required": "Bitte bestätigen Sie Ihr Passwort"
+    }
+  },
+  "report": {
+    "viewDetails": "Details anzeigen"
+  },
+  "media": {
+    "unsupported-media-type": "Nicht unterstützter Medientyp",
+    "download-or-open-the-document": "Klicken Sie auf die Schaltfläche unten, um das Dokument herunterzuladen oder zu öffnen",
+    "document": "Dokumentieren",
+    "browser-does-not-support-playback": "Ihr Browser unterstützt die Videowiedergabe nicht.",
+    "play-video": "Klicken Sie, um das Video abzuspielen",
+    "download-the-document": "📄 Laden Sie das Dokument herunter"
+  },
+  "editReport": {
+    "back-to-report": "← Zurück zu Berichte",
+    "update-details": "Aktualisieren Sie Ihre Berichtsdetails",
+    "description": "Beschreibung",
+    "location": "Standort",
+    "existing-media": "Vorhandene Medien",
+    "click-to-remove": "(zum Entfernen auf ✕ klicken)",
+    "add-new-media": "Neue Medien hinzufügen",
+    "click-to-select-files": "Klicken Sie, um Dateien auszuwählen",
+    "optional": "(Optional)",
+    "failed-to-update-report": "Bericht konnte nicht aktualisiert werden",
+    "save-changes": "Änderungen speichern",
+    "report-updated-successfully": "Bericht erfolgreich aktualisiert!",
+    "report-title": "Titel",
+    "categories-optional": "Kategorien (optional)"
+  },
+  "validation": {
+    "fullname-min": "Der vollständige Name muss mindestens 2 Zeichen lang sein",
+    "fullname-max": "Der vollständige Name muss weniger als 50 Zeichen lang sein",
+    "fullname-required": "Der vollständige Name ist erforderlich",
+    "invalid-email": "Ungültige E-Mail",
+    "email-required": "E-Mail ist erforderlich",
+    "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "password-required": "Passwort ist erforderlich",
+    "confirm-password-required": "Bestätigen Sie, dass ein Passwort erforderlich ist",
+    "password-match": "Passwörter müssen übereinstimmen"
   }
 }

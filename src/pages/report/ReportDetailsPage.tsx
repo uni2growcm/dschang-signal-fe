@@ -21,6 +21,8 @@ import {
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
 import { ReportModerationStatusEnum, type CategoryResponse, type MediaResponse } from "../../api";
+import { useMediaViewer } from "../../hooks/useMediaViewer";
+import MediaViewer from "../../components/media/MediaViewer";
 
 const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
   status
@@ -45,6 +47,7 @@ export default function ReportDetailsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const viewer = useMediaViewer();
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedReportStatus, setSelectedReportStatus] =
@@ -420,14 +423,14 @@ export default function ReportDetailsPage() {
             </span>
           </div>
           <p className={styles.description}>
-            {report.description || t("reportDetails.noDescription")}
+            {report.description || t("reportDetails.no-description-provided")}
           </p>
           <div className={styles.meta}>
             <span>
               {t("reportDetails.createdAt")}:{" "}
               {report.createdAt
                 ? new Date(report.createdAt).toLocaleString()
-                : t("reportDetails.na")}
+                : "N/A"}
             </span>
             <span>
               {t("reportDetails.moderation")}:{" "}
@@ -437,7 +440,7 @@ export default function ReportDetailsPage() {
             </span>
             {report.createdBy && (
               <span>
-                {t("reportDetails.reportedBy")}:{" "}
+                {t("reportDetails.reported-by")}{" "}
                 {report.createdBy.fullName || t("reportDetails.unknown")}
               </span>
             )}
@@ -446,7 +449,7 @@ export default function ReportDetailsPage() {
                 {report.moderationStatus !=
                   ReportModerationStatusEnum.PendingReview && (
                   <span>
-                {t("reportDetails.reviewedAt")}:{" "}
+                    {t("reportDetails.reviewed-at")}{" "}
                     {report.reviewedAt
                       ? new Date(report.reviewedAt).toLocaleString()
                       : "N/A"}
@@ -471,7 +474,7 @@ export default function ReportDetailsPage() {
               ))
             ) : (
               <span className={styles.categoryChip}>
-                {t("reportDetails.noCategories")}
+                {t("reportDetails.no-categories")}
               </span>
             )}
           </div>
@@ -495,6 +498,29 @@ export default function ReportDetailsPage() {
                     src={fullUrl}
                     alt="media"
                     className={styles.media}
+                    onClick={() =>
+                      viewer.openViewer(
+                        {
+                          id: media.id,
+                          url: fullUrl,
+                          mimeType: media.mimeType || "",
+                          fileName: media.originalName,
+                        },
+                        (report.medias as MediaResponse[])
+                          .filter(
+                            (m: MediaResponse) =>
+                              m.mimeType?.startsWith("image") ||
+                              m.mimeType?.startsWith("video"),
+                          )
+                          .map((m: MediaResponse) => ({
+                            id: m.id,
+                            url: `http://localhost:8080${m.url}`,
+                            mimeType: m.mimeType || "",
+                            fileName: m.originalName,
+                          })),
+                      )
+                    }
+                    style={{ cursor: "pointer" }}
                     onError={(event) => {
                       (event.target as HTMLImageElement).style.display = "none";
                     }}
@@ -502,12 +528,77 @@ export default function ReportDetailsPage() {
                 );
               }
 
+              if (media.mimeType?.startsWith("video")) {
+                const handleVideoClick = (e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  const videoElement = e.currentTarget as HTMLVideoElement;
+
+                  videoElement.pause();
+                  videoElement.currentTime = 0;
+
+                  videoElement.src = "";
+                  videoElement.load();
+
+                  viewer.openViewer(
+                    {
+                      id: media.id,
+                      url: fullUrl,
+                      mimeType: media.mimeType || "",
+                      fileName: media.originalName,
+                    },
+                    (report.medias as MediaResponse[])
+                      .filter(
+                        (m: MediaResponse) =>
+                          m.mimeType?.startsWith("image") ||
+                          m.mimeType?.startsWith("video"),
+                      )
+                      .map((m: MediaResponse) => ({
+                        id: m.id,
+                        url: `http://localhost:8080${m.url}`,
+                        mimeType: m.mimeType || "",
+                        fileName: m.originalName,
+                      })),
+                  );
+                };
+
+                return (
+                  <video
+                    key={media.id}
+                    controls
+                    className={styles.media}
+                    onClick={handleVideoClick}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <source src={fullUrl} type={media.mimeType || ""} />
+                  </video>
+                );
+              }
+
               if (media.mimeType?.startsWith("audio")) {
                 return (
                   <audio key={media.id} controls className={styles.audio}>
-                    <source src={fullUrl} type={media.mimeType} />
+                    <source src={fullUrl} type={media.mimeType || ""} />
                   </audio>
                 );
+              }
+
+              const isPdf =
+                media.mimeType === "application/pdf" ||
+                media.originalName?.toLowerCase().endsWith(".pdf");
+              const isDoc =
+                media.mimeType === "application/msword" ||
+                media.originalName?.toLowerCase().endsWith(".doc") ||
+                media.originalName?.toLowerCase().endsWith(".docx");
+
+              let icon = "📄";
+              let fileType = "Document";
+
+              if (isPdf) {
+                icon = "📑";
+                fileType = "PDF";
+              } else if (isDoc) {
+                icon = "📝";
+                fileType = "Word";
               }
 
               return (
@@ -518,15 +609,22 @@ export default function ReportDetailsPage() {
                   rel="noreferrer"
                   className={styles.documentLink}
                 >
-                  {t("reportDetails.downloadDocument")}
+                  <span className={styles.documentIcon}>{icon}</span>
+                  <span className={styles.documentInfo}>
+                    <span className={styles.documentType}>{fileType}</span>
+                    <span className={styles.documentName}>
+                      {media.originalName || t("media.document")}
+                    </span>
+                  </span>
                 </a>
               );
             })
           ) : (
-            <p>{t("reportDetails.noMedia")}</p>
+            <p>{t("reportDetails.no-media-available")}</p>
           )}
         </div>
       </div>
+      <MediaViewer viewer={viewer} />
     </div>
   );
 }

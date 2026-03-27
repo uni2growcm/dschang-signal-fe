@@ -1,19 +1,20 @@
 import * as Yup from 'yup';
 
-export const registerValidationSchema = Yup.object({
+export const getRegisterValidationSchema = (t: (key: string) => string) => Yup.object({
   fullName: Yup.string()
-    .min(2, 'Full name must be at least 2 characters')
-    .max(50, 'Full name must be less than 50 characters')
-    .required('Full name is required'),
+    .min(2, t('validation.fullname-min'))
+    .max(50, t('validation.fullname-max'))
+    .required(t('validation.fullname-required')),
 
-  email: Yup.string().email('Invalid email').required('Email is required'),
+  email: Yup.string()
+    .email(t('validation.invalid-email'))
+    .required(t('validation.email-required')),
 
   password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .min(6, t('validation.password-min'))
+    .required(t('validation.password-required')),
 
-  
   confirmPassword: Yup.string()
-    .required('Confirm Password is required')
-    .oneOf([Yup.ref('password'), ''], 'Passwords must match'),
+    .required(t('validation.confirm-password-required'))
+    .oneOf([Yup.ref('password')], t('validation.password-match')),
 });

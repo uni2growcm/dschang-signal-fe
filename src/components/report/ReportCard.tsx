@@ -113,7 +113,7 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
           to={PATHS.REPORT_DETAILS.replace(":id", String(report.id))}
           className="text-sm font-semibold text-primary hover:underline"
         >
-          View Details
+          {t("report.viewDetails")}
         </Link>
       </div>
     </div>

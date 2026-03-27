@@ -33,7 +33,12 @@
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "quote": "A simple way to report and track issues in our university.",
     "quoter": "Marie Nguemo",
-    "quoterTitle": "Community Leader, Dschang"
+    "quoterTitle": "Community Leader, Dschang",
+    "login-successful": "Login Successful",
+    "invalid-email": "Invalid email",
+    "email-required": "Email is required",
+    "password-min": "Password must be at least 6 characters",
+    "password-required": "Password is required"
   },
   "register": {
     "title": "Create Account",
@@ -117,7 +122,8 @@
     "selectedCategories": "Selected categories",
     "newCategory": "New category name",
     "attachMedia": "Attach photos or videos",
-    "optional": "optional",
+    "optional": "(optional)",
+    "add-input-as-new-category": "+ Add \"{{value}}\" as new category",
     "selectFiles": "Click to select files",
     "submit": "Submit Report",
     "success": "Report created successfully!",
@@ -133,7 +139,9 @@
     "categoryNameMin": "Category name must be at least 2 characters",
     "categoryNameMax": "Category name must be at most 50 characters",
     "categoryExists": "This category already exists. Please select it from the list.",
-    "categoryExistsFull": "This category already exists. Please select it from the list or choose a different name."
+    "categoryExistsFull": "This category already exists. Please select it from the list or choose a different name.",
+    "add": "+ Add \"",
+    "as-new-category": "\" as new category"
   },
   "reportPage": {
     "title": "Create a Report",
@@ -163,11 +171,6 @@
     "moderationAccepted": "Accepted",
     "moderationRejected": "Rejected"
   },
-  "settings": {
-    "backHome": "← Back to Home",
-    "title": "Settings",
-    "description": "Manage your project configuration and preferences"
-  },
   "reportDetails": {
     "backHome": "← Back to Home",
     "adminActions": "Admin actions",
@@ -196,7 +199,7 @@
     "noLocation": "No location provided",
     "noDescription": "No description provided",
     "createdAt": "Created at",
-    "moderation": "Moderation",
+    "moderation": "Moderation :",
     "reportedBy": "Reported by",
     "unknown": "Unknown",
     "noCategories": "No categories",
@@ -204,13 +207,167 @@
     "downloadDocument": "📄 Download document",
     "unknownStatus": "UNKNOWN",
     "unnamed": "Unnamed",
-    "reviewedAt": "Reviewed at"
+    "reviewedAt": "Reviewed at",
+    "no-description-provided": "No description provided",
+    "created-at": "Created at:",
+    "reported-by": "Reported by:",
+    "reviewed-at": "Reviewed at:",
+    "rejection-reason": "Rejection reason:",
+    "no-categories": "No categories",
+    "no-media-available": "No media available"
   },
   "usersSection": {
     "title": "List of Users",
     "description": "Manage registered users and their roles",
     "searchPlaceholder": "Search by full name...",
     "roleUpdated": "User role updated successfully",
-    "roleUpdateError": "You cannot authorize yourself. Please ask another admin to update your role."
+    "roleUpdateError": "You cannot authorize yourself. Please ask another admin to update your role.",
+    "noUser": "No user found"
+  },
+  "settings": {
+    "backHome": "← Back to Home",
+    "title": "Settings",
+    "description": "Manage your project configuration and preferences",
+    "moderation": {
+      "title": "Moderation",
+      "description": "Configure content moderation and approval rules",
+      "approvalMode": {
+        "title": "Post approval mode",
+        "manual": "Manual approval required",
+        "auto": "Auto approve all posts",
+        "verified": "Auto-approve for verified users only"
+      },
+      "filters": {
+        "title": "Content filters",
+        "profanity": "Filter profanity and offensive language",
+        "spam": "Block spam and repeated submissions",
+        "imageRequired": "Require image attachments for reports",
+        "location": "Enable location tagging"
+      },
+      "maxSignals": {
+        "title": "Max signals per user per day",
+        "helper": "Set to 0 for unlimited"
+      }
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "description": "Irreversible actions — proceed with caution",
+      "resetSignals": {
+        "title": "Reset all signals",
+        "description": "Permanently delete all signals and associated data",
+        "button": "Reset data"
+      },
+      "deleteProject": {
+        "title": "Delete project",
+        "description": "Permanently remove this project and all its data",
+        "button": "Delete project"
+      },
+      "notifications": {
+        "notDeveloped": "This feature has not been developed yet.",
+        "notAuthorized": "This action is not authorized."
+      }
+    },
+    "general": {
+      "title": "General",
+      "description": "Basic project information and configuration",
+      "projectName": "Project name",
+      "userEmail": "User email",
+      "fullName": "Full name",
+      "password": "Password",
+      "placeholders": {
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm new password"
+      },
+      "buttons": {
+        "updatePassword": "Update password",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "saveChanges": "Save changes",
+        "saving": "Saving..."
+      },
+      "notifications": {
+        "updateSuccess": "Profile updated successfully",
+        "updateError": "Failed to update profile. Please try again.",
+        "passwordSuccess": "Password updated successfully",
+        "passwordError": "Failed to update password. Please check your current password."
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "choose-what-notifications-to-receive": "Choose what notifications you want to receive",
+      "email-notifications": "Email notifications",
+      "receive-email-alerts-for-new-signals": "Receive email alerts for new signals",
+      "push-notifications": "Push notifications",
+      "get-push-notifications": "Get push notifications on your device",
+      "weekly-digest": "Weekly digest",
+      "receive-weekly-summary": "Receive a weekly summary of all activity",
+      "status-change-alerts": "Status change alerts",
+      "notify-when-a-signal-status-is-updated": "Notify when a signal status is updated"
+    },
+    "privacy": {
+      "title": "Privacy & Security",
+      "description": "Control data visibility and access settings",
+      "public-feed": "Public feed",
+      "allow-anyone-to-view-the-signal-feed-without-logging-in": "Allow anyone to view the signal feed without logging in",
+      "anonymous-reporting": "Anonymous reporting",
+      "allow-users-to-submit-signals-without-revealing-their-identity": "Allow users to submit signals without revealing their identity",
+      "two-factor-authentication": "Two-factor authentication",
+      "require-2fa-for-admin-accounts": "Require 2FA for admin accounts",
+      "session-timeout-minutes": "Session timeout (minutes)",
+      "automatically-log-out-inactive-users-after-this-duration": "Automatically log out inactive users after this duration"
+    },
+    "validation": {
+      "invalid-email": "Invalid email",
+      "email-required": "Email is required",
+      "fullname-min": "Full name must be at least 2 characters",
+      "fullname-max": "Full name must be less than 50 characters",
+      "fullname-required": "Full name is required",
+      "password-min": "Password must be at least 6 characters",
+      "current-password-required": "Current password is required",
+      "password-different": "New password must be different from current password",
+      "new-password-required": "New password is required",
+      "password-match": "Passwords do not match",
+      "confirm-password-required": "Please confirm your password"
+    }
+  },
+  "report": {
+    "viewDetails": "View details"
+  },
+  "media": {
+    "unsupported-media-type": "Unsupported media type",
+    "download-the-document": "📄 Download the document",
+    "download-or-open-the-document": "Click the button below to download or open the document",
+    "document": "Document",
+    "browser-does-not-support-playback": "Your browser does not support video playback.",
+    "play-video": "Click to play the video"
+  },
+  "editReport": {
+    "back-to-report": "← Back to Reports",
+    "title": "Edit Report",
+    "update-details": "Update your report details",
+    "description": "Description",
+    "location": "Location",
+    "existing-media": "Existing media",
+    "click-to-remove": "(click ✕ to remove)",
+    "add-new-media": "Add new media",
+    "click-to-select-files": "Click to select files",
+    "optional": "(Optional)",
+    "failed-to-update-report": "Failed to update report",
+    "save-changes": "Save Changes",
+    "report-updated-successfully": "Report updated successfully!",
+    "report-title": "Title",
+    "categories-optional": "Categories (optional)"
+  },
+  "validation": {
+    "fullname-min": "Full name must be at least 2 characters",
+    "fullname-max": "Full name must be less than 50 characters",
+    "fullname-required": "Full name is required",
+    "invalid-email": "Invalid email",
+    "email-required": "Email is required",
+    "password-min": "Password must be at least 6 characters",
+    "password-required": "Password is required",
+    "confirm-password-required": "Confirm Password is required",
+    "password-match": "Passwords must match"
   }
 }

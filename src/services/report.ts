@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Report } from "../api";
-import { getCategories, reportApi } from "../services";
+import { reportApi, mediaApi } from "../services";
 import { isAuth } from "../utils/utils";
+import { handleUnauthorized } from "../utils/handleUnauthorized";
+import { getCategoriesAPI } from "./category";
 
 const PAGE_SIZE = 10;
 
@@ -34,7 +36,9 @@ export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE) => {
         size,
       });
       const reports = await response.value();
-      const totalCount = getTotalCount(response.raw.headers.get("X-Total-Count"));
+      const totalCount = getTotalCount(
+        response.raw.headers.get("X-Total-Count"),
+      );
       const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
       return {
@@ -58,7 +62,9 @@ export const usePublicReports = (filters: PublicReportsFilters = {}) => {
         size,
       });
       const reports = await response.value();
-      const totalCount = getTotalCount(response.raw.headers.get("X-Total-Count"));
+      const totalCount = getTotalCount(
+        response.raw.headers.get("X-Total-Count"),
+      );
       const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
       return {
@@ -76,8 +82,86 @@ export const useCategories = (filters: CategoriesFilters = {}) => {
 
   return useQuery({
     queryKey: ["categories"],
-    queryFn: getCategories,
+    queryFn: getCategoriesAPI,
     enabled,
   });
 };
 
+export const useAllReports = (page: number, enabled: boolean = true) => {
+  return useQuery<PaginatedReports>({
+    queryKey: ["getAllReports", page],
+    enabled,
+    queryFn: () =>
+      reportApi
+        .getAllReportsRaw({ page: page - 1, size: PAGE_SIZE })
+        .then(async (raw) => {
+          const reports = await raw.value();
+          const totalCount = Number(raw.raw.headers.get("X-Total-Count") ?? 0);
+          const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+          return { reports, totalCount, totalPages };
+        }),
+  });
+};
+
+export const createReportAPI = async (data: {
+  title: string;
+  description: string;
+  locationText: string;
+  categoryIds: number[];
+}) => {
+  try {
+    const response = await reportApi.createReport({ reportRequest: data });
+    return response;
+  } catch (error: any) {
+    if (error.status === 401) {
+      await handleUnauthorized();
+    }
+    throw error;
+  }
+};
+
+export const uploadMediaAPI = async (reportId: number, file: File) => {
+  try {
+    const response = await mediaApi.uploadMedia({
+      reportId,
+      file,
+    });
+    return response;
+  } catch (error: any) {
+    if (error.status === 401) {
+      await handleUnauthorized();
+    }
+    throw error;
+  }
+};
+
+export const getReportByIdAPI = async (id: number) => {
+  const [report, medias] = await Promise.all([
+    reportApi.getReportById({ id }),
+    mediaApi.getReportMedias({ reportId: id }),
+  ]);
+  return { ...report, medias };
+};
+
+export const deleteReportAPI = async (id: number): Promise<void> => {
+  await reportApi.deleteReport({ id });
+};
+
+export const updateReportAPI = async (
+  id: number,
+  data: {
+    title: string;
+    description: string;
+    locationText: string;
+    categoryIds: number[];
+  },
+): Promise<void> => {
+  await reportApi.updateReport({
+    id,
+    reportRequest: data,
+  });
+};
+
+export const deleteMediaAPI = async (mediaId: number): Promise<void> => {
+  await mediaApi.deleteMedia({ mediaId });
+};

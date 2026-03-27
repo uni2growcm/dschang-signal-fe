@@ -1,28 +1,30 @@
 import * as Yup from 'yup';
 
-export const generalValidationSchema = Yup.object({
-  email: Yup.string().email('Invalid email').required('Email is required'),
+export const getGeneralValidationSchema = (t: (key: string) => string) => Yup.object({
+  email: Yup.string()
+    .email(t('settings.validation.invalid-email'))
+    .required(t('settings.validation.email-required')),
 
   fullName: Yup.string()
-    .min(2, 'Full name must be at least 2 characters')
-    .max(50, 'Full name must be less than 50 characters')
-    .required('Full name is required'),
+    .min(2, t('settings.validation.fullname-min'))
+    .max(50, t('settings.validation.fullname-max'))
+    .required(t('settings.validation.fullname-required')),
 });
 
-export const passwordValidationSchema = Yup.object({
+export const getPasswordValidationSchema = (t: (key: string) => string) => Yup.object({
   currentPassword: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Current password is required'),
+    .min(6, t('settings.validation.password-min'))
+    .required(t('settings.validation.current-password-required')),
 
   newPassword: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
+    .min(6, t('settings.validation.password-min'))
     .notOneOf(
       [Yup.ref('currentPassword')],
-      'New password must be different from current password',
+      t('settings.validation.password-different')
     )
-    .required('New password is required'),
+    .required(t('settings.validation.new-password-required')),
 
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('newPassword')], 'Passwords do not match')
-    .required('Please confirm your password'),
+    .oneOf([Yup.ref('newPassword')], t('settings.validation.password-match'))
+    .required(t('settings.validation.confirm-password-required')),
 });
