@@ -14,7 +14,7 @@ import { PATHS } from "../../routes/PATHS";
 import { deleteReport, getReportById } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
-import { ReportModerationStatusEnum, type Report } from "../../api";
+import { ReportModerationStatusEnum, type CategoryResponse } from "../../api";
 import { useMediaViewer } from "../../hooks/useMediaViewer";
 import MediaViewer from "../../components/media/MediaViewer";
 
@@ -225,28 +225,31 @@ export default function ReportDetailsPage() {
             </span>
           </div>
           <p className={styles.description}>
-            {report.description || "No description provided"}
+            {report.description || t("reportDetails.no-description-provided")}
           </p>
           <div className={styles.meta}>
             <span>
-              Created at:{" "}
+              {t("reportDetails.created-at")}{" "}
               {report.createdAt
                 ? new Date(report.createdAt).toLocaleString()
                 : "N/A"}
             </span>
             <span>
-              Moderation:{" "}
+              {t("reportDetails.moderation")}{" "}
               {getTranslatedModerationStatusLabel(report.moderationStatus)}
             </span>
             {report.createdBy && (
-              <span>Reported by: {report.createdBy.fullName || "Unknown"}</span>
+              <span>
+                {t("reportDetails.reported-by")}{" "}
+                {report.createdBy.fullName || t("reportDetails.unknown")}
+              </span>
             )}
             {report.createdBy?.fullName == currentUser?.fullName && (
               <div className="flex items-end flex-col gap-1">
                 {report.moderationStatus !=
                   ReportModerationStatusEnum.PendingReview && (
                   <span>
-                    Reviewed at:{" "}
+                    {t("reportDetails.reviewed-at")}{" "}
                     {report.reviewedAt
                       ? new Date(report.reviewedAt).toLocaleString()
                       : "N/A"}
@@ -255,7 +258,8 @@ export default function ReportDetailsPage() {
                 {report.moderationStatus ==
                   ReportModerationStatusEnum.Rejected && (
                   <span>
-                    Rejection reason: {report.rejectionReason || "N/A"}
+                    {t("reportDetails.rejection-reason")}{" "}
+                    {report.rejectionReason || "N/A"}
                   </span>
                 )}
               </div>
@@ -263,13 +267,15 @@ export default function ReportDetailsPage() {
           </div>
           <div className={styles.categories}>
             {report.categories?.length ? (
-              report.categories.map((category) => (
+              report.categories.map((category: CategoryResponse) => (
                 <span key={category.id} className={styles.categoryChip}>
-                  #{category.name || "Unnamed"}
+                  #{category.name || t("reportDetails.unnamed")}
                 </span>
               ))
             ) : (
-              <span className={styles.categoryChip}>No categories</span>
+              <span className={styles.categoryChip}>
+                {t("reportDetails.no-categories")}
+              </span>
             )}
           </div>
         </div>
@@ -322,16 +328,14 @@ export default function ReportDetailsPage() {
                 );
               }
 
-              
               if (media.mimeType?.startsWith("video")) {
                 const handleVideoClick = (e: React.MouseEvent) => {
                   e.stopPropagation();
                   const videoElement = e.currentTarget as HTMLVideoElement;
 
-                 
                   videoElement.pause();
                   videoElement.currentTime = 0;
-                 
+
                   videoElement.src = "";
                   videoElement.load();
 
@@ -409,14 +413,14 @@ export default function ReportDetailsPage() {
                   <span className={styles.documentInfo}>
                     <span className={styles.documentType}>{fileType}</span>
                     <span className={styles.documentName}>
-                      {media.originalName || "Document"}
+                      {media.originalName || t("media.document")}
                     </span>
                   </span>
                 </a>
               );
             })
           ) : (
-            <p>No media available</p>
+            <p>{t("reportDetails.no-media-available")}</p>
           )}
         </div>
       </div>
