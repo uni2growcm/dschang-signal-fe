@@ -33,7 +33,8 @@
                   "unexpectedError":  "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
                   "quote":  "Eine einfache MÃ¶glichkeit, Probleme in unserer UniversitÃ¤t zu melden und zu verfolgen.",
                   "quoter":  "Marie Nguemo",
-                  "quoterTitle":  "Gemeinschaftsleiterin, Dschang"
+                  "quoterTitle":  "Gemeinschaftsleiterin, Dschang",
+                  "login-successful":  "Anmeldung erfolgreich"
               },
     "register":  {
                      "title":  "Konto erstellen",
@@ -121,7 +122,8 @@
                        "selectedCategories":  "AusgewÃ¤hlte Kategorien",
                        "newCategory":  "Name der neuen Kategorie",
                        "attachMedia":  "Fotos oder Videos anhÃ¤ngen",
-                       "optional":  "optional",
+                       "optional":  "(optional)",
+                       "add-input-as-new-category":  "FÃ¼gen Sie â€ž{0}â€œ als neue Kategorie hinzu",
                        "selectFiles":  "Klicken Sie, um Dateien auszuwÃ¤hlen",
                        "submit":  "Bericht einreichen",
                        "success":  "Bericht erfolgreich erstellt!",
@@ -138,6 +140,8 @@
                        "categoryNameMax":  "Der Kategoriename darf maximal 50 Zeichen enthalten",
                        "categoryExists":  "Diese Kategorie existiert bereits. Bitte wÃ¤hlen Sie sie aus der Liste aus.",
                        "categoryExistsFull":  "Diese Kategorie existiert bereits. Bitte wÃ¤hlen Sie sie aus der Liste aus oder wÃ¤hlen Sie einen anderen Namen.",
+                       "add":  "HinzufÃ¼gen \"",
+                       "as-new-category":  "\" als neue Kategorie",
                        "quota":  {
                                      "title":  "Tägliches Meldelimit",
                                      "createdToday":  "Heute erstellt",
@@ -277,5 +281,8 @@
                                                            "passwordError":  "Fehler beim Ã„ndern des Passworts"
                                                        }
                                  }
-                 }
+                 },
+    "report":  {
+                   "viewDetails":  "Details anzeigen"
+               }
 }

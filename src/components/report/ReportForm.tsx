@@ -67,7 +67,6 @@ export default function ReportForm() {
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [categoryError, setCategoryError] = useState("");
   const [newCategoryError, setNewCategoryError] = useState("");
-  const [categoryInput, setCategoryInput] = useState("");
 
   const OTHER_OPTION = {
     id: "other" as const,
@@ -201,7 +200,6 @@ export default function ReportForm() {
       setShowNewCategory(false);
       setCategoryError("");
       setNewCategoryError("");
-      setCategoryInput("");
       navigate(PATHS.INDEX, {
         state: { filter: "mine" },
       });
@@ -273,7 +271,6 @@ export default function ReportForm() {
     if (id === "other") {
       setShowNewCategory(false);
       setNewCategoryError("");
-      setCategoryInput("");
       void setFieldValue("newCategoryName", "");
       return;
     }
@@ -305,7 +302,7 @@ export default function ReportForm() {
       <div className={styles.formHeader}>
         <Typography variant="body2" color="#666">
           {t("reportForm.headerDescription")}{" "}
-          <span style={{ color: "#e53935" }}>*</span>{" "}
+          <span style={{ color: "#e53935" }}>{`*`}</span>{" "}
           {t("reportForm.requiredFields")}
         </Typography>
       </div>
@@ -342,19 +339,17 @@ export default function ReportForm() {
             if (!selectedOther) {
               setShowNewCategory(false);
               setNewCategoryError("");
-              setCategoryInput("");
               void setFieldValue("newCategoryName", "");
               return;
             }
 
             setShowNewCategory(true);
 
-            if (selectedOther.name.startsWith('+ Add "')) {
+            if (selectedOther.name.startsWith(t('reportForm.add'))) {
               const extractedName = selectedOther.name
-                .replace('+ Add "', "")
-                .replace('" as new category', "");
+                .replace(t('reportForm.add'), "")
+                .replace(t('reportForm.as-new-category'), "");
               void setFieldValue("newCategoryName", extractedName);
-              setCategoryInput(extractedName);
             }
           };
 
@@ -398,7 +393,8 @@ export default function ReportForm() {
                 )}
 
                 <FormTextField
-                  label={`${t("reportForm.title")} *`}
+                  label={`${t("reportForm.title")}`}
+                  required
                   name="title"
                   value={values.title}
                   onChange={handleChange}
@@ -408,7 +404,8 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label={`${t("reportForm.description")} *`}
+                  label={`${t("reportForm.description")}`}
+                  required
                   name="description"
                   value={values.description}
                   onChange={handleChange}
@@ -420,7 +417,7 @@ export default function ReportForm() {
                 />
 
                 <FormTextField
-                  label={`${t("reportForm.location")} *`}
+                  label={`${t("reportForm.location")}`}
                   name="locationText"
                   value={values.locationText}
                   onChange={handleChange}
@@ -464,8 +461,6 @@ export default function ReportForm() {
                   multiple
                   options={[...categoryOptions, OTHER_OPTION]}
                   value={allSelected}
-                  inputValue={categoryInput}
-                  onInputChange={(_, value) => setCategoryInput(value)}
                   onChange={handleCategoryChange}
                   disableCloseOnSelect
                   renderTags={() => null}
@@ -490,7 +485,7 @@ export default function ReportForm() {
                         ...filtered,
                         {
                           id: "other",
-                          name: `+ Add "${input}" as new category`,
+                          name: t('reportForm.add-input-as-new-category', {value: input}),
                         },
                       ];
                     }
@@ -534,7 +529,8 @@ export default function ReportForm() {
                   <Box display="flex" gap={1} alignItems="flex-start">
                     <Box flex={1}>
                       <FormTextField
-                        label={`${t("reportForm.newCategory")} *`}
+                        required
+                        label={`${t("reportForm.newCategory")}`}
                         name="newCategoryName"
                         value={values.newCategoryName}
                         onChange={(event) => {
@@ -574,7 +570,7 @@ export default function ReportForm() {
                   <Typography variant="body2" color="#666" mb={1}>
                     {t("reportForm.attachMedia")}{" "}
                     <span style={{ color: "#999", fontSize: 12 }}>
-                      ({t("reportForm.optional")})
+                      {`${t("reportForm.optional")}`}
                     </span>
                   </Typography>
                   <label className={styles.uploadZone}>

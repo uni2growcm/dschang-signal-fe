@@ -33,7 +33,8 @@
                   "unexpectedError":  "Une erreur inattendue est survenue. Veuillez rÃ©essayer.",
                   "quote":  "Une maniÃ¨re simple de signaler et suivre les problÃ¨mes dans notre universitÃ©.",
                   "quoter":  "Marie Nguemo",
-                  "quoterTitle":  "Responsable communautaire, Dschang"
+                  "quoterTitle":  "Responsable communautaire, Dschang",
+                  "login-successful":  "Connexion rÃ©ussie"
               },
     "register":  {
                      "title":  "CrÃ©er un compte",
@@ -121,7 +122,8 @@
                        "selectedCategories":  "CatÃ©gories sÃ©lectionnÃ©es",
                        "newCategory":  "Nom de la nouvelle catÃ©gorie",
                        "attachMedia":  "Joindre des photos ou vidÃ©os",
-                       "optional":  "optionnel",
+                       "optional":  "(optionnel)",
+                       "add-input-as-new-category":  "Ajouter \"{0}\" comme nouvelle catÃ©gorie",
                        "selectFiles":  "Cliquez pour sÃ©lectionner des fichiers",
                        "submit":  "Soumettre le signalement",
                        "success":  "Signalement crÃ©Ã© avec succÃ¨s !",
@@ -138,6 +140,8 @@
                        "categoryNameMax":  "Le nom de la catÃ©gorie doit contenir au maximum 50 caractÃ¨res",
                        "categoryExists":  "Cette catÃ©gorie existe dÃ©jÃ . Veuillez la sÃ©lectionner dans la liste.",
                        "categoryExistsFull":  "Cette catÃ©gorie existe dÃ©jÃ . Veuillez la sÃ©lectionner dans la liste ou choisir un nom diffÃ©rent.",
+                       "add":  "Ajouter \"",
+                       "as-new-category":  "\" comme nouvelle catÃ©gorie",
                        "quota":  {
                                      "title":  "Limite quotidienne de signalements",
                                      "createdToday":  "Créés aujourd\u0027hui",
@@ -277,5 +281,8 @@
                                                            "passwordError":  "Ã‰chec de la mise Ã  jour du mot de passe"
                                                        }
                                  }
-                 }
+                 },
+    "report":  {
+                   "viewDetails":  "Afficher les dÃ©tails"
+               }
 }
