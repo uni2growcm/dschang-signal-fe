@@ -6,12 +6,11 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import { ResponseError } from "../../../api";
 import { PATHS } from "../../../routes/PATHS";
@@ -34,7 +33,6 @@ export default function LoginForm() {
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
 
   const loginMutation = useMutation({
@@ -80,13 +78,13 @@ export default function LoginForm() {
   });
 
   const googleLoginMutation = useMutation({
-    mutationFn: async (googleToken: string) => {
+    mutationFn: async (idToken: string) => {
       const response = await fetch("http://localhost:8080/api/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token: googleToken }),
+        body: JSON.stringify({ token: idToken }),
       });
 
       if (!response.ok) {
@@ -111,24 +109,11 @@ export default function LoginForm() {
         setIsError(false);
       }, 3000);
     },
-    onSettled: () => {
-      setIsGoogleLoading(false);
-    },
   });
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      setIsGoogleLoading(true);
-      googleLoginMutation.mutate(tokenResponse.access_token);
-    },
-    onError: () => {
-      setErrorMessage(t("login.googleLoginFailed"));
-      setIsError(true);
-      setTimeout(() => {
-        setIsError(false);
-      }, 3000);
-    },
-  });
+  const handleGoogleLogin = (credentialResponse: any) => {
+    googleLoginMutation.mutate(credentialResponse.credential);
+  };
 
   return (
     <Formik
@@ -274,36 +259,22 @@ export default function LoginForm() {
                 {t("login.or")}
               </Divider>
             </Box>
-            <Button
-              variant="outlined"
-              fullWidth
-              disabled={success || isGoogleLoading}
-              onClick={() => handleGoogleLogin()}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                padding: "12px",
-                borderRadius: "24px",
-                border: "1px solid #ddd",
-                color: "#333",
-                textTransform: "none",
-                fontSize: "15px",
-                fontWeight: 500,
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.02)",
-                  border: "1px solid #bbb",
-                },
+
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => {
+                setErrorMessage(t("login.googleLoginFailed"));
+                setIsError(true);
+                setTimeout(() => {
+                  setIsError(false);
+                }, 3000);
               }}
-            >
-              <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">
-                {isGoogleLoading
-                  ? t("login.loading")
-                  : t("login.continueGoogle")}
-              </span>
-            </Button>
+              theme="outline"
+              shape="pill"
+              width="100%"
+              text="continue_with"
+              locale="fr"
+            />
 
             <div className={styles.signupText}>
               {t("login.noAccount")}{" "}
