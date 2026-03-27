@@ -5,6 +5,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import App from "./App.tsx";
+import { NotificationCenterProvider } from "./contexts/NotificationCenter";
 import "./i18n/i18n";
 import "./index.css";
 import theme from "./theme";
@@ -25,9 +26,11 @@ window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
+      <NotificationCenterProvider>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </NotificationCenterProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

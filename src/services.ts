@@ -81,4 +81,105 @@ export {
   checkCategoryExistsAPI as checkCategoryExists,
 } from "./services/category";
 
+export interface DailyReportQuota {
+  dailyLimit: number | null;
+  createdToday: number | null;
+  remainingToday: number | null;
+  hasRecognizedFields: boolean;
+}
+
+const toNullableNumber = (value: unknown): number | null => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  }
+
+  return null;
+};
+
+const pickFirstNumber = (
+  source: Record<string, unknown>,
+  keys: string[],
+): number | null => {
+  for (const key of keys) {
+    const value = toNullableNumber(source[key]);
+    if (value !== null) {
+      return value;
+    }
+  }
+
+  return null;
+};
+
+export const getDailyReportQuota = async (): Promise<DailyReportQuota> => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error('Unauthorized');
+  }
+
+  const response = await fetch(`${API_URL.dev}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 401) {
+    await handleUnauthorized();
+    throw new Error('Unauthorized');
+  }
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch daily report quota');
+  }
+
+  const payload = (await response.json()) as Record<string, unknown>;
+
+  const dailyLimit = pickFirstNumber(payload, [
+    'dailyReportLimit',
+    'maxDailyReports',
+    'maxReportsPerDay',
+    'reportLimitPerDay',
+    'reportsPerDayLimit',
+    'dailyLimit',
+  ]);
+  const createdToday = pickFirstNumber(payload, [
+    'reportsCreatedToday',
+    'createdReportsToday',
+    'dailyReportsCreated',
+    'todayReportsCount',
+    'reportCountToday',
+    'reportsToday',
+  ]);
+  let remainingToday = pickFirstNumber(payload, [
+    'remainingReportsToday',
+    'remainingDailyReports',
+    'dailyReportsRemaining',
+    'reportsRemainingToday',
+    'remainingReports',
+    'remaining',
+  ]);
+
+  if (remainingToday === null && dailyLimit !== null && createdToday !== null) {
+    remainingToday = Math.max(dailyLimit - createdToday, 0);
+  }
+
+  const normalizedCreatedToday =
+    createdToday === null && dailyLimit !== null && remainingToday !== null
+      ? Math.max(dailyLimit - remainingToday, 0)
+      : createdToday;
+
+  return {
+    dailyLimit,
+    createdToday: normalizedCreatedToday,
+    remainingToday,
+    hasRecognizedFields:
+      dailyLimit !== null || normalizedCreatedToday !== null || remainingToday !== null,
+  };
+};
+
 export { logoutAPI as logout } from "./services/auth";

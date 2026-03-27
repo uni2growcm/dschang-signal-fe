@@ -1,6 +1,8 @@
 import {
   Avatar,
+  Badge,
   Backdrop,
+  Box,
   Button,
   Divider,
   IconButton,
@@ -8,6 +10,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -15,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
 import { MdClose, MdLogout, MdMenu } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
+import { useNotificationCenter } from "../../contexts/NotificationCenter";
 import { PATHS } from "../../routes/PATHS";
 import { authApi } from "../../services";
 import { useMe } from "../../services/user";
@@ -29,18 +33,36 @@ export default function Header() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { notifications, unreadCount, markAllAsRead, clearNotifications } =
+    useNotificationCenter();
   const [token, setToken] = useState<string | null>(
     localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN),
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] =
+    useState<null | HTMLElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const open = Boolean(anchorEl);
+  const notificationsOpen = Boolean(notificationAnchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNotificationClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    setNotificationAnchorEl(event.currentTarget);
+    markAllAsRead();
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
   };
 
   const [waiting, setWaiting] = useState(false);
@@ -51,6 +73,7 @@ export default function Header() {
     },
     onSuccess: () => {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+      clearNotifications();
       globalThis.dispatchEvent(new Event("storage"));
       setToken(null);
       queryClient.clear();
@@ -71,6 +94,13 @@ export default function Header() {
   };
 
   const { data: user, isLoading, isError } = useMe();
+  const formattedNotifications = notifications.map((notification) => ({
+    ...notification,
+    createdAtLabel: new Intl.DateTimeFormat(undefined, {
+      dateStyle: "short",
+      timeStyle: "short",
+    }).format(new Date(notification.createdAt)),
+  }));
 
   return isLoading ? (
     <Backdrop
@@ -191,8 +221,64 @@ export default function Header() {
             </MenuItem>
           </Menu>
 
-          <IconButton className="transition-all duration-300 ease-in-out hover:text-primary hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary active:text-primary">
-            <IoIosNotificationsOutline className="text-xl text-gray-700 hover:text-primary" />
+          <Menu
+            id="notifications-menu"
+            anchorEl={notificationAnchorEl}
+            open={notificationsOpen}
+            onClose={handleNotificationClose}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <Box sx={{ width: 340, maxWidth: "90vw", py: 1 }}>
+              <Typography sx={{ px: 2, pb: 1, fontWeight: 700 }}>
+                {t("header.notifications.title")}
+              </Typography>
+              <Divider />
+              {formattedNotifications.length === 0 ? (
+                <Typography sx={{ px: 2, py: 2, color: "text.secondary" }}>
+                  {t("header.notifications.empty")}
+                </Typography>
+              ) : (
+                formattedNotifications.map((notification) => (
+                  <MenuItem
+                    key={notification.id}
+                    onClick={handleNotificationClose}
+                    sx={{
+                      alignItems: "flex-start",
+                      whiteSpace: "normal",
+                      py: 1.5,
+                    }}
+                  >
+                    <Box>
+                      <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
+                        {notification.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary", mt: 0.5 }}
+                      >
+                        {notification.message}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "text.disabled", display: "block", mt: 0.75 }}
+                      >
+                        {notification.createdAtLabel}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                ))
+              )}
+            </Box>
+          </Menu>
+
+          <IconButton
+            onClick={handleNotificationClick}
+            className="transition-all duration-300 ease-in-out hover:text-primary hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary active:text-primary"
+          >
+            <Badge badgeContent={unreadCount} color="error">
+              <IoIosNotificationsOutline className="text-xl text-gray-700 hover:text-primary" />
+            </Badge>
           </IconButton>
         </nav>
       ) : (
