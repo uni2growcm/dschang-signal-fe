@@ -34,7 +34,11 @@
     "quote": "Eine einfache Möglichkeit, Probleme in unserer Universität zu melden und zu verfolgen.",
     "quoter": "Marie Nguemo",
     "quoterTitle": "Gemeinschaftsleiterin, Dschang",
-    "login-successful": "Anmeldung erfolgreich"
+    "login-successful": "Anmeldung erfolgreich",
+    "invalid-email": "Ungültige E-Mail",
+    "email-required": "E-Mail ist erforderlich",
+    "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "password-required": "Passwort ist erforderlich"
   },
   "register": {
     "title": "Konto erstellen",
@@ -296,6 +300,19 @@
       "require-2fa-for-admin-accounts": "Erfordern Sie 2FA für Administratorkonten",
       "session-timeout-minutes": "Sitzungszeitüberschreitung (Minuten)",
       "automatically-log-out-inactive-users-after-this-duration": "Melden Sie inaktive Benutzer nach dieser Zeit automatisch ab"
+    },
+    "validation": {
+      "invalid-email": "Ungültige E-Mail",
+      "email-required": "E-Mail ist erforderlich",
+      "fullname-min": "Der vollständige Name muss mindestens 2 Zeichen lang sein",
+      "fullname-max": "Der vollständige Name muss weniger als 50 Zeichen lang sein",
+      "fullname-required": "Der vollständige Name ist erforderlich",
+      "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      "current-password-required": "Aktuelles Passwort ist erforderlich",
+      "password-different": "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden",
+      "new-password-required": "Neues Passwort ist erforderlich",
+      "password-match": "Passwörter stimmen nicht überein",
+      "confirm-password-required": "Bitte bestätigen Sie Ihr Passwort"
     }
   },
   "report": {
@@ -324,5 +341,16 @@
     "report-updated-successfully": "Bericht erfolgreich aktualisiert!",
     "report-title": "Titel",
     "categories-optional": "Kategorien (optional)"
+  },
+  "validation": {
+    "fullname-min": "Der vollständige Name muss mindestens 2 Zeichen lang sein",
+    "fullname-max": "Der vollständige Name muss weniger als 50 Zeichen lang sein",
+    "fullname-required": "Der vollständige Name ist erforderlich",
+    "invalid-email": "Ungültige E-Mail",
+    "email-required": "E-Mail ist erforderlich",
+    "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "password-required": "Passwort ist erforderlich",
+    "confirm-password-required": "Bestätigen Sie, dass ein Passwort erforderlich ist",
+    "password-match": "Passwörter müssen übereinstimmen"
   }
 }
