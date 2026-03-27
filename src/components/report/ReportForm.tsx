@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form, Formik, type FormikHelpers } from "formik";
 import {
   useEffect,
@@ -25,6 +25,7 @@ import {
   checkCategoryExists,
   createCategory,
   createReport,
+  getDailyReportQuota,
   getCategories,
   uploadMedia,
 } from "../../services";
@@ -54,6 +55,7 @@ const initialValues: ReportFormValues = {
 export default function ReportForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [medias, setMedias] = useState<File[]>([]);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -89,6 +91,11 @@ export default function ReportForm() {
     queryKey: ["categories"],
     queryFn: getCategories,
   });
+  const { data: dailyQuota, isLoading: isQuotaLoading } = useQuery({
+    queryKey: ["daily-report-quota"],
+    queryFn: getDailyReportQuota,
+    retry: false,
+  });
 
   const categoryOptions = useMemo<CategoryOption[]>(() => {
     return (categories as Array<{ id: number | string; name: string }>).map(
@@ -100,6 +107,12 @@ export default function ReportForm() {
     () => medias.map((file) => URL.createObjectURL(file)),
     [medias],
   );
+  const isQuotaReached =
+    dailyQuota?.hasRecognizedFields === true &&
+    dailyQuota.dailyLimit !== 0 &&
+    dailyQuota.remainingToday !== null &&
+    dailyQuota.remainingToday <= 0;
+  const shouldShowQuota = dailyQuota?.hasRecognizedFields === true;
 
   useEffect(() => {
     return () => {
@@ -154,6 +167,7 @@ export default function ReportForm() {
       return report;
     },
     onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["daily-report-quota"] });
       setMessage(t("reportForm.success"));
       setIsError(false);
       setMedias([]);
@@ -307,6 +321,42 @@ export default function ReportForm() {
           return (
             <Form>
               <div className={styles.formInputs}>
+                {shouldShowQuota && (
+                  <Box className={styles.quotaCard}>
+                    <Typography variant="subtitle2" className={styles.quotaTitle}>
+                      Daily report limit
+                    </Typography>
+                    <Box className={styles.quotaStats}>
+                      <Box className={styles.quotaStat}>
+                        <Typography variant="caption" color="#666">
+                          Created today
+                        </Typography>
+                        <Typography variant="h6">
+                          {dailyQuota.createdToday ?? 0}
+                        </Typography>
+                      </Box>
+                      <Box className={styles.quotaStat}>
+                        <Typography variant="caption" color="#666">
+                          Remaining today
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          color={isQuotaReached ? "#d32f2f" : "#2e7d32"}
+                        >
+                          {dailyQuota.dailyLimit === 0
+                            ? "Unlimited"
+                            : (dailyQuota.remainingToday ?? "-")}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    {isQuotaReached && (
+                      <Typography variant="body2" color="#d32f2f">
+                        You have reached your daily report limit.
+                      </Typography>
+                    )}
+                  </Box>
+                )}
+
                 <FormTextField
                   label={`${t("reportForm.title")} *`}
                   name="title"
@@ -534,7 +584,11 @@ export default function ReportForm() {
                   type="submit"
                   variant="contained"
                   disabled={
-                    mutation.isPending || isSubmitting || Boolean(newCategoryError)
+                    mutation.isPending ||
+                    isSubmitting ||
+                    isQuotaLoading ||
+                    isQuotaReached ||
+                    Boolean(newCategoryError)
                   }
                   fullWidth
                   sx={{
