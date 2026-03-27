@@ -54,18 +54,25 @@ export default function LoginForm() {
         }, 2000);
       }
     },
-    onError: (error: unknown) => {
-      const err = error as ResponseError;
-      const message =
-        err.response?.status == 400
-          ? t("login.invalidCredentials")
-          : t("login.loginFailed");
-      if (!(error instanceof ResponseError)) {
-        setErrorMessage(t("login.unexpectedError"));
-        setIsError(true);
-        return;
+    onError: async (error: unknown) => {
+      let errorMessage = t("login.loginFailed");
+
+      if (error instanceof Error) {
+       
+        errorMessage = error.message;
+      } else if (error instanceof ResponseError) {
+      
+        try {
+          const text = await error.response.text();
+          const body = JSON.parse(text);
+          errorMessage = body.message || text;
+        } catch (e) {
+          errorMessage = t("login.unexpectedError");
+        }
       }
-      setErrorMessage(message);
+
+      console.log(">>> [LoginForm] Final error message:", errorMessage);
+      setErrorMessage(errorMessage);
       setIsError(true);
     },
     onSettled: () => {
