@@ -71,6 +71,8 @@ export {
   deleteReportAPI as deleteReport,
   updateReportAPI as updateReport,
   deleteMediaAPI as deleteMedia,
+  updateModerationStatusAPI as updateModerationStatus,
+  updateReportStatusAPI as updateReportStatus
 } from "./services/report";
 
 export {

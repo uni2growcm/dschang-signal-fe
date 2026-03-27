@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "appName": "Dschang Signal",
     "welcome": "Bienvenue",
@@ -184,6 +184,21 @@
   },
   "reportDetails": {
     "backHome": "← Retour à l'accueil",
+    "adminActions": "Actions administrateur",
+    "adminActionsDescription": "Examinez le signalement, acceptez ou rejetez-le, puis mettez à jour son avancement.",
+    "acceptReport": "Accepter le signalement",
+    "rejectReport": "Rejeter le signalement",
+    "rejectTitle": "Rejeter le signalement",
+    "rejectMessage": "Ajoutez un motif de rejet si nécessaire avant de rejeter ce signalement.",
+    "rejectionReason": "Motif du rejet",
+    "changeReportStatus": "Changer le statut du signalement",
+    "updateStatus": "Mettre à jour le statut",
+    "cancel": "Annuler",
+    "confirmReject": "Confirmer le rejet",
+    "adminActionError": "L'action administrateur a échoué",
+    "noAdminActionAvailable": "Aucune action administrateur n'est actuellement disponible pour ce signalement.",
+    "rejectedLockedMessage": "Ce signalement est rejeté. Son statut ne peut plus être mis à jour.",
+    "na": "N/A",
     "editReport": "Modifier le signalement",
     "deleteReport": "Supprimer le signalement",
     "deleteTitle": "Supprimer le signalement",
@@ -202,7 +217,15 @@
     "noMedia": "Aucun média disponible",
     "downloadDocument": "📄 Télécharger le document",
     "unknownStatus": "INCONNU",
-    "unnamed": "Sans nom"
+    "unnamed": "Sans nom",
+    "reviewedAt": "Révisé le",
+    "no-description-provided": "Aucune description fournie",
+    "created-at": "Créé à :",
+    "reported-by": "Rapporté par :",
+    "reviewed-at": "Révisé à :",
+    "rejection-reason": "Motif du refus :",
+    "no-categories": "Aucune catégorie",
+    "no-media-available": "Aucun média disponible"
   },
   "usersSection": {
     "title": "Liste des utilisateurs",

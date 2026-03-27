@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { Report } from "../api";
+import type { ErrorResponse, Report } from "../api";
 import { reportApi, mediaApi } from "../services";
 import { isAuth } from "../utils/utils";
 import { handleUnauthorized } from "../utils/handleUnauthorized";
@@ -112,8 +112,8 @@ export const createReportAPI = async (data: {
   try {
     const response = await reportApi.createReport({ reportRequest: data });
     return response;
-  } catch (error: any) {
-    if (error.status === 401) {
+  } catch (error: unknown) {
+    if ((error as ErrorResponse).status === 401) {
       await handleUnauthorized();
     }
     throw error;
@@ -127,8 +127,8 @@ export const uploadMediaAPI = async (reportId: number, file: File) => {
       file,
     });
     return response;
-  } catch (error: any) {
-    if (error.status === 401) {
+  } catch (error: unknown) {
+    if ((error as ErrorResponse).status === 401) {
       await handleUnauthorized();
     }
     throw error;
@@ -162,6 +162,33 @@ export const updateReportAPI = async (
   });
 };
 
+export const updateModerationStatusAPI = async (
+  id: number,
+  data: {
+    status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED";
+    rejectionReason?: string;
+  },
+) => {
+  return await reportApi.updateModerationStatus({
+    id,
+    updateModerationStatusRequest: data,
+  });
+};
+
+export const updateReportStatusAPI = async (
+  id: number,
+  data: {
+    status: "PENDING" | "IN_PROGRESS" | "RESOLVED";
+  },
+) => {
+    return await reportApi.updateReportStatus({
+      id,
+      updateReportStatusRequest: data,
+    });
+};
+
+
 export const deleteMediaAPI = async (mediaId: number): Promise<void> => {
   await mediaApi.deleteMedia({ mediaId });
 };
+
