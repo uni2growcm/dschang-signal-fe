@@ -12,12 +12,16 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { useEffect, useRef, useState } from "react";
 import { useMediaViewer } from "../../hooks/useMediaViewer";
 import styles from "./MediaViewer.module.css";
+import { useTranslation } from "react-i18next";
+import { FaPlay } from "react-icons/fa6";
 
 interface MediaViewerProps {
   viewer: ReturnType<typeof useMediaViewer>;
 }
 
 export default function MediaViewer({ viewer }: MediaViewerProps) {
+  const { t } = useTranslation();
+
   const {
     isOpen,
     currentMedia,
@@ -31,13 +35,11 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoUrl, setVideoUrl] = useState<string>("");
 
-
   useEffect(() => {
     if (!isOpen) {
       setVideoUrl("");
     }
   }, [isOpen]);
-
 
   const handlePlayClick = () => {
     if (currentMedia && !videoUrl) {
@@ -47,17 +49,19 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
 
   if (!currentMedia) return null;
 
-  const getMediaType = (mimeType: string): 'image' | 'video' | 'audio' | 'document' => {
-    if (mimeType?.startsWith('image/')) return 'image';
-    if (mimeType?.startsWith('video/')) return 'video';
-    if (mimeType?.startsWith('audio/')) return 'audio';
-    return 'document';
+  const getMediaType = (
+    mimeType: string,
+  ): "image" | "video" | "audio" | "document" => {
+    if (mimeType?.startsWith("image/")) return "image";
+    if (mimeType?.startsWith("video/")) return "video";
+    if (mimeType?.startsWith("audio/")) return "audio";
+    return "document";
   };
 
   const mediaType = getMediaType(currentMedia.mimeType);
 
   const handleDownload = () => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = currentMedia.url;
     link.download = currentMedia.fileName || `media-${currentMedia.id}`;
     document.body.appendChild(link);
@@ -67,7 +71,7 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
 
   const renderMediaContent = () => {
     switch (mediaType) {
-      case 'image':
+      case "image":
         return (
           <img
             src={currentMedia.url}
@@ -75,20 +79,20 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
             className={styles.fullImage}
           />
         );
-      case 'video':
+      case "video":
         if (!videoUrl) {
           return (
             <Box className={styles.videoPlaceholder}>
               <button onClick={handlePlayClick} className={styles.playButton}>
-                ▶
+                <FaPlay />
               </button>
               <Typography className={styles.playHint}>
-                Cliquez pour lire la vidéo
+                {t("media.play-video")}
               </Typography>
             </Box>
           );
         }
-       
+
         return (
           <video
             ref={videoRef}
@@ -98,35 +102,39 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
             key={videoUrl}
           >
             <source src={videoUrl} type={currentMedia.mimeType} />
-            Votre navigateur ne supporte pas la lecture vidéo.
+            {t("media.browser-does-not-support-playback")}
           </video>
         );
-      case 'audio':
+      case "audio":
         return (
           <Box className={styles.audioContainer}>
-            <audio controls className={styles.audioPlayer} key={currentMedia.id}>
+            <audio
+              controls
+              className={styles.audioPlayer}
+              key={currentMedia.id}
+            >
               <source src={currentMedia.url} type={currentMedia.mimeType} />
             </audio>
           </Box>
         );
-      case 'document':
+      case "document":
         return (
           <Box className={styles.documentContainer}>
             <Typography variant="h6" className={styles.documentName}>
-              {currentMedia.fileName || 'Document'}
+              {currentMedia.fileName || t("media.document")}
             </Typography>
             <Typography variant="body2" className={styles.documentHint}>
-              Cliquez sur le bouton ci-dessous pour télécharger ou ouvrir le document
+              {t("media.download-or-open-the-document")}
             </Typography>
             <button onClick={handleDownload} className={styles.documentButton}>
-              📄 Télécharger le document
+              {t("media.download-the-document")}
             </button>
           </Box>
         );
       default:
         return (
           <Typography className={styles.unsupportedText}>
-            Type de média non supporté
+            {t("media.unsupported-media-type")}
           </Typography>
         );
     }
@@ -139,7 +147,7 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
       maxWidth="xl"
       fullWidth
       classes={{ paper: styles.dialogPaper }}
-      BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 0.9)' } }}
+      BackdropProps={{ style: { backgroundColor: "rgba(0, 0, 0, 0.9)" } }}
     >
       <Box className={styles.header}>
         <IconButton onClick={closeViewer} className={styles.closeButton}>
@@ -160,9 +168,7 @@ export default function MediaViewer({ viewer }: MediaViewerProps) {
           </IconButton>
         )}
 
-        <Box className={styles.mediaContainer}>
-          {renderMediaContent()}
-        </Box>
+        <Box className={styles.mediaContainer}>{renderMediaContent()}</Box>
 
         {hasNext && (
           <IconButton
