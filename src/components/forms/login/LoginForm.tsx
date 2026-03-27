@@ -277,7 +277,7 @@ export default function LoginForm() {
           />
           <SnackBar
             open={success}
-            message="Login Successful"
+            message={t('login.login-successful')}
             severity="success"
             position="bottom-right"
           />
