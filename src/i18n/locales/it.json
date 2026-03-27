@@ -1,266 +1,281 @@
-{
-  "common": {
-    "appName": "Segnale di Dschang",
-    "welcome": "Benvenuto",
-    "logout": "Esci",
-    "loading": "Caricamento...",
-    "error": "Si è verificato un errore",
-    "success": "Successo",
-    "home": "Home",
-    "profile": "Profilo",
-    "settings": "Impostazioni"
-  },
-  "login": {
-    "title": "Accesso",
-    "welcomeBack": "Bentornato",
-    "description": "Segnala e monitora i problemi nella tua comunità universitaria con Dschang's Signal.",
-    "email": "Email",
-    "password": "Password",
-    "submit": "Accedi",
-    "loading": "Accesso in corso...",
-    "redirecting": "Reindirizzamento...",
-    "success": "Accesso riuscito",
-    "noAccount": "Non hai un account?",
-    "registerLink": "Registrati",
-    "invalidEmail": "Email non valida",
-    "passwordRequired": "La password è obbligatoria",
-    "forgotPassword": "Password dimenticata?",
-    "rememberMe": "Ricordami",
-    "continueGoogle": "Continua con Google",
-    "or": "OPPURE",
-    "invalidCredentials": "Credenziali non valide",
-    "loginFailed": "Accesso fallito, controlla le tue credenziali.",
-    "unexpectedError": "Si è verificato un errore imprevisto. Riprova.",
-    "quote": "Un modo semplice per segnalare e monitorare i problemi nella nostra università.",
-    "quoter": "Marie Nguemo",
-    "quoterTitle": "Leader della comunità, Dschang"
-  },
-  "register": {
-    "title": "Crea un account",
-    "description": "Unisciti a Dschang's Signal e inizia a segnalare problemi nella tua comunità universitaria.",
-    "fullName": "Nome completo",
-    "email": "Email",
-    "password": "Password",
-    "confirmPassword": "Conferma password",
-    "submit": "Registrati",
-    "loading": "Creazione account...",
-    "redirecting": "Reindirizzamento...",
-    "success": "Account creato con successo!",
-    "redirect": "Verrai reindirizzato al login",
-    "haveAccount": "Hai già un account?",
-    "loginLink": "Accedi",
-    "continueGoogle": "Continua con Google",
-    "or": "OPPURE",
-    "error": "Si è verificato un errore. Riprova.",
-    "fullNameMin": "Il nome completo deve contenere almeno 2 caratteri",
-    "fullNameMax": "Il nome completo deve contenere massimo 50 caratteri",
-    "fullNameRequired": "Il nome completo è obbligatorio",
-    "emailRequired": "L'email è obbligatoria",
-    "invalidEmail": "Email non valida",
-    "passwordRequired": "La password è obbligatoria",
-    "passwordMin": "La password deve contenere almeno 6 caratteri",
-    "passwordMatch": "Le password non corrispondono",
-    "createAccountHeader": "Crea il tuo account",
-    "joinDescription": "Unisciti a Dschang's Signal e inizia a segnalare problemi nella tua comunità.",
-    "accountExists": "Un account con questa email esiste già. Per favore accedi.",
-    "invalidData": "Dati di registrazione non validi. Controlla le tue informazioni.",
-    "registrationFailed": "Registrazione non riuscita. Per favore riprova.",
-    "successRedirect": "Registrazione riuscita! Reindirizzamento al login..."
-  },
-  "notFound": {
-    "code": "404",
-    "title": "Pagina non trovata",
-    "message": "Scusa, la pagina che stai cercando non esiste o è stata spostata.",
-    "reportText": "La segnalazione che stai cercando non esiste o è stata eliminata.",
-    "backHome": "Torna alla home"
-  },
-  "reports": {
-    "title": "Rapporti",
-    "newReport": "Nuovo rapporto",
-    "category": "Categoria",
-    "status": "Stato",
-    "date": "Data",
-    "actions": "Azioni",
-    "view": "Visualizza",
-    "edit": "Modifica",
-    "delete": "Elimina",
-    "noReports": "Nessun rapporto al momento"
-  },
-  "categories": {
-    "pothole": "Buca",
-    "trafficLight": "Semaforo",
-    "tree": "Albero caduto",
-    "streetLight": "Lampione stradale",
-    "other": "Altro"
-  },
-  "registerPage": {
-    "quote": "Unisciti a noi per fare la differenza nella tua comunità.",
-    "author": "Marie Nguemo",
-    "role": "Leader della comunità, Dschang"
-  },
-  "header": {
-    "fetchUserError": "Impossibile recuperare le informazioni dell'utente",
-    "loggingOut": "Uscita in corso...",
-    "logoutFailed": "Uscita non riuscita. Per favore riprova.",
-    "logoutSuccess": "Uscita riuscita!",
-    "openMenu": "Apri il menu principale",
-    "settings": "Impostazioni",
-    "logout": "Esci"
-  },
-  "reportForm": {
-    "headerDescription": "Descrivi il problema che hai osservato nella tua zona.",
-    "requiredFields": "Campi obbligatori",
-    "title": "Titolo",
-    "description": "Descrizione",
-    "location": "Posizione",
-    "categoryOptional": "Categoria (opzionale)",
-    "selectedCategories": "Categorie selezionate",
-    "newCategory": "Nome della nuova categoria",
-    "attachMedia": "Allega foto o video",
-    "optional": "opzionale",
-    "selectFiles": "Clicca per selezionare i file",
-    "submit": "Invia la segnalazione",
-    "success": "Segnalazione creata con successo!",
-    "error": "Errore nella creazione della segnalazione. Per favore riprova.",
-    "addCategory": "+ Aggiungi nuova categoria",
-    "addCategoryDynamic": "+ Aggiungi \"{{value}}\" come nuova categoria",
-    "titleMin": "Il titolo deve contenere almeno 3 caratteri",
-    "titleMax": "Il titolo deve contenere al massimo 150 caratteri",
-    "titleRequired": "Il titolo è obbligatorio",
-    "descriptionMin": "La descrizione deve contenere almeno 10 caratteri",
-    "descriptionRequired": "La descrizione è obbligatoria",
-    "locationRequired": "La posizione è obbligatoria",
-    "categoryNameMin": "Il nome della categoria deve contenere almeno 2 caratteri",
-    "categoryNameMax": "Il nome della categoria deve contenere al massimo 50 caratteri",
-    "categoryExists": "Questa categoria esiste già. Per favore selezionala dall'elenco.",
-    "categoryExistsFull": "Questa categoria esiste già. Per favore selezionala dall'elenco o scegli un nome diverso."
-  },
-  "reportPage": {
-    "title": "Crea una segnalazione",
-    "subtitle": "Aiuta a migliorare la tua città segnalando un problema",
-    "backHome": "Torna alla home"
-  },
-  "home": {
-    "loadingReports": "Caricamento segnalazioni...",
-    "errorLoading": "Errore nel caricamento delle segnalazioni. Per favore ricarica la pagina.",
-    "filterPublic": "Pubblico",
-    "filterMine": "Le mie segnalazioni",
-    "createReport": "Crea una segnalazione",
-    "noReports": "Nessuna segnalazione trovata",
-    "noReports_View": "Nessuna segnalazione trovata per questa vista.",
-    "clearFilters": "Cancella i filtri per vedere tutte le segnalazioni",
-    "clearFiltersAction": "Cancella i filtri",
-    "allStatuses": "Tutti gli stati",
-    "allModerationStatuses": "Tutti gli stati di moderazione",
-    "allCategories": "Tutte le categorie",
-    "category": "Categoria",
-    "status": "Stato",
-    "moderationStatus": "Stato di moderazione",
-    "statusPending": "In attesa",
-    "statusInProgress": "In corso",
-    "statusResolved": "Risolto",
-    "moderationPendingReview": "In attesa di revisione",
-    "moderationAccepted": "Accettato",
-    "moderationRejected": "Rifiutato"
-  },
-  "reportDetails": {
-    "backHome": "← Torna alla home",
-    "editReport": "Modifica la segnalazione",
-    "deleteReport": "Elimina la segnalazione",
-    "deleteTitle": "Elimina la segnalazione",
-    "deleteMessage": "Sei sicuro di voler eliminare questa segnalazione? Questa azione non può essere annullata.",
-    "no": "No",
-    "yesDelete": "Sì, elimina",
-    "deleteError": "Errore nell'eliminazione della segnalazione",
-    "untitledReport": "Segnalazione senza titolo",
-    "noLocation": "Nessuna posizione fornita",
-    "noDescription": "Nessuna descrizione fornita",
-    "createdAt": "Creato il",
-    "moderation": "Moderazione",
-    "reportedBy": "Segnalato da",
-    "unknown": "Sconosciuto",
-    "noCategories": "Nessuna categoria",
-    "noMedia": "Nessun media disponibile",
-    "downloadDocument": "📄 Scarica documento",
-    "unknownStatus": "SCONOSCIUTO",
-    "unnamed": "Senza nome"
-  },
-  "usersSection": {
-    "title": "Elenco utenti",
-    "description": "Gestisci gli utenti registrati e i loro ruoli",
-    "searchPlaceholder": "Cerca per nome completo...",
-    "roleUpdated": "Ruolo utente aggiornato con successo",
-    "roleUpdateError": "Non puoi autorizzare te stesso. Chiedi a un altro admin di aggiornare il tuo ruolo.",
-    "noUser": "Nessun utente trovato"
-  },
-  "settings": {
-    "backHome": "← Torna alla home",
-    "title": "Impostazioni",
-    "description": "Gestisci la configurazione del tuo progetto e le preferenze",
-    "moderation": {
-      "title": "Moderazione",
-      "description": "Configura la moderazione dei contenuti e le regole di approvazione",
-      "approvalMode": {
-        "title": "Modalità di approvazione dei post",
-        "manual": "Approvazione manuale richiesta",
-        "auto": "Approva automaticamente tutti i post",
-        "verified": "Approvazione automatica solo per utenti verificati"
-      },
-      "filters": {
-        "title": "Filtri dei contenuti",
-        "profanity": "Filtra linguaggio offensivo",
-        "spam": "Blocca spam e invii ripetuti",
-        "imageRequired": "Richiedi immagini per le segnalazioni",
-        "location": "Abilita geolocalizzazione"
-      },
-      "maxSignals": {
-        "title": "Numero massimo di segnalazioni per utente al giorno",
-        "helper": "Imposta 0 per illimitato"
-      }
-    },
-    "danger": {
-      "title": "Zona pericolosa",
-      "description": "Azioni irreversibili — procedere con cautela",
-      "resetSignals": {
-        "title": "Reimposta tutti i segnali",
-        "description": "Elimina definitivamente tutti i segnali e i dati associati",
-        "button": "Reimposta"
-      },
-      "deleteProject": {
-        "title": "Elimina progetto",
-        "description": "Elimina definitivamente questo progetto e tutti i dati",
-        "button": "Elimina progetto"
-      },
-      "notifications": {
-        "notDeveloped": "Questa funzionalità non è ancora disponibile.",
-        "notAuthorized": "Questa azione non è autorizzata."
-      }
-    },
-    "general": {
-      "title": "Generale",
-      "description": "Informazioni e configurazione di base del progetto",
-      "projectName": "Nome progetto",
-      "userEmail": "Email utente",
-      "fullName": "Nome completo",
-      "password": "Password",
-      "placeholders": {
-        "currentPassword": "Password attuale",
-        "newPassword": "Nuova password",
-        "confirmPassword": "Conferma password"
-      },
-      "buttons": {
-        "updatePassword": "Aggiorna password",
-        "cancel": "Annulla",
-        "confirm": "Conferma",
-        "saveChanges": "Salva modifiche",
-        "saving": "Salvataggio..."
-      },
-      "notifications": {
-        "updateSuccess": "Profilo aggiornato con successo",
-        "updateError": "Errore durante l'aggiornamento del profilo",
-        "passwordSuccess": "Password aggiornata con successo",
-        "passwordError": "Errore durante l'aggiornamento della password"
-      }
-    }
-  }
+﻿{
+    "common":  {
+                   "appName":  "Segnale di Dschang",
+                   "welcome":  "Benvenuto",
+                   "logout":  "Esci",
+                   "loading":  "Caricamento...",
+                   "error":  "Si Ã¨ verificato un errore",
+                   "success":  "Successo",
+                   "home":  "Home",
+                   "profile":  "Profilo",
+                   "settings":  "Impostazioni"
+               },
+    "login":  {
+                  "title":  "Accesso",
+                  "welcomeBack":  "Bentornato",
+                  "description":  "Segnala e monitora i problemi nella tua comunitÃ  universitaria con Dschang\u0027s Signal.",
+                  "email":  "Email",
+                  "password":  "Password",
+                  "submit":  "Accedi",
+                  "loading":  "Accesso in corso...",
+                  "redirecting":  "Reindirizzamento...",
+                  "success":  "Accesso riuscito",
+                  "noAccount":  "Non hai un account?",
+                  "registerLink":  "Registrati",
+                  "invalidEmail":  "Email non valida",
+                  "passwordRequired":  "La password Ã¨ obbligatoria",
+                  "forgotPassword":  "Password dimenticata?",
+                  "rememberMe":  "Ricordami",
+                  "continueGoogle":  "Continua con Google",
+                  "or":  "OPPURE",
+                  "invalidCredentials":  "Credenziali non valide",
+                  "loginFailed":  "Accesso fallito, controlla le tue credenziali.",
+                  "unexpectedError":  "Si Ã¨ verificato un errore imprevisto. Riprova.",
+                  "quote":  "Un modo semplice per segnalare e monitorare i problemi nella nostra universitÃ .",
+                  "quoter":  "Marie Nguemo",
+                  "quoterTitle":  "Leader della comunitÃ , Dschang"
+              },
+    "register":  {
+                     "title":  "Crea un account",
+                     "description":  "Unisciti a Dschang\u0027s Signal e inizia a segnalare problemi nella tua comunitÃ  universitaria.",
+                     "fullName":  "Nome completo",
+                     "email":  "Email",
+                     "password":  "Password",
+                     "confirmPassword":  "Conferma password",
+                     "submit":  "Registrati",
+                     "loading":  "Creazione account...",
+                     "redirecting":  "Reindirizzamento...",
+                     "success":  "Account creato con successo!",
+                     "redirect":  "Verrai reindirizzato al login",
+                     "haveAccount":  "Hai giÃ  un account?",
+                     "loginLink":  "Accedi",
+                     "continueGoogle":  "Continua con Google",
+                     "or":  "OPPURE",
+                     "error":  "Si Ã¨ verificato un errore. Riprova.",
+                     "fullNameMin":  "Il nome completo deve contenere almeno 2 caratteri",
+                     "fullNameMax":  "Il nome completo deve contenere massimo 50 caratteri",
+                     "fullNameRequired":  "Il nome completo Ã¨ obbligatorio",
+                     "emailRequired":  "L\u0027email Ã¨ obbligatoria",
+                     "invalidEmail":  "Email non valida",
+                     "passwordRequired":  "La password Ã¨ obbligatoria",
+                     "passwordMin":  "La password deve contenere almeno 6 caratteri",
+                     "passwordMatch":  "Le password non corrispondono",
+                     "createAccountHeader":  "Crea il tuo account",
+                     "joinDescription":  "Unisciti a Dschang\u0027s Signal e inizia a segnalare problemi nella tua comunitÃ .",
+                     "accountExists":  "Un account con questa email esiste giÃ . Per favore accedi.",
+                     "invalidData":  "Dati di registrazione non validi. Controlla le tue informazioni.",
+                     "registrationFailed":  "Registrazione non riuscita. Per favore riprova.",
+                     "successRedirect":  "Registrazione riuscita! Reindirizzamento al login..."
+                 },
+    "notFound":  {
+                     "code":  "404",
+                     "title":  "Pagina non trovata",
+                     "message":  "Scusa, la pagina che stai cercando non esiste o Ã¨ stata spostata.",
+                     "reportText":  "La segnalazione che stai cercando non esiste o Ã¨ stata eliminata.",
+                     "backHome":  "Torna alla home"
+                 },
+    "reports":  {
+                    "title":  "Rapporti",
+                    "newReport":  "Nuovo rapporto",
+                    "category":  "Categoria",
+                    "status":  "Stato",
+                    "date":  "Data",
+                    "actions":  "Azioni",
+                    "view":  "Visualizza",
+                    "edit":  "Modifica",
+                    "delete":  "Elimina",
+                    "noReports":  "Nessun rapporto al momento"
+                },
+    "categories":  {
+                       "pothole":  "Buca",
+                       "trafficLight":  "Semaforo",
+                       "tree":  "Albero caduto",
+                       "streetLight":  "Lampione stradale",
+                       "other":  "Altro"
+                   },
+    "registerPage":  {
+                         "quote":  "Unisciti a noi per fare la differenza nella tua comunitÃ .",
+                         "author":  "Marie Nguemo",
+                         "role":  "Leader della comunitÃ , Dschang"
+                     },
+    "header":  {
+                   "fetchUserError":  "Impossibile recuperare le informazioni dell\u0027utente",
+                   "loggingOut":  "Uscita in corso...",
+                   "logoutFailed":  "Uscita non riuscita. Per favore riprova.",
+                   "logoutSuccess":  "Uscita riuscita!",
+                   "openMenu":  "Apri il menu principale",
+                   "settings":  "Impostazioni",
+                   "logout":  "Esci",
+                   "notifications":  {
+                                         "title":  "Notifiche",
+                                         "empty":  "Nessuna notifica al momento."
+                                     }
+               },
+    "reportForm":  {
+                       "headerDescription":  "Descrivi il problema che hai osservato nella tua zona.",
+                       "requiredFields":  "Campi obbligatori",
+                       "title":  "Titolo",
+                       "description":  "Descrizione",
+                       "location":  "Posizione",
+                       "categoryOptional":  "Categoria (opzionale)",
+                       "selectedCategories":  "Categorie selezionate",
+                       "newCategory":  "Nome della nuova categoria",
+                       "attachMedia":  "Allega foto o video",
+                       "optional":  "opzionale",
+                       "selectFiles":  "Clicca per selezionare i file",
+                       "submit":  "Invia la segnalazione",
+                       "success":  "Segnalazione creata con successo!",
+                       "error":  "Errore nella creazione della segnalazione. Per favore riprova.",
+                       "addCategory":  "+ Aggiungi nuova categoria",
+                       "addCategoryDynamic":  "+ Aggiungi \"{{value}}\" come nuova categoria",
+                       "titleMin":  "Il titolo deve contenere almeno 3 caratteri",
+                       "titleMax":  "Il titolo deve contenere al massimo 150 caratteri",
+                       "titleRequired":  "Il titolo Ã¨ obbligatorio",
+                       "descriptionMin":  "La descrizione deve contenere almeno 10 caratteri",
+                       "descriptionRequired":  "La descrizione Ã¨ obbligatoria",
+                       "locationRequired":  "La posizione Ã¨ obbligatoria",
+                       "categoryNameMin":  "Il nome della categoria deve contenere almeno 2 caratteri",
+                       "categoryNameMax":  "Il nome della categoria deve contenere al massimo 50 caratteri",
+                       "categoryExists":  "Questa categoria esiste giÃ . Per favore selezionala dall\u0027elenco.",
+                       "categoryExistsFull":  "Questa categoria esiste giÃ . Per favore selezionala dall\u0027elenco o scegli un nome diverso.",
+                       "quota":  {
+                                     "title":  "Limite giornaliero di segnalazioni",
+                                     "createdToday":  "Create oggi",
+                                     "remainingToday":  "Rimanenti oggi",
+                                     "unlimited":  "Illimitato",
+                                     "reached":  "Hai raggiunto il tuo limite giornaliero di segnalazioni."
+                                 },
+                       "notifications":  {
+                                             "dailyLimitReachedTitle":  "Limite di segnalazioni raggiunto",
+                                             "dailyLimitReachedMessage":  "Hai raggiunto il numero massimo di segnalazioni per oggi."
+                                         }
+                   },
+    "reportPage":  {
+                       "title":  "Crea una segnalazione",
+                       "subtitle":  "Aiuta a migliorare la tua cittÃ  segnalando un problema",
+                       "backHome":  "Torna alla home"
+                   },
+    "home":  {
+                 "loadingReports":  "Caricamento segnalazioni...",
+                 "errorLoading":  "Errore nel caricamento delle segnalazioni. Per favore ricarica la pagina.",
+                 "filterPublic":  "Pubblico",
+                 "filterMine":  "Le mie segnalazioni",
+                 "createReport":  "Crea una segnalazione",
+                 "noReports":  "Nessuna segnalazione trovata",
+                 "noReports_View":  "Nessuna segnalazione trovata per questa vista.",
+                 "clearFilters":  "Cancella i filtri per vedere tutte le segnalazioni",
+                 "clearFiltersAction":  "Cancella i filtri",
+                 "allStatuses":  "Tutti gli stati",
+                 "allModerationStatuses":  "Tutti gli stati di moderazione",
+                 "allCategories":  "Tutte le categorie",
+                 "category":  "Categoria",
+                 "status":  "Stato",
+                 "moderationStatus":  "Stato di moderazione",
+                 "statusPending":  "In attesa",
+                 "statusInProgress":  "In corso",
+                 "statusResolved":  "Risolto",
+                 "moderationPendingReview":  "In attesa di revisione",
+                 "moderationAccepted":  "Accettato",
+                 "moderationRejected":  "Rifiutato"
+             },
+    "reportDetails":  {
+                          "backHome":  "â† Torna alla home",
+                          "editReport":  "Modifica la segnalazione",
+                          "deleteReport":  "Elimina la segnalazione",
+                          "deleteTitle":  "Elimina la segnalazione",
+                          "deleteMessage":  "Sei sicuro di voler eliminare questa segnalazione? Questa azione non puÃ² essere annullata.",
+                          "no":  "No",
+                          "yesDelete":  "SÃ¬, elimina",
+                          "deleteError":  "Errore nell\u0027eliminazione della segnalazione",
+                          "untitledReport":  "Segnalazione senza titolo",
+                          "noLocation":  "Nessuna posizione fornita",
+                          "noDescription":  "Nessuna descrizione fornita",
+                          "createdAt":  "Creato il",
+                          "moderation":  "Moderazione",
+                          "reportedBy":  "Segnalato da",
+                          "unknown":  "Sconosciuto",
+                          "noCategories":  "Nessuna categoria",
+                          "noMedia":  "Nessun media disponibile",
+                          "downloadDocument":  "ðŸ“„ Scarica documento",
+                          "unknownStatus":  "SCONOSCIUTO",
+                          "unnamed":  "Senza nome"
+                      },
+    "usersSection":  {
+                         "title":  "Elenco utenti",
+                         "description":  "Gestisci gli utenti registrati e i loro ruoli",
+                         "searchPlaceholder":  "Cerca per nome completo...",
+                         "roleUpdated":  "Ruolo utente aggiornato con successo",
+                         "roleUpdateError":  "Non puoi autorizzare te stesso. Chiedi a un altro admin di aggiornare il tuo ruolo.",
+                         "noUser":  "Nessun utente trovato"
+                     },
+    "settings":  {
+                     "backHome":  "â† Torna alla home",
+                     "title":  "Impostazioni",
+                     "description":  "Gestisci la configurazione del tuo progetto e le preferenze",
+                     "moderation":  {
+                                        "title":  "Moderazione",
+                                        "description":  "Configura la moderazione dei contenuti e le regole di approvazione",
+                                        "approvalMode":  {
+                                                             "title":  "ModalitÃ  di approvazione dei post",
+                                                             "manual":  "Approvazione manuale richiesta",
+                                                             "auto":  "Approva automaticamente tutti i post",
+                                                             "verified":  "Approvazione automatica solo per utenti verificati"
+                                                         },
+                                        "filters":  {
+                                                        "title":  "Filtri dei contenuti",
+                                                        "profanity":  "Filtra linguaggio offensivo",
+                                                        "spam":  "Blocca spam e invii ripetuti",
+                                                        "imageRequired":  "Richiedi immagini per le segnalazioni",
+                                                        "location":  "Abilita geolocalizzazione"
+                                                    },
+                                        "maxSignals":  {
+                                                           "title":  "Numero massimo di segnalazioni per utente al giorno",
+                                                           "helper":  "Imposta 0 per illimitato"
+                                                       }
+                                    },
+                     "danger":  {
+                                    "title":  "Zona pericolosa",
+                                    "description":  "Azioni irreversibili â€” procedere con cautela",
+                                    "resetSignals":  {
+                                                         "title":  "Reimposta tutti i segnali",
+                                                         "description":  "Elimina definitivamente tutti i segnali e i dati associati",
+                                                         "button":  "Reimposta"
+                                                     },
+                                    "deleteProject":  {
+                                                          "title":  "Elimina progetto",
+                                                          "description":  "Elimina definitivamente questo progetto e tutti i dati",
+                                                          "button":  "Elimina progetto"
+                                                      },
+                                    "notifications":  {
+                                                          "notDeveloped":  "Questa funzionalitÃ  non Ã¨ ancora disponibile.",
+                                                          "notAuthorized":  "Questa azione non Ã¨ autorizzata."
+                                                      }
+                                },
+                     "general":  {
+                                     "title":  "Generale",
+                                     "description":  "Informazioni e configurazione di base del progetto",
+                                     "projectName":  "Nome progetto",
+                                     "userEmail":  "Email utente",
+                                     "fullName":  "Nome completo",
+                                     "password":  "Password",
+                                     "placeholders":  {
+                                                          "currentPassword":  "Password attuale",
+                                                          "newPassword":  "Nuova password",
+                                                          "confirmPassword":  "Conferma password"
+                                                      },
+                                     "buttons":  {
+                                                     "updatePassword":  "Aggiorna password",
+                                                     "cancel":  "Annulla",
+                                                     "confirm":  "Conferma",
+                                                     "saveChanges":  "Salva modifiche",
+                                                     "saving":  "Salvataggio..."
+                                                 },
+                                     "notifications":  {
+                                                           "updateSuccess":  "Profilo aggiornato con successo",
+                                                           "updateError":  "Errore durante l\u0027aggiornamento del profilo",
+                                                           "passwordSuccess":  "Password aggiornata con successo",
+                                                           "passwordError":  "Errore durante l\u0027aggiornamento della password"
+                                                       }
+                                 }
+                 }
 }

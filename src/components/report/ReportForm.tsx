@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { MdCloudUpload } from "react-icons/md";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { useNotificationCenter } from "../../contexts/NotificationCenter";
 import { PATHS } from "../../routes/PATHS";
 import {
   checkCategoryExists,
@@ -56,6 +57,7 @@ export default function ReportForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { addNotification } = useNotificationCenter();
   const [medias, setMedias] = useState<File[]>([]);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -120,6 +122,18 @@ export default function ReportForm() {
     };
   }, [previewUrls]);
 
+  useEffect(() => {
+    if (!isQuotaReached) {
+      return;
+    }
+
+    addNotification({
+      title: t("reportForm.notifications.dailyLimitReachedTitle"),
+      message: t("reportForm.notifications.dailyLimitReachedMessage"),
+      type: "warning",
+    });
+  }, [addNotification, isQuotaReached, t]);
+
   const mutation = useMutation({
     mutationFn: async (values: ReportFormValues) => {
       let finalCategoryIds = selectedCategories
@@ -168,6 +182,18 @@ export default function ReportForm() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["daily-report-quota"] });
+      if (
+        dailyQuota?.hasRecognizedFields === true &&
+        dailyQuota.dailyLimit !== 0 &&
+        dailyQuota.remainingToday !== null &&
+        dailyQuota.remainingToday <= 1
+      ) {
+        addNotification({
+          title: t("reportForm.notifications.dailyLimitReachedTitle"),
+          message: t("reportForm.notifications.dailyLimitReachedMessage"),
+          type: "warning",
+        });
+      }
       setMessage(t("reportForm.success"));
       setIsError(false);
       setMedias([]);
@@ -183,6 +209,20 @@ export default function ReportForm() {
     onError: (error: unknown) => {
       const errorMessage =
         error instanceof Error && error.message ? error.message : t("reportForm.error");
+
+      const normalizedMessage = errorMessage.toLowerCase();
+      if (
+        normalizedMessage.includes("limit") ||
+        normalizedMessage.includes("maximum number of reports") ||
+        normalizedMessage.includes("limite") ||
+        isQuotaReached
+      ) {
+        addNotification({
+          title: t("reportForm.notifications.dailyLimitReachedTitle"),
+          message: errorMessage,
+          type: "warning",
+        });
+      }
 
       setMessage(errorMessage);
       setIsError(true);
@@ -324,12 +364,12 @@ export default function ReportForm() {
                 {shouldShowQuota && (
                   <Box className={styles.quotaCard}>
                     <Typography variant="subtitle2" className={styles.quotaTitle}>
-                      Daily report limit
+                      {t("reportForm.quota.title")}
                     </Typography>
                     <Box className={styles.quotaStats}>
                       <Box className={styles.quotaStat}>
                         <Typography variant="caption" color="#666">
-                          Created today
+                          {t("reportForm.quota.createdToday")}
                         </Typography>
                         <Typography variant="h6">
                           {dailyQuota.createdToday ?? 0}
@@ -337,21 +377,21 @@ export default function ReportForm() {
                       </Box>
                       <Box className={styles.quotaStat}>
                         <Typography variant="caption" color="#666">
-                          Remaining today
+                          {t("reportForm.quota.remainingToday")}
                         </Typography>
                         <Typography
                           variant="h6"
                           color={isQuotaReached ? "#d32f2f" : "#2e7d32"}
                         >
                           {dailyQuota.dailyLimit === 0
-                            ? "Unlimited"
+                            ? t("reportForm.quota.unlimited")
                             : (dailyQuota.remainingToday ?? "-")}
                         </Typography>
                       </Box>
                     </Box>
                     {isQuotaReached && (
                       <Typography variant="body2" color="#d32f2f">
-                        You have reached your daily report limit.
+                        {t("reportForm.quota.reached")}
                       </Typography>
                     )}
                   </Box>
