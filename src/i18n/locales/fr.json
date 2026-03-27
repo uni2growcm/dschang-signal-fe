@@ -33,7 +33,8 @@
     "unexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer.",
     "quote": "Une manière simple de signaler et suivre les problèmes dans notre université.",
     "quoter": "Marie Nguemo",
-    "quoterTitle": "Responsable communautaire, Dschang"
+    "quoterTitle": "Responsable communautaire, Dschang",
+    "login-successful": "Connexion réussie"
   },
   "register": {
     "title": "Créer un compte",
@@ -117,7 +118,8 @@
     "selectedCategories": "Catégories sélectionnées",
     "newCategory": "Nom de la nouvelle catégorie",
     "attachMedia": "Joindre des photos ou vidéos",
-    "optional": "optionnel",
+    "optional": "(optionnel)",
+    "add-input-as-new-category": "Ajouter \"{0}\" comme nouvelle catégorie",
     "selectFiles": "Cliquez pour sélectionner des fichiers",
     "submit": "Soumettre le signalement",
     "success": "Signalement créé avec succès !",
@@ -133,7 +135,9 @@
     "categoryNameMin": "Le nom de la catégorie doit contenir au moins 2 caractères",
     "categoryNameMax": "Le nom de la catégorie doit contenir au maximum 50 caractères",
     "categoryExists": "Cette catégorie existe déjà. Veuillez la sélectionner dans la liste.",
-    "categoryExistsFull": "Cette catégorie existe déjà. Veuillez la sélectionner dans la liste ou choisir un nom différent."
+    "categoryExistsFull": "Cette catégorie existe déjà. Veuillez la sélectionner dans la liste ou choisir un nom différent.",
+    "add": "Ajouter \"",
+    "as-new-category": "\" comme nouvelle catégorie"
   },
   "reportPage": {
     "title": "Créer un signalement",
@@ -262,5 +266,8 @@
         "passwordError": "Échec de la mise à jour du mot de passe"
       }
     }
+  },
+  "report": {
+    "viewDetails": "Afficher les détails"
   }
 }
