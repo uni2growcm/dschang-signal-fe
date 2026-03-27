@@ -33,7 +33,8 @@
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "quote": "Eine einfache Möglichkeit, Probleme in unserer Universität zu melden und zu verfolgen.",
     "quoter": "Marie Nguemo",
-    "quoterTitle": "Gemeinschaftsleiterin, Dschang"
+    "quoterTitle": "Gemeinschaftsleiterin, Dschang",
+    "login-successful": "Anmeldung erfolgreich"
   },
   "register": {
     "title": "Konto erstellen",
@@ -117,7 +118,8 @@
     "selectedCategories": "Ausgewählte Kategorien",
     "newCategory": "Name der neuen Kategorie",
     "attachMedia": "Fotos oder Videos anhängen",
-    "optional": "optional",
+    "optional": "(optional)",
+    "add-input-as-new-category": "Fügen Sie „{0}“ als neue Kategorie hinzu",
     "selectFiles": "Klicken Sie, um Dateien auszuwählen",
     "submit": "Bericht einreichen",
     "success": "Bericht erfolgreich erstellt!",
@@ -133,7 +135,9 @@
     "categoryNameMin": "Der Kategoriename muss mindestens 2 Zeichen enthalten",
     "categoryNameMax": "Der Kategoriename darf maximal 50 Zeichen enthalten",
     "categoryExists": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus.",
-    "categoryExistsFull": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus oder wählen Sie einen anderen Namen."
+    "categoryExistsFull": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus oder wählen Sie einen anderen Namen.",
+    "add": "Hinzufügen \"",
+    "as-new-category": "\" als neue Kategorie"
   },
   "reportPage": {
     "title": "Einen Bericht erstellen",
@@ -262,5 +266,8 @@
         "passwordError": "Fehler beim Ändern des Passworts"
       }
     }
+  },
+  "report": {
+    "viewDetails": "Details anzeigen"
   }
 }
