@@ -13,6 +13,7 @@ interface FormTextFieldProps {
   rows?: number;
   select?: boolean;
   children?: React.ReactNode;
+  required?: boolean;
 }
 
 export default function FormTextField({
@@ -28,9 +29,11 @@ export default function FormTextField({
   rows,
   select,
   children,
+  required
 }: FormTextFieldProps) {
   return (
     <TextField
+      required={required}
       label={label}
       name={name}
       type={type}

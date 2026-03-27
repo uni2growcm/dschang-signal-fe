@@ -33,7 +33,8 @@
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "quote": "A simple way to report and track issues in our university.",
     "quoter": "Marie Nguemo",
-    "quoterTitle": "Community Leader, Dschang"
+    "quoterTitle": "Community Leader, Dschang",
+    "login-successful": "Login Successful"
   },
   "register": {
     "title": "Create Account",
@@ -117,7 +118,8 @@
     "selectedCategories": "Selected categories",
     "newCategory": "New category name",
     "attachMedia": "Attach photos or videos",
-    "optional": "optional",
+    "optional": "(optional)",
+    "add-input-as-new-category": "+ Add \"{{value}}\" as new category",
     "selectFiles": "Click to select files",
     "submit": "Submit Report",
     "success": "Report created successfully!",
@@ -133,7 +135,9 @@
     "categoryNameMin": "Category name must be at least 2 characters",
     "categoryNameMax": "Category name must be at most 50 characters",
     "categoryExists": "This category already exists. Please select it from the list.",
-    "categoryExistsFull": "This category already exists. Please select it from the list or choose a different name."
+    "categoryExistsFull": "This category already exists. Please select it from the list or choose a different name.",
+    "add": "+ Add \"",
+    "as-new-category": "\" as new category"
   },
   "reportPage": {
     "title": "Create a Report",
@@ -262,5 +266,8 @@
         "passwordError": "Failed to update password. Please check your current password."
       }
     }
+  },
+  "report": {
+    "viewDetails": "View details"
   }
 }
