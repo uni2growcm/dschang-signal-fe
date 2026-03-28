@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate, useParams } from "react-router";
 import { PATHS } from "../../routes/PATHS";
@@ -20,26 +20,22 @@ import {
 } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
-import { ReportModerationStatusEnum, type CategoryResponse, type MediaResponse } from "../../api";
-import { useMediaViewer } from "../../hooks/useMediaViewer";
+import {
+  ReportModerationStatusEnum,
+  ReportReportStatusEnum,
+  type CategoryResponse,
+  type MediaResponse,
+} from "../../api";
+import { useMediaViewer, type MediaItem } from "../../hooks/useMediaViewer";
 import MediaViewer from "../../components/media/MediaViewer";
 
-const formatStatus = (status: "PENDING" | "IN_PROGRESS" | "RESOLVED") =>
-  status
-    .split("_")
-    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
-    .join(" ");
-
-const formatModerationStatus = (
-  status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED",
+const formatStatus = (
+  status: ReportModerationStatusEnum | ReportReportStatusEnum,
 ) =>
   status
     .split("_")
     .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
     .join(" ");
-
-type ReportStatus = "PENDING" | "IN_PROGRESS" | "RESOLVED";
-type ModerationStatus = "PENDING_REVIEW" | "ACCEPTED" | "REJECTED";
 
 export default function ReportDetailsPage() {
   const { t } = useTranslation();
@@ -50,8 +46,6 @@ export default function ReportDetailsPage() {
   const viewer = useMediaViewer();
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [selectedReportStatus, setSelectedReportStatus] =
-    useState<ReportStatus>("PENDING");
 
   const {
     data: report,
@@ -65,11 +59,13 @@ export default function ReportDetailsPage() {
 
   const { data: currentUser } = useMe();
 
-  useEffect(() => {
-    if (report?.reportStatus) {
-      setSelectedReportStatus(report.reportStatus as ReportStatus);
-    }
-  }, [report?.reportStatus]);
+  const [selectedReportStatus, setSelectedReportStatus] =
+    useState<ReportReportStatusEnum | null>(null);
+
+  const currentStatus =
+    selectedReportStatus ??
+    (report?.reportStatus as ReportReportStatusEnum) ??
+    "PENDING";
 
   const invalidateReportQueries = async () => {
     await Promise.all([
@@ -94,7 +90,7 @@ export default function ReportDetailsPage() {
 
   const moderationMutation = useMutation({
     mutationFn: (payload: {
-      status: ModerationStatus;
+      status: ReportModerationStatusEnum;
       rejectionReason?: string;
     }) => updateModerationStatus(Number(id), payload),
     onSuccess: async () => {
@@ -105,7 +101,7 @@ export default function ReportDetailsPage() {
   });
 
   const reportStatusMutation = useMutation({
-    mutationFn: (payload: { status: ReportStatus }) =>
+    mutationFn: (payload: { status: ReportReportStatusEnum }) =>
       updateReportStatus(Number(id), payload),
     onSuccess: async () => {
       await invalidateReportQueries();
@@ -138,7 +134,7 @@ export default function ReportDetailsPage() {
     return <Navigate to={PATHS.NOT_FOUND} replace />;
   }
 
-  const getTranslatedStatusLabel = (status?: ReportStatus) => {
+  const getTranslatedStatusLabel = (status?: ReportReportStatusEnum) => {
     if (!status) {
       return t("reportDetails.unknownStatus");
     }
@@ -155,9 +151,11 @@ export default function ReportDetailsPage() {
     }
   };
 
-  const getTranslatedModerationStatusLabel = (status?: ModerationStatus) => {
+  const getTranslatedModerationStatusLabel = (
+    status?: ReportModerationStatusEnum,
+  ) => {
     if (!status) {
-      return t("reportDetails.na");
+      return "N/A";
     }
 
     switch (status) {
@@ -168,13 +166,12 @@ export default function ReportDetailsPage() {
       case "REJECTED":
         return t("home.moderationRejected");
       default:
-        return formatModerationStatus(status);
+        return formatStatus(status);
     }
   };
 
   const adminErrorMessage =
-    (moderationMutation.error as Error | null)?.message ||
-    (reportStatusMutation.error as Error | null)?.message;
+    moderationMutation.error?.message || reportStatusMutation.error?.message;
 
   const adminLoading =
     moderationMutation.isPending || reportStatusMutation.isPending;
@@ -251,7 +248,7 @@ export default function ReportDetailsPage() {
           moderationMutation.isError ||
           reportStatusMutation.isError) && (
           <p className="text-center text-sm text-red-500">
-            {(deleteMutation.error as Error | null)?.message ||
+            {deleteMutation.error?.message ||
               adminErrorMessage ||
               t("reportDetails.adminActionError")}
           </p>
@@ -299,10 +296,10 @@ export default function ReportDetailsPage() {
                       {t("reportDetails.changeReportStatus")}
                     </label>
                     <select
-                      value={selectedReportStatus}
+                      value={currentStatus}
                       onChange={(event) =>
                         setSelectedReportStatus(
-                          event.target.value as ReportStatus,
+                          event.target.value as ReportReportStatusEnum,
                         )
                       }
                       className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -320,7 +317,7 @@ export default function ReportDetailsPage() {
                     type="button"
                     onClick={() =>
                       reportStatusMutation.mutate({
-                        status: selectedReportStatus,
+                        status: currentStatus,
                       })
                     }
                     disabled={
@@ -418,7 +415,7 @@ export default function ReportDetailsPage() {
                 : displayPendingReviewStatus
                   ? getTranslatedModerationStatusLabel("PENDING_REVIEW")
                   : getTranslatedStatusLabel(
-                      report.reportStatus as ReportStatus | undefined,
+                      report.reportStatus as ReportReportStatusEnum | undefined,
                     )}
             </span>
           </div>
@@ -435,7 +432,7 @@ export default function ReportDetailsPage() {
             <span>
               {t("reportDetails.moderation")}:{" "}
               {getTranslatedModerationStatusLabel(
-                report.moderationStatus as ModerationStatus | undefined,
+                report.moderationStatus,
               )}
             </span>
             {report.createdBy && (
@@ -493,38 +490,50 @@ export default function ReportDetailsPage() {
 
               if (media.mimeType?.startsWith("image")) {
                 return (
-                  <img
+                  <button
                     key={media.id}
-                    src={fullUrl}
-                    alt="media"
-                    className={styles.media}
                     onClick={() =>
                       viewer.openViewer(
                         {
-                          id: media.id,
+                          id: media.id as number,
                           url: fullUrl,
                           mimeType: media.mimeType || "",
                           fileName: media.originalName,
                         },
-                        (report.medias as MediaResponse[])
+                        report.medias
                           .filter(
                             (m: MediaResponse) =>
                               m.mimeType?.startsWith("image") ||
                               m.mimeType?.startsWith("video"),
                           )
-                          .map((m: MediaResponse) => ({
-                            id: m.id,
-                            url: `http://localhost:8080${m.url}`,
-                            mimeType: m.mimeType || "",
-                            fileName: m.originalName,
-                          })),
+                          .map(
+                            (m: MediaResponse) =>
+                              ({
+                                id: m.id,
+                                url: `http://localhost:8080${m.url}`,
+                                mimeType: m.mimeType || "",
+                                fileName: m.originalName,
+                              }) as MediaItem,
+                          ),
                       )
                     }
-                    style={{ cursor: "pointer" }}
-                    onError={(event) => {
-                      (event.target as HTMLImageElement).style.display = "none";
+                    style={{
+                      border: "none",
+                      background: "none",
+                      padding: 0,
+                      cursor: "pointer",
                     }}
-                  />
+                  >
+                    <img
+                      src={fullUrl}
+                      alt="media"
+                      className={styles.media}
+                      onError={(event) => {
+                        (event.target as HTMLImageElement).style.display =
+                          "none";
+                      }}
+                    />
+                  </button>
                 );
               }
 
@@ -541,23 +550,26 @@ export default function ReportDetailsPage() {
 
                   viewer.openViewer(
                     {
-                      id: media.id,
+                      id: media.id as number,
                       url: fullUrl,
                       mimeType: media.mimeType || "",
                       fileName: media.originalName,
                     },
-                    (report.medias as MediaResponse[])
+                    report.medias
                       .filter(
                         (m: MediaResponse) =>
                           m.mimeType?.startsWith("image") ||
                           m.mimeType?.startsWith("video"),
                       )
-                      .map((m: MediaResponse) => ({
-                        id: m.id,
-                        url: `http://localhost:8080${m.url}`,
-                        mimeType: m.mimeType || "",
-                        fileName: m.originalName,
-                      })),
+                      .map(
+                        (m: MediaResponse) =>
+                          ({
+                            id: m.id,
+                            url: `http://localhost:8080${m.url}`,
+                            mimeType: m.mimeType || "",
+                            fileName: m.originalName,
+                          }) as MediaItem,
+                      ),
                   );
                 };
 
