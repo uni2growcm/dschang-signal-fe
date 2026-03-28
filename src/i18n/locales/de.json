@@ -127,7 +127,7 @@
     "newCategory": "Name der neuen Kategorie",
     "attachMedia": "Fotos oder Videos anhängen",
     "optional": "(optional)",
-    "add-input-as-new-category": "Fügen Sie „{0}“ als neue Kategorie hinzu",
+    "add-input-as-new-category": "Fügen Sie „{{value}}“ als neue Kategorie hinzu",
     "selectFiles": "Klicken Sie, um Dateien auszuwählen",
     "submit": "Bericht einreichen",
     "success": "Bericht erfolgreich erstellt!",

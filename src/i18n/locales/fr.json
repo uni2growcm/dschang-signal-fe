@@ -127,7 +127,7 @@
     "newCategory": "Nom de la nouvelle catégorie",
     "attachMedia": "Joindre des photos ou vidéos",
     "optional": "(optionnel)",
-    "add-input-as-new-category": "Ajouter \"{0}\" comme nouvelle catégorie",
+    "add-input-as-new-category": "Ajouter \"{{value}}\" comme nouvelle catégorie",
     "selectFiles": "Cliquez pour sélectionner des fichiers",
     "submit": "Soumettre le signalement",
     "success": "Signalement créé avec succès !",
