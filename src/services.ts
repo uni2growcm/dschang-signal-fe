@@ -7,6 +7,7 @@ import {
   UserApi,
   type Middleware,
 } from "./api";
+import i18n from "./i18n/i18n";
 import { API_URL } from "./utils/env";
 import { handleUnauthorized } from "./utils/handleUnauthorized";
 import { getToken } from "./utils/localStorage";
@@ -14,20 +15,40 @@ import { getToken } from "./utils/localStorage";
 const addTokenToHeadersMiddleware: Middleware = {
   pre: async (request) => {
     const token = getToken();
-    if (token) {
-      request.init.headers = {
-        ...request.init.headers,
-        Authorization: `Bearer ${token}`,
-      };
-    }
+    request.init.headers = {
+      ...request.init.headers,
+      "Accept-Language": i18n.language,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
   },
 
   post: async (context) => {
     const isAuthEndpoint =
       context.url.includes("/logout") || context.url.includes("/login");
-    if (context.response.status === 401 && !isAuthEndpoint) {
-      await handleUnauthorized();
+
+    if (context.response.status >= 400) {
+      let errorMessage = "Une erreur est survenue";
+
+      try {
+        const errorBody = await context.response.clone().json();
+        if (errorBody.message) {
+          errorMessage = errorBody.message;
+        }
+      } catch {
+        try {
+          errorMessage = await context.response.clone().text();
+        } catch (error) {
+          console.error("Failed to parse error response:", error);
+        }
+      }
+
+      if (context.response.status === 401 && !isAuthEndpoint) {
+        await handleUnauthorized();
+      }
+
+      throw new Error(errorMessage);
     }
+
     return context.response;
   },
 };
@@ -60,135 +81,124 @@ export const googleLogin = async (token: string) => {
   return response.json();
 };
 
-export const getReportById = async (id: number) => {
-  const token = getToken();
+export {
+  createReportAPI as createReport,
+  deleteMediaAPI as deleteMedia,
+  deleteReportAPI as deleteReport,
+  getReportByIdAPI as getReportById,
+  updateModerationStatusAPI as updateModerationStatus,
+  updateReportAPI as updateReport,
+  updateReportStatusAPI as updateReportStatus,
+  uploadMediaAPI as uploadMedia,
+} from "./services/report";
 
-  if (!token) {
-    try {
-      const response = await fetch(`${API_URL.dev}/reports/public/${id}`);
-      if (response.status === 404) throw new Error("REPORT_NOT_FOUND");
-      if (!response.ok) throw new Error("Failed to fetch public report");
-      const report = await response.json();
-      return { ...report, medias: [] };
-    } catch (error) {
-      console.error("Error fetching public report:", error);
-      throw error;
+export {
+  checkCategoryExistsAPI as checkCategoryExists,
+  createCategoryAPI as createCategory,
+  getCategoriesAPI as getCategories,
+} from "./services/category";
+
+export interface DailyReportQuota {
+  dailyLimit: number | null;
+  createdToday: number | null;
+  remainingToday: number | null;
+  hasRecognizedFields: boolean;
+}
+
+const toNullableNumber = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  }
+
+  return null;
+};
+
+const pickFirstNumber = (
+  source: Record<string, unknown>,
+  keys: string[],
+): number | null => {
+  for (const key of keys) {
+    const value = toNullableNumber(source[key]);
+    if (value !== null) {
+      return value;
     }
   }
 
-  try {
-    const [report, medias] = await Promise.all([
-      reportApi.getReportById({ id }),
-      mediaApi.getReportMedias({ reportId: id }),
-    ]);
-    return { ...report, medias };
-  } catch (error) {
-    console.error("Error fetching private report:", error);
-    throw new Error("Failed to fetch report details");
-  }
+  return null;
 };
 
-export const createReport = async (data: {
-  title: string;
-  description: string;
-  locationText: string;
-  categoryIds: number[];
-}) => {
+export const getDailyReportQuota = async (): Promise<DailyReportQuota> => {
   const token = getToken();
-  const response = await fetch(`${API_URL.dev}/reports`, {
-    method: "POST",
+
+  if (!token) {
+    throw new Error("Unauthorized");
+  }
+
+  const response = await fetch(`${API_URL.dev}/users/me`, {
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data),
   });
+
   if (response.status === 401) {
     await handleUnauthorized();
-    return;
+    throw new Error("Unauthorized");
   }
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to create report");
+    throw new Error("Failed to fetch daily report quota");
   }
-  return response.json();
-};
 
-export const uploadMedia = async (reportId: number, file: File) => {
-  const token = getToken();
-  const formData = new FormData();
-  formData.append("file", file);
-  const response = await fetch(`${API_URL.dev}/reports/${reportId}/media`, {
-    method: "POST",
-    body: formData,
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (response.status === 401) {
-    await handleUnauthorized();
-    return;
+  const payload = (await response.json()) as Record<string, unknown>;
+
+  const dailyLimit = pickFirstNumber(payload, [
+    "dailyReportLimit",
+    "maxDailyReports",
+    "maxReportsPerDay",
+    "reportLimitPerDay",
+    "reportsPerDayLimit",
+    "dailyLimit",
+  ]);
+  const createdToday = pickFirstNumber(payload, [
+    "reportsCreatedToday",
+    "createdReportsToday",
+    "dailyReportsCreated",
+    "todayReportsCount",
+    "reportCountToday",
+    "reportsToday",
+  ]);
+  let remainingToday = pickFirstNumber(payload, [
+    "remainingReportsToday",
+    "remainingDailyReports",
+    "dailyReportsRemaining",
+    "reportsRemainingToday",
+    "remainingReports",
+    "remaining",
+  ]);
+
+  if (remainingToday === null && dailyLimit !== null && createdToday !== null) {
+    remainingToday = Math.max(dailyLimit - createdToday, 0);
   }
-  if (!response.ok) throw new Error("Media upload failed");
-  return response.json();
+
+  const normalizedCreatedToday =
+    createdToday === null && dailyLimit !== null && remainingToday !== null
+      ? Math.max(dailyLimit - remainingToday, 0)
+      : createdToday;
+
+  return {
+    dailyLimit,
+    createdToday: normalizedCreatedToday,
+    remainingToday,
+    hasRecognizedFields:
+      dailyLimit !== null ||
+      normalizedCreatedToday !== null ||
+      remainingToday !== null,
+  };
 };
 
-export const getCategories = async () => {
-  return await categoryApi.getAllCategories();
-};
-
-export const createCategory = async (name: string) => {
-  const token = getToken();
-  const normalizedName =
-    name.trim().charAt(0).toUpperCase() + name.trim().slice(1).toLowerCase();
-  const response = await fetch(`${API_URL.dev}/categories`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ name: normalizedName }),
-  });
-  if (response.status === 401) {
-    await handleUnauthorized();
-    return;
-  }
-  if (!response.ok) throw new Error("Category creation failed");
-  return response.json();
-};
-
-export const checkCategoryExists = async (name: string): Promise<boolean> => {
-  const token = getToken();
-  const response = await fetch(`${API_URL.dev}/categories`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (response.status === 401) {
-    await handleUnauthorized();
-    return false;
-  }
-  const categories = await response.json();
-  return categories.some(
-    (cat: any) => cat.name.toLowerCase() === name.toLowerCase(),
-  );
-};
-
-export const deleteReport = async (id: number): Promise<void> => {
-  await reportApi.deleteReport({ id });
-};
-
-export const deleteMedia = async (mediaId: number): Promise<void> => {
-  await mediaApi.deleteMedia({ mediaId });
-};
-
-export const updateReport = async (
-  id: number,
-  data: {
-    title: string;
-    description: string;
-    locationText: string;
-    categoryIds: number[];
-  },
-): Promise<void> => {
-  await reportApi.updateReport({
-    id,
-    reportRequest: data,
-  });
-};
+export { logoutAPI as logout } from "./services/auth";

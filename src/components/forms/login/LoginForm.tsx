@@ -20,7 +20,7 @@ import SnackBar from "../../snackBar/SnackBar";
 import FormTextField from "../shared/FormTextField";
 import SuccessFade from "../shared/SuccessFade";
 import styles from "./LoginForm.module.css";
-import { loginValidationSchema } from "./schema";
+import { getLoginValidationSchema } from "./schema";
 
 interface LoginFormValues {
   email: string;
@@ -30,6 +30,7 @@ interface LoginFormValues {
 
 export default function LoginForm() {
   const { t } = useTranslation();
+  const validationSchema = getLoginValidationSchema(t);
   const [success, setSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -55,18 +56,24 @@ export default function LoginForm() {
         }, 2000);
       }
     },
-    onError: (error: unknown) => {
-      const err = error as ResponseError;
-      const message =
-        err.response?.status == 400
-          ? t("login.invalidCredentials")
-          : t("login.loginFailed");
-      if (!(error instanceof ResponseError)) {
-        setErrorMessage(t("login.unexpectedError"));
-        setIsError(true);
-        return;
+    onError: async (error: unknown) => {
+      let errorMessage = t("login.loginFailed");
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error instanceof ResponseError) {
+        try {
+          const text = await error.response.text();
+          const body = JSON.parse(text);
+          errorMessage = body.message || text;
+        } catch (e) {
+          console.error(e);
+          errorMessage = t("login.unexpectedError");
+        }
       }
-      setErrorMessage(message);
+
+      console.log(">>> [LoginForm] Final error message:", errorMessage);
+      setErrorMessage(errorMessage);
       setIsError(true);
     },
     onSettled: () => {
@@ -88,7 +95,7 @@ export default function LoginForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Google login failed");
+        throw new Error(t("login.googleLoginFailed"));
       }
 
       return response.json();
@@ -118,7 +125,7 @@ export default function LoginForm() {
   return (
     <Formik
       initialValues={{ email: "", password: "", remember: false }}
-      validationSchema={loginValidationSchema}
+      validationSchema={validationSchema}
       onSubmit={loginMutation.mutate}
     >
       {({ values, handleChange, handleBlur, errors, touched }) => (
@@ -273,7 +280,7 @@ export default function LoginForm() {
               shape="pill"
               width="100%"
               text="continue_with"
-              locale="fr"
+              locale={t("login.googleLocale")}
             />
 
             <div className={styles.signupText}>
@@ -297,7 +304,7 @@ export default function LoginForm() {
           />
           <SnackBar
             open={success}
-            message={t('login.login-successful')}
+            message={t("login.loginSuccessful")}
             severity="success"
             position="bottom-right"
           />

@@ -23,8 +23,8 @@ import { userApi } from "../../../services";
 import { Formik, Form, type FormikProps } from "formik";
 import { useTranslation } from "react-i18next";
 import {
-  generalValidationSchema,
-  passwordValidationSchema,
+  getGeneralValidationSchema,
+  getPasswordValidationSchema,
 } from "./generalValidationSchema";
 
 interface Notification {
@@ -41,6 +41,8 @@ export const GeneralSection = () => {
   const [isProfileDirty, setIsProfileDirty] = useState(false);
   const [notification, setNotification] = useState<Notification | null>(null);
   const { t } = useTranslation();
+  const generalValidationSchema = getGeneralValidationSchema(t);
+  const passwordValidationSchema = getPasswordValidationSchema(t);
   const showNotification = (message: string, severity: "success" | "error") => {
     setNotification({ message, severity });
   };
@@ -136,7 +138,12 @@ export const GeneralSection = () => {
           >
             {t("settings.general.projectName")}
           </Typography>
-          <TextField value="Dschang's Signal" size="small" disabled fullWidth />
+          <TextField
+            value={t("common.appName")}
+            size="small"
+            disabled
+            fullWidth
+          />
         </Box>
 
         <Formik
@@ -333,7 +340,7 @@ export const GeneralSection = () => {
                         mb={0.5}
                         display="block"
                       >
-                        New password
+                        {t("settings.general.placeholders.newPassword")}
                       </Typography>
                       <TextField
                         name="newPassword"
