@@ -36,7 +36,11 @@
     "quoterTitle": "Leader della comunità, Dschang",
     "login-successful": "Accesso riuscito",
     "googleLoginFailed": "Accesso con Google fallito. Per favore riprova.",
-    "googleLocale": "it"
+    "googleLocale": "it",
+    "invalid-email": "E-mail non valida",
+    "email-required": "L'e-mail è obbligatoria",
+    "password-min": "La password deve contenere almeno 6 caratteri",
+    "password-required": "È richiesta la password"
   },
   "register": {
     "title": "Crea un account",
@@ -120,12 +124,12 @@
     "title": "Titolo",
     "description": "Descrizione",
     "location": "Posizione",
-    "categoryOptional": "Categoria (opzionale)",
+    "categoryOptional": "Categorie (opzionale)",
     "selectedCategories": "Categorie selezionate",
     "newCategory": "Nome della nuova categoria",
     "attachMedia": "Allega foto o video",
     "optional": "(opzionale)",
-    "add-input-as-new-category": "Aggiungi \"{0}\" come nuova categoria",
+    "add-input-as-new-category": "Aggiungi \"{{value}}\" come nuova categoria",
     "selectFiles": "Clicca per selezionare i file",
     "submit": "Invia la segnalazione",
     "success": "Segnalazione creata con successo!",
@@ -186,6 +190,21 @@
   },
   "reportDetails": {
     "backHome": "← Torna alla home",
+    "adminActions": "Azioni admin",
+    "adminActionsDescription": "Esamina la segnalazione, accettala o rifiutala, quindi aggiorna il suo avanzamento.",
+    "acceptReport": "Accetta la segnalazione",
+    "rejectReport": "Rifiuta la segnalazione",
+    "rejectTitle": "Rifiuta la segnalazione",
+    "rejectMessage": "Aggiungi un motivo di rifiuto se necessario prima di rifiutare questa segnalazione.",
+    "rejectionReason": "Motivo del rifiuto",
+    "changeReportStatus": "Cambia lo stato della segnalazione",
+    "updateStatus": "Aggiorna stato",
+    "cancel": "Annulla",
+    "confirmReject": "Conferma rifiuto",
+    "adminActionError": "Azione admin non riuscita",
+    "noAdminActionAvailable": "Nessuna azione admin è attualmente disponibile per questa segnalazione.",
+    "rejectedLockedMessage": "Questa segnalazione è rifiutata. Il suo stato non può più essere aggiornato.",
+    "na": "N/A",
     "editReport": "Modifica la segnalazione",
     "deleteReport": "Elimina la segnalazione",
     "deleteTitle": "Elimina la segnalazione",
@@ -204,7 +223,15 @@
     "noMedia": "Nessun media disponibile",
     "downloadDocument": "📄 Scarica documento",
     "unknownStatus": "SCONOSCIUTO",
-    "unnamed": "Senza nome"
+    "unnamed": "Senza nome",
+    "reviewedAt": "Revisionato il",
+    "no-description-provided": "Nessuna descrizione fornita",
+    "created-at": "Creato a:",
+    "reported-by": "Segnalato da:",
+    "reviewed-at": "Recensito su:",
+    "rejection-reason": "Motivo del rifiuto:",
+    "no-categories": "Nessuna categoria",
+    "no-media-available": "Nessun supporto disponibile"
   },
   "usersSection": {
     "title": "Elenco utenti",
@@ -282,9 +309,81 @@
         "passwordSuccess": "Password aggiornata con successo",
         "passwordError": "Errore durante l'aggiornamento della password"
       }
+    },
+    "notifications": {
+      "title": "Notifiche",
+      "choose-what-notifications-to-receive": "Scegli quali notifiche desideri ricevere",
+      "email-notifications": "Notifiche e-mail",
+      "receive-email-alerts-for-new-signals": "Ricevi avvisi e-mail per nuovi segnali",
+      "push-notifications": "Notifiche push",
+      "weekly-digest": "Raccolta settimanale",
+      "get-push-notifications": "Ricevi notifiche push sul tuo dispositivo",
+      "receive-weekly-summary": "Ricevi un riepilogo settimanale di tutte le attività",
+      "status-change-alerts": "Avvisi di modifica dello stato",
+      "notify-when-a-signal-status-is-updated": "Avvisa quando lo stato di un segnale viene aggiornato"
+    },
+    "privacy": {
+      "title": "Privacy e sicurezza",
+      "description": "Controlla la visibilità dei dati e le impostazioni di accesso",
+      "public-feed": "Alimentazione pubblica",
+      "allow-anyone-to-view-the-signal-feed-without-logging-in": "Consenti a chiunque di visualizzare il feed del segnale senza effettuare l'accesso",
+      "anonymous-reporting": "Segnalazione anonima",
+      "allow-users-to-submit-signals-without-revealing-their-identity": "Consenti agli utenti di inviare segnali senza rivelare la propria identità",
+      "two-factor-authentication": "Autenticazione a due fattori",
+      "require-2fa-for-admin-accounts": "Richiedi 2FA per gli account amministratore",
+      "session-timeout-minutes": "Timeout della sessione (minuti)",
+      "automatically-log-out-inactive-users-after-this-duration": "Disconnette automaticamente gli utenti inattivi dopo questo periodo"
+    },
+    "validation": {
+      "invalid-email": "E-mail non valida",
+      "email-required": "L'e-mail è obbligatoria",
+      "fullname-min": "Il nome completo deve contenere almeno 2 caratteri",
+      "fullname-max": "Il nome completo deve contenere meno di 50 caratteri",
+      "fullname-required": "È richiesto il nome completo",
+      "password-min": "La password deve contenere almeno 6 caratteri",
+      "current-password-required": "È richiesta la password attuale",
+      "password-different": "La nuova password deve essere diversa dalla password corrente",
+      "new-password-required": "È richiesta una nuova password",
+      "password-match": "Le password non corrispondono",
+      "confirm-password-required": "Per favore conferma la tua password"
     }
   },
   "report": {
     "viewDetails": "Visualizza i dettagli"
+  },
+  "media": {
+    "unsupported-media-type": "Tipo di supporto non supportato",
+    "download-or-open-the-document": "Fare clic sul pulsante in basso per scaricare o aprire il documento",
+    "document": "Documento",
+    "browser-does-not-support-playback": "Il tuo browser non supporta la riproduzione video.",
+    "play-video": "Fare clic per riprodurre il video",
+    "download-the-document": "📄 Scarica il documento"
+  },
+  "editReport": {
+    "back-to-report": "← Torna a Rapporti",
+    "update-details": "Aggiorna i dettagli del tuo rapporto",
+    "description": "Descrizione",
+    "location": "Posizione",
+    "existing-media": "Supporti esistenti",
+    "click-to-remove": "(clicca ✕ per rimuovere)",
+    "add-new-media": "Aggiungi nuovi media",
+    "click-to-select-files": "Fare clic per selezionare i file",
+    "optional": "(Opzionale)",
+    "failed-to-update-report": "Impossibile aggiornare il rapporto",
+    "save-changes": "Salva modifiche",
+    "report-updated-successfully": "Report aggiornato con successo!",
+    "report-title": "Titolo",
+    "categories-optional": "Categorie (facoltativo)"
+  },
+  "validation": {
+    "fullname-max": "Il nome completo deve contenere meno di 50 caratteri",
+    "fullname-min": "Il nome completo deve contenere almeno 2 caratteri",
+    "fullname-required": "È richiesto il nome completo",
+    "invalid-email": "E-mail non valida",
+    "email-required": "L'e-mail è obbligatoria",
+    "password-min": "La password deve contenere almeno 6 caratteri",
+    "password-required": "È richiesta la password",
+    "confirm-password-required": "È richiesta la conferma della password",
+    "password-match": "Le password devono essere identiche"
   }
 }

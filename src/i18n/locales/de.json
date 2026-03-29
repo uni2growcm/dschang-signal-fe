@@ -36,7 +36,11 @@
     "quoterTitle": "Gemeinschaftsleiterin, Dschang",
     "login-successful": "Anmeldung erfolgreich",
     "googleLoginFailed": "Google-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "googleLocale": "de"
+    "googleLocale": "de",
+    "invalid-email": "Ungültige E-Mail",
+    "email-required": "E-Mail ist erforderlich",
+    "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "password-required": "Passwort ist erforderlich"
   },
   "register": {
     "title": "Konto erstellen",
@@ -125,7 +129,7 @@
     "newCategory": "Name der neuen Kategorie",
     "attachMedia": "Fotos oder Videos anhängen",
     "optional": "(optional)",
-    "add-input-as-new-category": "Fügen Sie \"{0}\" als neue Kategorie hinzu",
+    "add-input-as-new-category": "Fügen Sie „{{value}}“ als neue Kategorie hinzu",
     "selectFiles": "Klicken Sie, um Dateien auszuwählen",
     "submit": "Bericht einreichen",
     "success": "Bericht erfolgreich erstellt!",
@@ -186,6 +190,21 @@
   },
   "reportDetails": {
     "backHome": "← Zurück zur Startseite",
+    "adminActions": "Admin-Aktionen",
+    "adminActionsDescription": "Prüfen Sie den Bericht, akzeptieren oder lehnen Sie ihn ab und aktualisieren Sie dann seinen Fortschritt.",
+    "acceptReport": "Bericht akzeptieren",
+    "rejectReport": "Bericht ablehnen",
+    "rejectTitle": "Bericht ablehnen",
+    "rejectMessage": "Fügen Sie bei Bedarf einen Ablehnungsgrund hinzu, bevor Sie diesen Bericht ablehnen.",
+    "rejectionReason": "Ablehnungsgrund",
+    "changeReportStatus": "Berichtsstatus ändern",
+    "updateStatus": "Status aktualisieren",
+    "cancel": "Abbrechen",
+    "confirmReject": "Ablehnung bestätigen",
+    "adminActionError": "Admin-Aktion fehlgeschlagen",
+    "noAdminActionAvailable": "Für diesen Bericht ist derzeit keine Admin-Aktion verfügbar.",
+    "rejectedLockedMessage": "Dieser Bericht wurde abgelehnt. Sein Status kann nicht mehr aktualisiert werden.",
+    "na": "N/A",
     "editReport": "Bericht bearbeiten",
     "deleteReport": "Bericht löschen",
     "deleteTitle": "Bericht löschen",
@@ -204,7 +223,15 @@
     "noMedia": "Kein Medium verfügbar",
     "downloadDocument": "📄 Dokument herunterladen",
     "unknownStatus": "UNBEKANNT",
-    "unnamed": "Ohne Namen"
+    "unnamed": "Ohne Namen",
+    "reviewedAt": "Überprüft am",
+    "no-description-provided": "Keine Beschreibung angegeben",
+    "created-at": "Erstellt am:",
+    "reported-by": "Berichtet von:",
+    "reviewed-at": "Bewertet bei:",
+    "rejection-reason": "Ablehnungsgrund:",
+    "no-categories": "Keine Kategorien",
+    "no-media-available": "Keine Medien verfügbar"
   },
   "usersSection": {
     "title": "Benutzerliste",
@@ -282,9 +309,81 @@
         "passwordSuccess": "Passwort erfolgreich geändert",
         "passwordError": "Fehler beim Ändern des Passworts"
       }
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "choose-what-notifications-to-receive": "Wählen Sie aus, welche Benachrichtigungen Sie erhalten möchten",
+      "receive-email-alerts-for-new-signals": "Erhalten Sie E-Mail-Benachrichtigungen für neue Signale",
+      "weekly-digest": "Wöchentliche Übersicht",
+      "get-push-notifications": "Erhalten Sie Push-Benachrichtigungen auf Ihrem Gerät",
+      "push-notifications": "Push-Benachrichtigungen",
+      "email-notifications": "E-Mail-Benachrichtigungen",
+      "receive-weekly-summary": "Erhalten Sie eine wöchentliche Zusammenfassung aller Aktivitäten",
+      "status-change-alerts": "Benachrichtigungen über Statusänderungen",
+      "notify-when-a-signal-status-is-updated": "Benachrichtigen, wenn ein Signalstatus aktualisiert wird"
+    },
+    "privacy": {
+      "title": "Privatsphäre",
+      "description": "Steuern Sie die Datensichtbarkeit und Zugriffseinstellungen",
+      "public-feed": "Öffentlicher Feed",
+      "allow-anyone-to-view-the-signal-feed-without-logging-in": "Erlauben Sie jedem, den Signal-Feed anzusehen, ohne sich anzumelden",
+      "anonymous-reporting": "Anonyme Berichterstattung",
+      "allow-users-to-submit-signals-without-revealing-their-identity": "Ermöglichen Sie Benutzern das Senden von Signalen, ohne ihre Identität preiszugeben",
+      "two-factor-authentication": "Zwei-Faktor-Authentifizierung",
+      "require-2fa-for-admin-accounts": "Erfordern Sie 2FA für Administratorkonten",
+      "session-timeout-minutes": "Sitzungszeitüberschreitung (Minuten)",
+      "automatically-log-out-inactive-users-after-this-duration": "Melden Sie inaktive Benutzer nach dieser Zeit automatisch ab"
+    },
+    "validation": {
+      "invalid-email": "Ungültige E-Mail",
+      "email-required": "E-Mail ist erforderlich",
+      "fullname-min": "Der vollständige Name muss mindestens 2 Zeichen lang sein",
+      "fullname-max": "Der vollständige Name muss weniger als 50 Zeichen lang sein",
+      "fullname-required": "Der vollständige Name ist erforderlich",
+      "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      "current-password-required": "Aktuelles Passwort ist erforderlich",
+      "password-different": "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden",
+      "new-password-required": "Neues Passwort ist erforderlich",
+      "password-match": "Passwörter stimmen nicht überein",
+      "confirm-password-required": "Bitte bestätigen Sie Ihr Passwort"
     }
   },
   "report": {
     "viewDetails": "Details anzeigen"
+  },
+  "media": {
+    "unsupported-media-type": "Nicht unterstützter Medientyp",
+    "download-or-open-the-document": "Klicken Sie auf die Schaltfläche unten, um das Dokument herunterzuladen oder zu öffnen",
+    "document": "Dokumentieren",
+    "browser-does-not-support-playback": "Ihr Browser unterstützt die Videowiedergabe nicht.",
+    "play-video": "Klicken Sie, um das Video abzuspielen",
+    "download-the-document": "📄 Laden Sie das Dokument herunter"
+  },
+  "editReport": {
+    "back-to-report": "← Zurück zu Berichte",
+    "update-details": "Aktualisieren Sie Ihre Berichtsdetails",
+    "description": "Beschreibung",
+    "location": "Standort",
+    "existing-media": "Vorhandene Medien",
+    "click-to-remove": "(zum Entfernen auf ✕ klicken)",
+    "add-new-media": "Neue Medien hinzufügen",
+    "click-to-select-files": "Klicken Sie, um Dateien auszuwählen",
+    "optional": "(Optional)",
+    "failed-to-update-report": "Bericht konnte nicht aktualisiert werden",
+    "save-changes": "Änderungen speichern",
+    "report-updated-successfully": "Bericht erfolgreich aktualisiert!",
+    "report-title": "Titel",
+    "categories-optional": "Kategorien (optional)"
+  },
+  "validation": {
+    "fullname-min": "Der vollständige Name muss mindestens 2 Zeichen lang sein",
+    "fullname-max": "Der vollständige Name muss weniger als 50 Zeichen lang sein",
+    "fullname-required": "Der vollständige Name ist erforderlich",
+    "invalid-email": "Ungültige E-Mail",
+    "email-required": "E-Mail ist erforderlich",
+    "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "password-required": "Passwort ist erforderlich",
+    "confirm-password-required": "Bestätigen Sie, dass ein Passwort erforderlich ist",
+    "password-match": "Passwörter müssen übereinstimmen"
   }
 }

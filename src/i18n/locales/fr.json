@@ -1,8 +1,8 @@
 ﻿{
   "common": {
-    "appName": "Dschang Signal",
+    "appName": "Dschang's Signal",
     "welcome": "Bienvenue",
-    "logout": "Se déconnecter",
+    "logout": "Déconnexion",
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
     "success": "Succès",
@@ -31,22 +31,26 @@
     "invalidCredentials": "Identifiants invalides",
     "loginFailed": "Échec de la connexion, veuillez vérifier vos informations.",
     "unexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer.",
-    "quote": "Une façon simple de signaler et suivre les problèmes dans notre université.",
+    "quote": "Une manière simple de signaler et suivre les problèmes dans notre université.",
     "quoter": "Marie Nguemo",
     "quoterTitle": "Responsable communautaire, Dschang",
     "login-successful": "Connexion réussie",
     "googleLoginFailed": "Échec de la connexion Google. Veuillez réessayer.",
-    "googleLocale": "fr"
+    "googleLocale": "fr",
+    "invalid-email": "E-mail invalide",
+    "email-required": "L'e-mail est requis",
+    "password-min": "Le mot de passe doit contenir au moins 6 caractères",
+    "password-required": "Le mot de passe est requis"
   },
   "register": {
     "title": "Créer un compte",
-    "description": "Rejoignez Dschang's Signal et signalez les problèmes dans votre communauté universitaire.",
+    "description": "Rejoignez Dschang's Signal et commencez à signaler les problèmes dans votre communauté universitaire.",
     "fullName": "Nom complet",
-    "email": "E-mail",
+    "email": "Email",
     "password": "Mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
     "submit": "S'inscrire",
-    "loading": "Création du compte en cours...",
+    "loading": "Création du compte...",
     "redirecting": "Redirection...",
     "success": "Compte créé avec succès !",
     "redirect": "Vous allez être redirigé vers la connexion",
@@ -58,15 +62,15 @@
     "fullNameMin": "Le nom complet doit contenir au moins 2 caractères",
     "fullNameMax": "Le nom complet doit contenir au maximum 50 caractères",
     "fullNameRequired": "Le nom complet est requis",
-    "emailRequired": "L'e-mail est requis",
-    "invalidEmail": "Adresse e-mail invalide",
+    "emailRequired": "L'email est requis",
+    "invalidEmail": "Adresse email invalide",
     "passwordRequired": "Le mot de passe est requis",
     "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
     "passwordMatch": "Les mots de passe ne correspondent pas",
     "createAccountHeader": "Créez votre compte",
-    "joinDescription": "Rejoignez Dschang's Signal et signalez les problèmes dans votre communauté.",
-    "accountExists": "Un compte avec cette adresse e-mail existe déjà. Veuillez vous connecter.",
-    "invalidData": "Données d'inscription invalides. Veuillez vérifier vos informations.",
+    "joinDescription": "Rejoignez Dschang's Signal et commencez à signaler les problèmes dans votre communauté.",
+    "accountExists": "Un compte avec cet email existe déjà. Veuillez vous connecter.",
+    "invalidData": "Données d'inscription invalides. Vérifiez vos informations.",
     "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
     "successRedirect": "Inscription réussie ! Redirection vers la connexion..."
   },
@@ -74,7 +78,7 @@
     "code": "404",
     "title": "Page non trouvée",
     "message": "Désolé, la page que vous recherchez n'existe pas ou a été déplacée.",
-    "reportText": "Le signalement recherché n'existe pas ou a été supprimé.",
+    "reportText": "Le signalement que vous recherchez n'existe pas ou a été supprimé.",
     "backHome": "Retour à l'accueil"
   },
   "reports": {
@@ -90,7 +94,7 @@
     "noReports": "Aucun signalement pour le moment"
   },
   "categories": {
-    "pothole": "Nid-de-poule",
+    "pothole": "Nid de poule",
     "trafficLight": "Feu de circulation",
     "tree": "Arbre tombé",
     "streetLight": "Lampadaire",
@@ -102,30 +106,30 @@
     "role": "Responsable communautaire, Dschang"
   },
   "header": {
-    "fetchUserError": "Impossible de récupérer les informations de l'utilisateur",
+    "fetchUserError": "Impossible de récupérer les informations utilisateur",
     "loggingOut": "Déconnexion en cours...",
-    "logoutFailed": "La déconnexion a échoué. Veuillez réessayer.",
-    "logoutSuccess": "Déconnexion réussie !",
+    "logoutFailed": "Échec de la déconnexion. Veuillez réessayer.",
+    "logoutSuccess": "Déconnectée avec succès !",
     "openMenu": "Ouvrir le menu principal",
     "settings": "Paramètres",
-    "logout": "Se déconnecter",
+    "logout": "Déconnexion",
     "notifications": {
       "title": "Notifications",
       "empty": "Aucune notification pour le moment."
     }
   },
   "reportForm": {
-    "headerDescription": "Décrivez le problème que vous avez observé dans votre environnement.",
+    "headerDescription": "Décrivez le problème observé dans votre zone.",
     "requiredFields": "Champs obligatoires",
     "title": "Titre",
     "description": "Description",
-    "location": "Lieu",
-    "categoryOptional": "Catégorie (optionnel)",
+    "location": "Localisation",
+    "categoryOptional": "Catégories (optionnelle)",
     "selectedCategories": "Catégories sélectionnées",
     "newCategory": "Nom de la nouvelle catégorie",
-    "attachMedia": "Joindre des photos ou des vidéos",
+    "attachMedia": "Joindre des photos ou vidéos",
     "optional": "(optionnel)",
-    "add-input-as-new-category": "Ajouter \"{0}\" comme nouvelle catégorie",
+    "add-input-as-new-category": "Ajouter \"{{value}}\" comme nouvelle catégorie",
     "selectFiles": "Cliquez pour sélectionner des fichiers",
     "submit": "Soumettre le signalement",
     "success": "Signalement créé avec succès !",
@@ -137,11 +141,11 @@
     "titleRequired": "Le titre est requis",
     "descriptionMin": "La description doit contenir au moins 10 caractères",
     "descriptionRequired": "La description est requise",
-    "locationRequired": "Le lieu est requis",
+    "locationRequired": "La localisation est requise",
     "categoryNameMin": "Le nom de la catégorie doit contenir au moins 2 caractères",
     "categoryNameMax": "Le nom de la catégorie doit contenir au maximum 50 caractères",
     "categoryExists": "Cette catégorie existe déjà. Veuillez la sélectionner dans la liste.",
-    "categoryExistsFull": "Cette catégorie existe déjà. Veuillez la sélectionner dans la liste ou choisir un autre nom.",
+    "categoryExistsFull": "Cette catégorie existe déjà. Veuillez la sélectionner dans la liste ou choisir un nom différent.",
     "add": "Ajouter \"",
     "as-new-category": "\" comme nouvelle catégorie",
     "quota": {
@@ -163,13 +167,13 @@
   },
   "home": {
     "loadingReports": "Chargement des signalements...",
-    "errorLoading": "Erreur lors du chargement des signalements. Veuillez recharger la page.",
+    "errorLoading": "Échec du chargement des signalements. Veuillez recharger la page.",
     "filterPublic": "Public",
     "filterMine": "Mes signalements",
     "createReport": "Créer un signalement",
     "noReports": "Aucun signalement trouvé",
     "noReports_View": "Aucun signalement trouvé pour cette vue.",
-    "clearFilters": "Réinitialisez les filtres pour voir tous les signalements",
+    "clearFilters": "Effacer les filtres pour voir tous les signalements",
     "clearFiltersAction": "Effacer les filtres",
     "allStatuses": "Tous les statuts",
     "allModerationStatuses": "Tous les statuts de modération",
@@ -204,13 +208,13 @@
     "editReport": "Modifier le signalement",
     "deleteReport": "Supprimer le signalement",
     "deleteTitle": "Supprimer le signalement",
-    "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce signalement ? Cette action est irréversible.",
+    "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce signalement? Cette action ne peut pas être annulée.",
     "no": "Non",
     "yesDelete": "Oui, supprimer",
-    "deleteError": "Erreur lors de la suppression du signalement",
+    "deleteError": "Échec de la supression du signalement",
     "untitledReport": "Signalement sans titre",
-    "noLocation": "Aucun lieu indiqué",
-    "noDescription": "Aucune description disponible",
+    "noLocation": "Aucun lieu fourni",
+    "noDescription": "Aucune description fournie",
     "createdAt": "Créé le",
     "moderation": "Modération",
     "reportedBy": "Signalé par",
@@ -233,41 +237,41 @@
     "title": "Liste des utilisateurs",
     "description": "Gérez les utilisateurs enregistrés et leurs rôles",
     "searchPlaceholder": "Rechercher par nom complet...",
-    "roleUpdated": "Rôle utilisateur mis à jour avec succès",
-    "roleUpdateError": "Vous ne pouvez pas vous autoriser vous-même. Demandez à un autre administrateur de mettre à jour votre rôle.",
+    "roleUpdated": "Rôle de l'utilisateur mis à jour avec succès",
+    "roleUpdateError": "Vous ne pouvez pas vous autoriser. Veuillez demander à un autre administrateur de mettre à jour votre rôle.",
     "noUser": "Aucun utilisateur trouvé"
   },
   "settings": {
     "backHome": "← Retour à l'accueil",
     "title": "Paramètres",
-    "description": "Gérez la configuration et les paramètres de votre projet",
+    "description": "Gérez votre configuration de projet et vos préférences",
     "moderation": {
       "title": "Modération",
-      "description": "Configurer la modération du contenu et les règles d'approbation",
+      "description": "Configurer la modération et les règles d'approbation",
       "approvalMode": {
         "title": "Mode d'approbation des publications",
         "manual": "Approbation manuelle requise",
         "auto": "Approuver automatiquement toutes les publications",
-        "verified": "Approuver automatiquement uniquement les utilisateurs vérifiés"
+        "verified": "Approbation automatique pour les utilisateurs vérifiés uniquement"
       },
       "filters": {
         "title": "Filtres de contenu",
         "profanity": "Filtrer les propos offensants",
-        "spam": "Bloquer les spams et les soumissions répétées",
-        "imageRequired": "Rendre les images obligatoires pour les signalements",
-        "location": "Activer le marquage de localisation"
+        "spam": "Bloquer le spam et les soumissions répétées",
+        "imageRequired": "Exiger une image pour les signalements",
+        "location": "Activer la géolocalisation"
       },
       "maxSignals": {
-        "title": "Nombre maximal de signalements par utilisateur et par jour",
-        "helper": "Définir sur 0 pour illimité"
+        "title": "Nombre maximum de signalements par utilisateur et par jour",
+        "helper": "Mettre 0 pour illimité"
       }
     },
     "danger": {
-      "title": "Zone de danger",
-      "description": "Actions irréversibles, à utiliser avec précaution",
+      "title": "Zone dangereuse",
+      "description": "Actions irréversibles — procédez avec prudence",
       "resetSignals": {
-        "title": "Réinitialiser tous les signalements",
-        "description": "Supprimer définitivement tous les signalements et leurs données",
+        "title": "Réinitialiser tous les signaux",
+        "description": "Supprimer définitivement tous les signaux et leurs données",
         "button": "Réinitialiser"
       },
       "deleteProject": {
@@ -276,37 +280,110 @@
         "button": "Supprimer le projet"
       },
       "notifications": {
-        "notDeveloped": "Cette fonctionnalité n'est pas encore implémentée.",
+        "notDeveloped": "Cette fonctionnalité n'est pas encore développée.",
         "notAuthorized": "Cette action n'est pas autorisée."
       }
     },
     "general": {
       "title": "Général",
-      "description": "Informations de base et configuration du projet",
+      "description": "Informations et configuration de base du projet",
       "projectName": "Nom du projet",
-      "userEmail": "E-mail de l'utilisateur",
+      "userEmail": "Email utilisateur",
       "fullName": "Nom complet",
       "password": "Mot de passe",
       "placeholders": {
         "currentPassword": "Mot de passe actuel",
         "newPassword": "Nouveau mot de passe",
-        "confirmPassword": "Confirmer le mot de passe"
+        "confirmPassword": "Confirmer le nouveau mot de passe"
       },
       "buttons": {
-        "updatePassword": "Changer le mot de passe",
+        "updatePassword": "Mettre à jour",
         "cancel": "Annuler",
         "confirm": "Confirmer",
-        "saveChanges": "Enregistrer"
+        "saveChanges": "Enregistrer",
+        "saving": "Enregistrement..."
       },
       "notifications": {
         "updateSuccess": "Profil mis à jour avec succès",
-        "updateError": "Erreur lors de la mise à jour du profil",
-        "passwordSuccess": "Mot de passe modifié avec succès",
-        "passwordError": "Erreur lors du changement du mot de passe"
+        "updateError": "Échec de la mise à jour du profil",
+        "passwordSuccess": "Mot de passe mis à jour avec succès",
+        "passwordError": "Échec de la mise à jour du mot de passe"
       }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "choose-what-notifications-to-receive": "Choisissez les notifications que vous souhaitez recevoir",
+      "push-notifications": "Notifications poussées",
+      "weekly-digest": "Résumé hebdomadaire",
+      "get-push-notifications": "Recevez des notifications push sur votre appareil",
+      "receive-email-alerts-for-new-signals": "Recevez des alertes par e-mail pour les nouveaux signaux",
+      "email-notifications": "Notifications par courrier électronique",
+      "receive-weekly-summary": "Recevez un résumé hebdomadaire de toutes les activités",
+      "status-change-alerts": "Alertes de changement de statut",
+      "notify-when-a-signal-status-is-updated": "Avertir lorsqu'un état de signal est mis à jour"
+    },
+    "privacy": {
+      "title": "Confidentialité et sécurité",
+      "description": "Contrôler la visibilité des données et les paramètres d'accès",
+      "public-feed": "Flux public",
+      "allow-anyone-to-view-the-signal-feed-without-logging-in": "Autoriser n'importe qui à voir le flux du signal sans se connecter",
+      "anonymous-reporting": "Rapports anonymes",
+      "allow-users-to-submit-signals-without-revealing-their-identity": "Autoriser les utilisateurs à soumettre des signaux sans révéler leur identité",
+      "two-factor-authentication": "Authentification à deux facteurs",
+      "require-2fa-for-admin-accounts": "Exiger 2FA pour les comptes administrateur",
+      "session-timeout-minutes": "Délai d'expiration de la session (minutes)",
+      "automatically-log-out-inactive-users-after-this-duration": "Déconnectez automatiquement les utilisateurs inactifs après cette durée"
+    },
+    "validation": {
+      "invalid-email": "E-mail invalide",
+      "email-required": "L'e-mail est requis",
+      "fullname-min": "Le nom complet doit comporter au moins 2 caractères",
+      "fullname-max": "Le nom complet doit comporter moins de 50 caractères",
+      "fullname-required": "Le nom complet est requis",
+      "password-min": "Le mot de passe doit contenir au moins 6 caractères",
+      "current-password-required": "Le mot de passe actuel est requis",
+      "password-different": "Le nouveau mot de passe doit être différent du mot de passe actuel",
+      "new-password-required": "Un nouveau mot de passe est requis",
+      "password-match": "Les mots de passe ne correspondent pas",
+      "confirm-password-required": "Veuillez confirmer votre mot de passe"
     }
   },
   "report": {
-    "viewDetails": "Voir les détails"
+    "viewDetails": "Afficher les détails"
+  },
+  "media": {
+    "unsupported-media-type": "Type de média non pris en charge",
+    "download-or-open-the-document": "Cliquez sur le bouton ci-dessous pour télécharger ou ouvrir le document",
+    "document": "Document",
+    "browser-does-not-support-playback": "Votre navigateur ne prend pas en charge la lecture vidéo.",
+    "play-video": "Cliquez pour lire la vidéo",
+    "download-the-document": "📄 Téléchargez le document"
+  },
+  "editReport": {
+    "back-to-report": "← Retour aux rapports",
+    "update-details": "Mettez à jour les détails de votre rapport",
+    "description": "Description",
+    "location": "Emplacement",
+    "existing-media": "Médias existants",
+    "click-to-remove": "(cliquez sur ✕ pour supprimer)",
+    "add-new-media": "Ajouter un nouveau média",
+    "click-to-select-files": "Cliquez pour sélectionner les fichiers",
+    "optional": "(Optionnel)",
+    "failed-to-update-report": "Échec de la mise à jour du rapport",
+    "save-changes": "Enregistrer les modifications",
+    "report-updated-successfully": "Rapport mis à jour avec succès !",
+    "report-title": "Titre",
+    "categories-optional": "Catégories (facultatif)"
+  },
+  "validation": {
+    "fullname-min": "Le nom complet doit comporter au moins 2 caractères",
+    "fullname-max": "Le nom complet doit comporter moins de 50 caractères",
+    "fullname-required": "Le nom complet est requis",
+    "invalid-email": "E-mail invalide",
+    "email-required": "L'e-mail est requis",
+    "password-min": "Le mot de passe doit contenir au moins 6 caractères",
+    "password-required": "Le mot de passe est requis",
+    "confirm-password-required": "Confirmer que le mot de passe est requis",
+    "password-match": "Les mots de passe doivent correspondre"
   }
 }
