@@ -75,7 +75,7 @@ export default function Home() {
   )
   const [authenticated, setAuthenticated] = useState<boolean>(isAuth())
   const [showError, setShowError] = useState(false)
-  const { data: currentUser } = useMe()
+  const { data: currentUser, isLoading: isUserLoading } = useMe()
   const isAdmin = currentUser?.role === 'ADMIN'
 
   const { data: categories = [] } = useCategories({ enabled: isAdmin })
@@ -83,12 +83,12 @@ export default function Home() {
     data: myReportsData,
     isLoading: privateLoading,
     isError: privateError,
-  } = useAuthenticatedUserReports(page, PAGE_SIZE)
+  } = useAuthenticatedUserReports(page, PAGE_SIZE, { enabled: !isUserLoading && !isAdmin })
   const {
     data: publicReportsData,
     isLoading: publicLoading,
     isError: publicError,
-  } = usePublicReports({ page, size: PAGE_SIZE })
+  } = usePublicReports({ page, size: PAGE_SIZE, enabled: !isUserLoading && !isAdmin })
 
   const {
     data: allReportsData,
@@ -186,13 +186,13 @@ export default function Home() {
     isAdmin,
   ])
 
-  const isLoading = isAdmin
+  const isLoading = isUserLoading || (isAdmin
     ? allReportsLoading
     : authenticated
       ? filter === 'mine'
         ? privateLoading
         : publicLoading
-      : publicLoading
+      : publicLoading)
 
   const hasError = isAdmin
     ? allReportsError
