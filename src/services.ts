@@ -90,6 +90,7 @@ export {
   updateReportAPI as updateReport,
   updateReportStatusAPI as updateReportStatus,
   uploadMediaAPI as uploadMedia,
+  usePublicReportById,
 } from "./services/report";
 
 export {

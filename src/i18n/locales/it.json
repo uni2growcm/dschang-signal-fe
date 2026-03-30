@@ -72,7 +72,10 @@
     "accountExists": "Un account con questa email esiste già. Per favore accedi.",
     "invalidData": "Dati di registrazione non validi. Controlla le tue informazioni.",
     "registrationFailed": "Registrazione non riuscita. Per favore riprova.",
-    "successRedirect": "Registrazione riuscita! Reindirizzamento al login..."
+    "successRedirect": "Registrazione riuscita! Reindirizzamento al login...",
+    "googleLoginFailed": "Autenticazione con Google non riuscita. Riprova.",
+    "googleLoading": "Connessione a Google in corso...",
+    "googleLocale": "it"
   },
   "notFound": {
     "code": "404",

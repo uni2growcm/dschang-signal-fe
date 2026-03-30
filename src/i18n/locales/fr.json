@@ -72,7 +72,10 @@
     "accountExists": "Un compte avec cet email existe déjà. Veuillez vous connecter.",
     "invalidData": "Données d'inscription invalides. Vérifiez vos informations.",
     "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
-    "successRedirect": "Inscription réussie ! Redirection vers la connexion..."
+    "successRedirect": "Inscription réussie ! Redirection vers la connexion...",
+    "googleLoginFailed": "Échec de l’authentification avec Google. Veuillez réessayer.",
+    "googleLoading": "Connexion à Google en cours...",
+    "googleLocale": "fr"
   },
   "notFound": {
     "code": "404",
