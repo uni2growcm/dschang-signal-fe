@@ -111,10 +111,10 @@
     "openMenu": "Open main menu",
     "settings": "Settings",
     "logout": "Logout",
-        "notifications": {
-            "title": "Notifications",
-            "empty": "No notifications for now."
-        }
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications for now."
+    }
   },
   "reportForm": {
     "headerDescription": "Describe the issue you observed in your area.",
@@ -146,17 +146,17 @@
     "categoryExistsFull": "This category already exists. Please select it from the list or choose a different name.",
     "add": "+ Add \"",
     "as-new-category": "\" as new category",
-        "quota": {
-            "title": "Daily report limit",
-            "createdToday": "Created today",
-            "remainingToday": "Remaining today",
-            "unlimited": "Unlimited",
-            "reached": "You have reached your daily report limit."
-        },
-        "notifications": {
-            "dailyLimitReachedTitle": "Report limit reached",
-            "dailyLimitReachedMessage": "You have reached your maximum number of reports for today."
-        }
+    "quota": {
+      "title": "Daily report limit",
+      "createdToday": "Created today",
+      "remainingToday": "Remaining today",
+      "unlimited": "Unlimited",
+      "reached": "You have reached your daily report limit."
+    },
+    "notifications": {
+      "dailyLimitReachedTitle": "Report limit reached",
+      "dailyLimitReachedMessage": "You have reached your maximum number of reports for today."
+    }
   },
   "reportPage": {
     "title": "Create a Report",
@@ -284,28 +284,38 @@
     },
     "general": {
       "title": "General",
-      "description": "Basic project information and configuration",
-      "projectName": "Project name",
-      "userEmail": "User email",
-      "fullName": "Full name",
+      "description": "Project information and basic configuration",
+      "projectName": "Project Name",
+      "userEmail": "User Email",
+      "fullName": "Full Name",
       "password": "Password",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password",
+      "passwordRequirements": "Password must be at least 6 characters",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "passwordSuccess": "Password updated successfully",
+      "passwordError": "Failed to update password",
+      "passwordSameAsOld": "New password must be different from the old one",
       "placeholders": {
-        "currentPassword": "Current password",
-        "newPassword": "New password",
-        "confirmPassword": "Confirm new password"
+        "currentPassword": "Enter your current password",
+        "newPassword": "Enter your new password",
+        "confirmPassword": "Confirm your new password"
       },
       "buttons": {
-        "updatePassword": "Update password",
+        "updatePassword": "Update",
         "cancel": "Cancel",
         "confirm": "Confirm",
-        "saveChanges": "Save changes",
+        "saveChanges": "Save Changes",
         "saving": "Saving..."
       },
       "notifications": {
         "updateSuccess": "Profile updated successfully",
-        "updateError": "Failed to update profile. Please try again.",
+        "updateError": "Failed to update profile",
         "passwordSuccess": "Password updated successfully",
-        "passwordError": "Failed to update password. Please check your current password."
+        "passwordError": "Failed to update password"
       }
     },
     "notifications": {
@@ -384,5 +394,12 @@
     "password-required": "Password is required",
     "confirm-password-required": "Confirm Password is required",
     "password-match": "Passwords must match"
+  },
+
+  "reportCard": {
+    "share": "Share",
+    "shareCopied": "Link copied to clipboard!",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }

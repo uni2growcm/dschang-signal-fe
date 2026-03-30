@@ -289,10 +289,20 @@
       "userEmail": "Email utilisateur",
       "fullName": "Nom complet",
       "password": "Mot de passe",
+      "changePassword": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe",
+      "passwordRequirements": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordSuccess": "Mot de passe mis à jour avec succès",
+      "passwordError": "Échec de la mise à jour du mot de passe",
+      "passwordSameAsOld": "Le nouveau mot de passe doit être différent de l'ancien",
       "placeholders": {
-        "currentPassword": "Mot de passe actuel",
-        "newPassword": "Nouveau mot de passe",
-        "confirmPassword": "Confirmer le nouveau mot de passe"
+        "currentPassword": "Entrez votre mot de passe actuel",
+        "newPassword": "Entrez votre nouveau mot de passe",
+        "confirmPassword": "Confirmez votre nouveau mot de passe"
       },
       "buttons": {
         "updatePassword": "Mettre à jour",
@@ -383,5 +393,11 @@
     "password-required": "Le mot de passe est requis",
     "confirm-password-required": "Confirmer que le mot de passe est requis",
     "password-match": "Les mots de passe doivent correspondre"
+  },
+  "reportCard": {
+    "share": "Partager",
+    "shareCopied": "Lien copié dans le presse-papier !",
+    "edit": "Modifier",
+    "delete": "Supprimer"
   }
 }

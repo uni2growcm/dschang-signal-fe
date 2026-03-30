@@ -110,11 +110,11 @@
     "logoutSuccess": "Erfolgreich abgemeldet!",
     "openMenu": "Hauptmenü öffnen",
     "settings": "Einstellungen",
-        "logout": "Abmelden",
-        "notifications": {
-            "title": "Benachrichtigungen",
-            "empty": "Zurzeit keine Benachrichtigungen."
-        }
+    "logout": "Abmelden",
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "empty": "Zurzeit keine Benachrichtigungen."
+    }
   },
   "reportForm": {
     "headerDescription": "Beschreiben Sie das Problem, das Sie in Ihrer Umgebung beobachtet haben.",
@@ -145,18 +145,18 @@
     "categoryExists": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus.",
     "categoryExistsFull": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus oder wählen Sie einen anderen Namen.",
     "add": "Hinzufügen \"",
-        "as-new-category": "\" als neue Kategorie",
-        "quota": {
-            "title": "Tägliches Meldelimit",
-            "createdToday": "Heute erstellt",
-            "remainingToday": "Heute verbleibend",
-            "unlimited": "Unbegrenzt",
-            "reached": "Sie haben Ihr tägliches Meldelimit erreicht."
-        },
-        "notifications": {
-            "dailyLimitReachedTitle": "Meldelimit erreicht",
-            "dailyLimitReachedMessage": "Sie haben Ihre maximale Anzahl von Meldungen für heute erreicht."
-        }
+    "as-new-category": "\" als neue Kategorie",
+    "quota": {
+      "title": "Tägliches Meldelimit",
+      "createdToday": "Heute erstellt",
+      "remainingToday": "Heute verbleibend",
+      "unlimited": "Unbegrenzt",
+      "reached": "Sie haben Ihr tägliches Meldelimit erreicht."
+    },
+    "notifications": {
+      "dailyLimitReachedTitle": "Meldelimit erreicht",
+      "dailyLimitReachedMessage": "Sie haben Ihre maximale Anzahl von Meldungen für heute erreicht."
+    }
   },
   "reportPage": {
     "title": "Einen Bericht erstellen",
@@ -284,28 +284,38 @@
     },
     "general": {
       "title": "Allgemein",
-      "description": "Grundlegende Projektinformationen und Konfiguration",
+      "description": "Projektinformationen und Grundeinstellungen",
       "projectName": "Projektname",
       "userEmail": "Benutzer-E-Mail",
       "fullName": "Vollständiger Name",
       "password": "Passwort",
+      "changePassword": "Passwort ändern",
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmNewPassword": "Neues Passwort bestätigen",
+      "passwordRequirements": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      "passwordMismatch": "Passwörter stimmen nicht überein",
+      "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein",
+      "passwordSuccess": "Passwort erfolgreich aktualisiert",
+      "passwordError": "Passwort konnte nicht aktualisiert werden",
+      "passwordSameAsOld": "Das neue Passwort muss sich vom alten unterscheiden",
       "placeholders": {
-        "currentPassword": "Aktuelles Passwort",
-        "newPassword": "Neues Passwort",
-        "confirmPassword": "Passwort bestätigen"
+        "currentPassword": "Geben Sie Ihr aktuelles Passwort ein",
+        "newPassword": "Geben Sie Ihr neues Passwort ein",
+        "confirmPassword": "Bestätigen Sie Ihr neues Passwort"
       },
       "buttons": {
-        "updatePassword": "Passwort ändern",
+        "updatePassword": "Aktualisieren",
         "cancel": "Abbrechen",
         "confirm": "Bestätigen",
-        "saveChanges": "Speichern",
-        "saving": "Speichert..."
+        "saveChanges": "Änderungen speichern",
+        "saving": "Speichern..."
       },
       "notifications": {
         "updateSuccess": "Profil erfolgreich aktualisiert",
-        "updateError": "Fehler beim Aktualisieren des Profils",
-        "passwordSuccess": "Passwort erfolgreich geändert",
-        "passwordError": "Fehler beim Ändern des Passworts"
+        "updateError": "Profil konnte nicht aktualisiert werden",
+        "passwordSuccess": "Passwort erfolgreich aktualisiert",
+        "passwordError": "Passwort konnte nicht aktualisiert werden"
       }
     },
     "notifications": {
@@ -383,5 +393,11 @@
     "password-required": "Passwort ist erforderlich",
     "confirm-password-required": "Bestätigen Sie, dass ein Passwort erforderlich ist",
     "password-match": "Passwörter müssen übereinstimmen"
+  },
+  "reportCard": {
+    "share": "Teilen",
+    "shareCopied": "Link in die Zwischenablage kopiert!",
+    "edit": "Bearbeiten",
+    "delete": "Löschen"
   }
 }
