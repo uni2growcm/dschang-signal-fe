@@ -71,6 +71,7 @@ export {
   deleteReportAPI as deleteReport,
   updateReportAPI as updateReport,
   deleteMediaAPI as deleteMedia,
+    usePublicReportById,
   updateModerationStatusAPI as updateModerationStatus,
   updateReportStatusAPI as updateReportStatus
 } from "./services/report";
@@ -80,6 +81,8 @@ export {
   createCategoryAPI as createCategory,
   checkCategoryExistsAPI as checkCategoryExists,
 } from "./services/category";
+
+
 
 export interface DailyReportQuota {
   dailyLimit: number | null;
