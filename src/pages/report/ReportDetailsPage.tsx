@@ -17,6 +17,7 @@ import {
   getReportById,
   updateModerationStatus,
   updateReportStatus,
+  usePublicReportById,
 } from "../../services";
 import { useMe } from "../../services/user";
 import styles from "./ReportDetailsPage.module.css";
@@ -28,6 +29,7 @@ import {
 } from "../../api";
 import { useMediaViewer, type MediaItem } from "../../hooks/useMediaViewer";
 import MediaViewer from "../../components/media/MediaViewer";
+import { isAuth } from "../../utils/utils";
 
 const formatStatus = (
   status: ReportModerationStatusEnum | ReportReportStatusEnum,
@@ -46,18 +48,21 @@ export default function ReportDetailsPage() {
   const viewer = useMediaViewer();
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const authenticated = isAuth();
 
   const {
     data: report,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ["report", id],
-    queryFn: () => getReportById(Number(id)),
-    enabled: Boolean(id),
-  });
+  } = authenticated
+    ? useQuery({
+        queryKey: ["report", id],
+        queryFn: () => getReportById(Number(id)),
+        enabled: Boolean(id),
+      })
+    : usePublicReportById(id ? Number(id) : null);
 
-  const { data: currentUser } = useMe();
+  const { data: currentUser } = authenticated ? useMe() : { data: null };
 
   const [selectedReportStatus, setSelectedReportStatus] =
     useState<ReportReportStatusEnum | null>(null);
@@ -431,9 +436,7 @@ export default function ReportDetailsPage() {
             </span>
             <span>
               {t("reportDetails.moderation")}:{" "}
-              {getTranslatedModerationStatusLabel(
-                report.moderationStatus,
-              )}
+              {getTranslatedModerationStatusLabel(report.moderationStatus)}
             </span>
             {report.createdBy && (
               <span>

@@ -106,6 +106,22 @@ export const useAllReports = (page: number, enabled: boolean = true) => {
   });
 };
 
+
+export const usePublicReportById = (id: number | null) => {
+  return useQuery<Report & { medias?: any[] }>({
+    queryKey: ["getPublicReportById", id],
+    queryFn: async () => {
+      if (!id) throw new Error("Report ID is required");
+      
+      const report = await reportApi.getPublicReportById({ id });
+      
+      return { ...report, medias: [] };
+    },
+    enabled: !!id,
+    retry: false,
+  });
+};
+
 export const createReportAPI = async (data: {
   title: string;
   description: string;
@@ -194,4 +210,7 @@ export const updateReportStatusAPI = async (
 export const deleteMediaAPI = async (mediaId: number): Promise<void> => {
   await mediaApi.deleteMedia({ mediaId });
 };
+
+
+
 
