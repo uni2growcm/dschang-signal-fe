@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -5,32 +6,35 @@ import { ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import App from "./App.tsx";
-import { NotificationCenterProvider } from "./contexts/NotificationCenter";
+import { NotificationCenterProvider } from "./contexts/NotificationCenter.tsx";
 import "./i18n/i18n";
 import "./index.css";
 import theme from "./theme";
 
 const queryClient = new QueryClient();
 
-// This code is only for TypeScript
 declare global {
   interface Window {
-    __TANSTACK_QUERY_CLIENT__:
-      import("@tanstack/query-core").QueryClient;
+    __TANSTACK_QUERY_CLIENT__: import("@tanstack/query-core").QueryClient;
   }
 }
 
-// This code is for all users
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
+
+const GOOGLE_CLIENT_ID =
+  "270719315111-cqvfgncjvu1gnqeb941uku41d21kvqmm.apps.googleusercontent.com";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <NotificationCenterProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      {" "}
+      <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          <App />
+          <NotificationCenterProvider>
+            <App />
+          </NotificationCenterProvider>
         </ThemeProvider>
-      </NotificationCenterProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   </StrictMode>,
 );

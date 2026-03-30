@@ -6,11 +6,11 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
+import { GoogleLogin } from "@react-oauth/google";
 import { useMutation } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import { ResponseError } from "../../../api";
 import { PATHS } from "../../../routes/PATHS";
@@ -35,6 +35,7 @@ export default function LoginForm() {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const response = await authApi.login({
@@ -59,10 +60,8 @@ export default function LoginForm() {
       let errorMessage = t("login.loginFailed");
 
       if (error instanceof Error) {
-       
         errorMessage = error.message;
       } else if (error instanceof ResponseError) {
-      
         try {
           const text = await error.response.text();
           const body = JSON.parse(text);
@@ -84,6 +83,44 @@ export default function LoginForm() {
       }, 1500);
     },
   });
+
+  const googleLoginMutation = useMutation({
+    mutationFn: async (idToken: string) => {
+      const response = await fetch("http://localhost:8080/api/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: idToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error(t("login.googleLoginFailed"));
+      }
+
+      return response.json();
+    },
+    onSuccess: (response) => {
+      if (response.token) {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
+        setSuccess(true);
+        setTimeout(() => {
+          navigate(PATHS.INDEX);
+        }, 2000);
+      }
+    },
+    onError: () => {
+      setErrorMessage(t("login.googleLoginFailed"));
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+    },
+  });
+
+  const handleGoogleLogin = (credentialResponse: any) => {
+    googleLoginMutation.mutate(credentialResponse.credential);
+  };
 
   return (
     <Formik
@@ -230,33 +267,21 @@ export default function LoginForm() {
               </Divider>
             </Box>
 
-            <Button
-              variant="outlined"
-              fullWidth
-              disabled={success}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                padding: "12px",
-                borderRadius: "24px",
-                border: "1px solid #ddd",
-                color: "#333",
-                textTransform: "none",
-                fontSize: "15px",
-                fontWeight: 500,
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.02)",
-                  border: "1px solid #bbb",
-                },
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => {
+                setErrorMessage(t("login.googleLoginFailed"));
+                setIsError(true);
+                setTimeout(() => {
+                  setIsError(false);
+                }, 3000);
               }}
-            >
-              <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">
-                {t("login.continueGoogle")}
-              </span>
-            </Button>
+              theme="outline"
+              shape="pill"
+              width="100%"
+              text="continue_with"
+              locale={t("login.googleLocale")}
+            />
 
             <div className={styles.signupText}>
               {t("login.noAccount")}{" "}
@@ -279,7 +304,7 @@ export default function LoginForm() {
           />
           <SnackBar
             open={success}
-            message={t('login.login-successful')}
+            message={t("login.loginSuccessful")}
             severity="success"
             position="bottom-right"
           />

@@ -1,16 +1,16 @@
 import {
   AuthApi,
-  ReportApi,
   CategoryApi,
-  MediaApi,
-  UserApi,
   Configuration,
+  MediaApi,
+  ReportApi,
+  UserApi,
   type Middleware,
 } from "./api";
-import { API_URL } from "./utils/env";
-import { getToken } from "./utils/localStorage";
-import { handleUnauthorized } from "./utils/handleUnauthorized";
 import i18n from "./i18n/i18n";
+import { API_URL } from "./utils/env";
+import { handleUnauthorized } from "./utils/handleUnauthorized";
+import { getToken } from "./utils/localStorage";
 
 const addTokenToHeadersMiddleware: Middleware = {
   pre: async (request) => {
@@ -64,25 +64,40 @@ export const reportApi = new ReportApi(apiConfig);
 export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
 
+export const googleLogin = async (token: string) => {
+  const response = await fetch(`${API_URL.dev}/auth/google`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Google login failed");
+  }
+
+  return response.json();
+};
+
 export {
   createReportAPI as createReport,
-  uploadMediaAPI as uploadMedia,
-  getReportByIdAPI as getReportById,
-  deleteReportAPI as deleteReport,
-  updateReportAPI as updateReport,
   deleteMediaAPI as deleteMedia,
-    usePublicReportById,
+  deleteReportAPI as deleteReport,
+  getReportByIdAPI as getReportById,
   updateModerationStatusAPI as updateModerationStatus,
-  updateReportStatusAPI as updateReportStatus
+  updateReportAPI as updateReport,
+  updateReportStatusAPI as updateReportStatus,
+  uploadMediaAPI as uploadMedia,
+  usePublicReportById,
 } from "./services/report";
 
 export {
-  getCategoriesAPI as getCategories,
-  createCategoryAPI as createCategory,
   checkCategoryExistsAPI as checkCategoryExists,
+  createCategoryAPI as createCategory,
+  getCategoriesAPI as getCategories,
 } from "./services/category";
-
-
 
 export interface DailyReportQuota {
   dailyLimit: number | null;
@@ -92,11 +107,11 @@ export interface DailyReportQuota {
 }
 
 const toNullableNumber = (value: unknown): number | null => {
-  if (typeof value === 'number' && Number.isFinite(value)) {
+  if (typeof value === "number" && Number.isFinite(value)) {
     return value;
   }
 
-  if (typeof value === 'string' && value.trim() !== '') {
+  if (typeof value === "string" && value.trim() !== "") {
     const parsedValue = Number(value);
     return Number.isFinite(parsedValue) ? parsedValue : null;
   }
@@ -122,7 +137,7 @@ export const getDailyReportQuota = async (): Promise<DailyReportQuota> => {
   const token = getToken();
 
   if (!token) {
-    throw new Error('Unauthorized');
+    throw new Error("Unauthorized");
   }
 
   const response = await fetch(`${API_URL.dev}/users/me`, {
@@ -133,38 +148,38 @@ export const getDailyReportQuota = async (): Promise<DailyReportQuota> => {
 
   if (response.status === 401) {
     await handleUnauthorized();
-    throw new Error('Unauthorized');
+    throw new Error("Unauthorized");
   }
 
   if (!response.ok) {
-    throw new Error('Failed to fetch daily report quota');
+    throw new Error("Failed to fetch daily report quota");
   }
 
   const payload = (await response.json()) as Record<string, unknown>;
 
   const dailyLimit = pickFirstNumber(payload, [
-    'dailyReportLimit',
-    'maxDailyReports',
-    'maxReportsPerDay',
-    'reportLimitPerDay',
-    'reportsPerDayLimit',
-    'dailyLimit',
+    "dailyReportLimit",
+    "maxDailyReports",
+    "maxReportsPerDay",
+    "reportLimitPerDay",
+    "reportsPerDayLimit",
+    "dailyLimit",
   ]);
   const createdToday = pickFirstNumber(payload, [
-    'reportsCreatedToday',
-    'createdReportsToday',
-    'dailyReportsCreated',
-    'todayReportsCount',
-    'reportCountToday',
-    'reportsToday',
+    "reportsCreatedToday",
+    "createdReportsToday",
+    "dailyReportsCreated",
+    "todayReportsCount",
+    "reportCountToday",
+    "reportsToday",
   ]);
   let remainingToday = pickFirstNumber(payload, [
-    'remainingReportsToday',
-    'remainingDailyReports',
-    'dailyReportsRemaining',
-    'reportsRemainingToday',
-    'remainingReports',
-    'remaining',
+    "remainingReportsToday",
+    "remainingDailyReports",
+    "dailyReportsRemaining",
+    "reportsRemainingToday",
+    "remainingReports",
+    "remaining",
   ]);
 
   if (remainingToday === null && dailyLimit !== null && createdToday !== null) {
@@ -181,7 +196,9 @@ export const getDailyReportQuota = async (): Promise<DailyReportQuota> => {
     createdToday: normalizedCreatedToday,
     remainingToday,
     hasRecognizedFields:
-      dailyLimit !== null || normalizedCreatedToday !== null || remainingToday !== null,
+      dailyLimit !== null ||
+      normalizedCreatedToday !== null ||
+      remainingToday !== null,
   };
 };
 

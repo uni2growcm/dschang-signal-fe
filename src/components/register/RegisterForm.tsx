@@ -1,12 +1,14 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
+import { GoogleLogin } from "@react-oauth/google";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import { PATHS } from "../../routes/PATHS";
 import { authApi } from "../../services";
+import { LOCAL_STORAGE_KEYS } from "../../utils/localStorage";
 import FormTextField from "../forms/shared/FormTextField";
 import SuccessFade from "../forms/shared/SuccessFade";
 import styles from "./RegisterForm.module.css";
@@ -23,7 +25,10 @@ export default function RegisterForm() {
   const { t } = useTranslation();
   const registerValidationSchema = getRegisterValidationSchema(t);
   const navigate = useNavigate();
+
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
@@ -34,26 +39,91 @@ export default function RegisterForm() {
           password: values.password,
         },
       });
+
       setIsSuccess(true);
+
       setTimeout(() => {
         navigate(PATHS.LOGIN);
       }, 2000);
     } catch (error: unknown) {
-      console.error("Register error:", error);
-
       let message = t("register.error");
 
       if (axios.isAxiosError(error)) {
         message = error.response?.data?.message || message;
       }
 
-      alert(message);
+      setErrorMessage(message);
+      setIsError(true);
+
+      setTimeout(() => setIsError(false), 3000);
     }
+  };
+
+  const googleLoginMutation = useMutation({
+    mutationFn: async (idToken: string) => {
+      const response = await fetch("http://localhost:8080/api/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: idToken }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || t("register.googleLoginFailed"));
+      }
+
+      return response.json();
+    },
+
+    onSuccess: (response) => {
+      if (response?.token) {
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.token);
+
+        setIsSuccess(true);
+        setErrorMessage("");
+
+        setTimeout(() => {
+          navigate(PATHS.INDEX);
+        }, 2000);
+      }
+    },
+
+    onError: (error: unknown) => {
+      let message = t("register.googleLoginFailed");
+
+      if (error instanceof Error) {
+        message = error.message;
+      }
+
+      setErrorMessage(message);
+      setIsError(true);
+
+      setTimeout(() => setIsError(false), 3000);
+    },
+  });
+
+  const handleGoogleLogin = (credentialResponse: any) => {
+    if (!credentialResponse?.credential) {
+      setErrorMessage(t("register.googleLoginFailed"));
+      setIsError(true);
+
+      setTimeout(() => setIsError(false), 3000);
+      return;
+    }
+
+    googleLoginMutation.mutate(credentialResponse.credential);
   };
 
   return (
     <Formik
-      initialValues={{ email: "", fullName: "", password: "", confirmPassword: ""}}
+      initialValues={{
+        email: "",
+        fullName: "",
+        password: "",
+        confirmPassword: "",
+      }}
       validationSchema={registerValidationSchema}
       onSubmit={handleSubmit}
     >
@@ -73,7 +143,6 @@ export default function RegisterForm() {
                   fontSize: 28,
                   fontWeight: 700,
                   color: "#1a1a1a",
-                  letterSpacing: -0.5,
                 }}
               >
                 {t("register.title")}
@@ -83,7 +152,6 @@ export default function RegisterForm() {
                 sx={{
                   color: "#757575",
                   fontSize: 14,
-                  lineHeight: 1.5,
                   textAlign: "center",
                 }}
               >
@@ -102,7 +170,6 @@ export default function RegisterForm() {
               style={{
                 opacity: isSuccess ? 0.5 : 1,
                 pointerEvents: isSuccess ? "none" : "auto",
-                transition: "all 0.4s ease",
               }}
             >
               <FormTextField
@@ -138,13 +205,15 @@ export default function RegisterForm() {
               />
 
               <FormTextField
-                label={t('register.confirmPassword')}
+                label={t("register.confirmPassword")}
                 name="confirmPassword"
                 type="password"
                 value={values.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                error={
+                  touched.confirmPassword && Boolean(errors.confirmPassword)
+                }
                 helperText={touched.confirmPassword && errors.confirmPassword}
               />
             </div>
@@ -159,11 +228,8 @@ export default function RegisterForm() {
                 padding: "12px",
                 borderRadius: "24px",
                 fontWeight: 600,
-                fontSize: "15px",
                 textTransform: "none",
-                marginTop: "8px",
-                transition: "all 0.3s ease",
-                "&:hover": { backgroundColor: "#6b3edb" },
+                mt: 1,
               }}
             >
               {isSuccess
@@ -174,32 +240,22 @@ export default function RegisterForm() {
             </Button>
 
             <Box sx={{ my: 2 }}>
-              <Divider sx={{ fontSize: "14px", color: "#999" }}>
-                {t("register.or")}
-              </Divider>
+              <Divider>{t("register.or")}</Divider>
             </Box>
 
-            <Button
-              variant="outlined"
-              fullWidth
-              disabled={isSuccess}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                padding: "12px",
-                borderRadius: "24px",
-                border: "1px solid #ddd",
-                color: "#333",
-                textTransform: "none",
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => {
+                setErrorMessage(t("register.googleLoginFailed"));
+                setIsError(true);
+                setTimeout(() => setIsError(false), 3000);
               }}
-            >
-              <FcGoogle size={25} />
-              <span className="text-inherit font-medium text-lg">
-                {t("register.continueGoogle")}
-              </span>
-            </Button>
+              theme="outline"
+              shape="pill"
+              width="100%"
+              text="continue_with"
+              locale={t("register.googleLocale")}
+            />
 
             <div className={styles.loginText}>
               {t("register.haveAccount")}{" "}
