@@ -16,6 +16,7 @@ export interface PaginatedReports {
 export interface PublicReportsFilters {
   page?: number;
   size?: number;
+  enabled?: boolean;
 }
 
 export interface CategoriesFilters {
@@ -27,7 +28,8 @@ const getTotalCount = (headerValue: string | null) => {
   return Number.isFinite(parsedValue) ? parsedValue : 0;
 };
 
-export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE) => {
+export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options: { enabled?: boolean } = {}) => {
+    const { enabled = true } = options;
   return useQuery<PaginatedReports>({
     queryKey: ["getAuthenticatedUserReports", page, size],
     queryFn: async () => {
@@ -47,12 +49,12 @@ export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE) => {
         totalPages,
       };
     },
-    enabled: isAuth(),
+    enabled: isAuth() && enabled,
   });
 };
 
 export const usePublicReports = (filters: PublicReportsFilters = {}) => {
-  const { page = 1, size = PAGE_SIZE } = filters;
+  const { page = 1, size = PAGE_SIZE, enabled = true  } = filters;
 
   return useQuery<PaginatedReports>({
     queryKey: ["getPublicReports", page, size],
@@ -73,6 +75,7 @@ export const usePublicReports = (filters: PublicReportsFilters = {}) => {
         totalPages,
       };
     },
+    enabled,
     placeholderData: (previousData) => previousData,
   });
 };
