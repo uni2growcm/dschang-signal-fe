@@ -35,6 +35,8 @@
     "quoter": "Marie Nguemo",
     "quoterTitle": "Gemeinschaftsleiterin, Dschang",
     "login-successful": "Anmeldung erfolgreich",
+    "googleLoginFailed": "Google-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "googleLocale": "de",
     "invalid-email": "Ungültige E-Mail",
     "email-required": "E-Mail ist erforderlich",
     "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
@@ -70,7 +72,10 @@
     "accountExists": "Ein Konto mit dieser E-Mail-Adresse existiert bereits. Bitte melden Sie sich an.",
     "invalidData": "Ungültige Registrierungsdaten. Bitte überprüfen Sie Ihre Informationen.",
     "registrationFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "successRedirect": "Registrierung erfolgreich! Weiterleitung zur Anmeldung..."
+    "successRedirect": "Registrierung erfolgreich! Weiterleitung zur Anmeldung...",
+    "googleLoginFailed": "Google-Authentifizierung fehlgeschlagen. Bitte versuche es erneut.",
+    "googleLoading": "Verbindung zu Google wird hergestellt...",
+    "googleLocale": "de"
   },
   "notFound": {
     "code": "404",

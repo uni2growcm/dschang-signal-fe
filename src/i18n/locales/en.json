@@ -35,6 +35,8 @@
     "quoter": "Marie Nguemo",
     "quoterTitle": "Community Leader, Dschang",
     "login-successful": "Login Successful",
+    "googleLoginFailed": "Google login failed. Please try again.",
+    "googleLocale": "en",
     "invalid-email": "Invalid email",
     "email-required": "Email is required",
     "password-min": "Password must be at least 6 characters",
@@ -70,7 +72,11 @@
     "accountExists": "An account with this email already exists. Please log in.",
     "invalidData": "Invalid registration data. Please check your information.",
     "registrationFailed": "Registration failed. Please try again.",
-    "successRedirect": "Registration successful! Redirecting to login..."
+    "successRedirect": "Registration successful! Redirecting to login...",
+    "googleRegisterFailed": "Google authentication failed. Please try again.",
+    "googleLoading": "Connecting with Google...",
+    "googleLoginFailed": "Google authentication failed. Please try again.",
+    "googleLocale": "en"
   },
   "notFound": {
     "code": "404",
