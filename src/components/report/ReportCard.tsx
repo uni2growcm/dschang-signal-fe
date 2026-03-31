@@ -19,6 +19,7 @@ import { PATHS } from "../../routes/PATHS";
 import { stringAvatar } from "../../utils/utils";
 import { deleteReport } from "../../services";
 import { useMe } from "../../services/user";
+import SnackBar from "../snackBar/SnackBar";
 
 const formatStatus = (status: NonNullable<Report["reportStatus"]>) =>
   status
@@ -32,17 +33,26 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
   const queryClient = useQueryClient();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
   const { data: currentUser } = useMe();
-
   const isOwner = currentUser?.id === report.createdBy?.id;
   const canEdit =
     isOwner &&
     report.moderationStatus === "PENDING_REVIEW" &&
     report.reportStatus === "PENDING";
+
   const canDelete = isOwner && report.reportStatus === "PENDING";
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error" | "warning" | "info";
+  }>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -89,13 +99,30 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        alert(
-          t("reportCard.shareCopied", "Lien copié dans le presse-papier !"),
-        );
+        setSnackbar({
+          open: true,
+          message: t(
+            "reportCard.shareCopied",
+            "Lien copié dans le presse-papier !",
+          ),
+          severity: "success",
+        });
       })
-      .catch(console.error);
+      .catch(() => {
+        setSnackbar({
+          open: true,
+          message: t(
+            "reportCard.shareError",
+            "Erreur lors de la copie du lien",
+          ),
+          severity: "error",
+        });
+      });
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
   const statusStyles: Record<
     Exclude<Report["reportStatus"], undefined>,
     string
@@ -275,6 +302,13 @@ export default function ReportCard({ report }: Readonly<{ report: Report }>) {
         >
           {t("report.viewDetails")}
         </Link>
+
+        <SnackBar
+          open={snackbar.open}
+          message={snackbar.message}
+          severity={snackbar.severity}
+          onClose={handleCloseSnackbar}
+        />
       </div>
     </div>
   );
