@@ -113,7 +113,10 @@
     "logout": "Esci",
         "notifications": {
             "title": "Notifiche",
-            "empty": "Nessuna notifica al momento."
+            "empty": "Nessuna notifica al momento.",
+            "reportRejectedTitle": "Segnalazione rifiutata",
+            "reportRejectedMessage": "La tua segnalazione \"{{reportTitle}}\" è stata rifiutata dalla moderazione.",
+            "rejectionReasonLabel": "Motivo"
         }
   },
   "reportForm": {

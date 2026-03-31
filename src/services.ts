@@ -3,6 +3,7 @@ import {
   ReportApi,
   CategoryApi,
   MediaApi,
+  NotificationApi,
   UserApi,
   Configuration,
   type Middleware,
@@ -63,6 +64,7 @@ export const userApi = new UserApi(apiConfig);
 export const reportApi = new ReportApi(apiConfig);
 export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
+export const notificationApi = new NotificationApi(apiConfig);
 
 export {
   createReportAPI as createReport,
@@ -71,6 +73,7 @@ export {
   deleteReportAPI as deleteReport,
   updateReportAPI as updateReport,
   deleteMediaAPI as deleteMedia,
+  getAllAuthenticatedUserReportsAPI as getAllAuthenticatedUserReports,
   updateModerationStatusAPI as updateModerationStatus,
   updateReportStatusAPI as updateReportStatus
 } from "./services/report";

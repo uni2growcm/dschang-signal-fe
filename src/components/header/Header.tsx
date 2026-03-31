@@ -12,7 +12,11 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoIosNotificationsOutline, IoMdSettings } from "react-icons/io";
@@ -20,7 +24,7 @@ import { MdClose, MdLogout, MdMenu } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
 import { useNotificationCenter } from "../../contexts/NotificationCenter";
 import { PATHS } from "../../routes/PATHS";
-import { authApi } from "../../services";
+import { authApi, getReportById } from "../../services";
 import { useMe } from "../../services/user";
 import { LOCAL_STORAGE_KEYS } from "../../utils/localStorage";
 import { stringAvatar } from "../../utils/utils";
@@ -33,8 +37,13 @@ export default function Header() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { notifications, unreadCount, markAllAsRead, clearNotifications } =
-    useNotificationCenter();
+  const {
+    notifications,
+    unreadCount,
+    isLoading: notificationsLoading,
+    markAllAsRead,
+    clearNotifications,
+  } = useNotificationCenter();
   const [token, setToken] = useState<string | null>(
     localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN),
   );
@@ -63,6 +72,14 @@ export default function Header() {
 
   const handleNotificationClose = () => {
     setNotificationAnchorEl(null);
+  };
+
+  const handleNotificationSelect = (reportId?: number) => {
+    handleNotificationClose();
+
+    if (typeof reportId === "number") {
+      navigate(PATHS.REPORT_DETAILS.replace(":id", String(reportId)));
+    }
   };
 
   const [waiting, setWaiting] = useState(false);
@@ -94,13 +111,90 @@ export default function Header() {
   };
 
   const { data: user, isLoading, isError } = useMe();
-  const formattedNotifications = notifications.map((notification) => ({
-    ...notification,
-    createdAtLabel: new Intl.DateTimeFormat(undefined, {
+  const isRejectedNotification = (notification: (typeof notifications)[number]) =>
+    notification.newStatus === "REJECTED" ||
+    notification.type.toUpperCase().includes("REJECT");
+  const rejectedNotificationReportIds = Array.from(
+    new Set(
+      notifications
+        .filter(isRejectedNotification)
+        .map((notification) => notification.reportId)
+        .filter((reportId): reportId is number => typeof reportId === "number"),
+    ),
+  );
+  const rejectedReportsQueries = useQueries({
+    queries: rejectedNotificationReportIds.map((reportId) => ({
+      queryKey: ["notification-rejected-report", reportId],
+      queryFn: () => getReportById(reportId),
+      enabled: token !== null,
+      staleTime: 60000,
+    })),
+  });
+  const rejectionReasonByReportId = new Map<number, string>();
+  const reportTitleByReportId = new Map<number, string>();
+
+  rejectedReportsQueries.forEach((query, index) => {
+    const reportId = rejectedNotificationReportIds[index];
+    const rejectionReason = query.data?.rejectionReason?.trim();
+    const reportTitle = query.data?.title?.trim();
+
+    if (reportId && rejectionReason) {
+      rejectionReasonByReportId.set(reportId, rejectionReason);
+    }
+
+    if (reportId && reportTitle) {
+      reportTitleByReportId.set(reportId, reportTitle);
+    }
+  });
+
+  const formattedNotifications = notifications.map((notification) => {
+    const createdAtLabel = new Intl.DateTimeFormat(undefined, {
       dateStyle: "short",
       timeStyle: "short",
-    }).format(new Date(notification.createdAt)),
-  }));
+    }).format(new Date(notification.createdAt));
+
+    if (isRejectedNotification(notification)) {
+      const rejectionReason =
+        notification.rejectionReason ||
+        (typeof notification.reportId === "number"
+          ? rejectionReasonByReportId.get(notification.reportId)
+          : undefined);
+      const reportTitle =
+        typeof notification.reportId === "number"
+          ? reportTitleByReportId.get(notification.reportId)
+          : undefined;
+      const baseMessage =
+        notification.message ||
+        t("header.notifications.reportRejectedMessage", {
+          reportTitle:
+            reportTitle ||
+            notification.title ||
+            `#${notification.reportId ?? "-"}`,
+        });
+      const displayMessage =
+        rejectionReason &&
+        !baseMessage.toLowerCase().includes(rejectionReason.toLowerCase())
+          ? `${baseMessage} ${t("header.notifications.rejectionReasonLabel")}: ${rejectionReason}`
+          : baseMessage;
+
+      return {
+        ...notification,
+        createdAtLabel,
+        displayTitle:
+          notification.title || t("header.notifications.reportRejectedTitle"),
+        displayMessage,
+        accentColor: "error.main",
+      };
+    }
+
+    return {
+      ...notification,
+      createdAtLabel,
+      displayTitle: notification.title,
+      displayMessage: notification.message,
+      accentColor: notification.read ? "text.primary" : "text.primary",
+    };
+  });
 
   return isLoading ? (
     <Backdrop
@@ -234,7 +328,11 @@ export default function Header() {
                 {t("header.notifications.title")}
               </Typography>
               <Divider />
-              {formattedNotifications.length === 0 ? (
+              {notificationsLoading ? (
+                <Typography sx={{ px: 2, py: 2, color: "text.secondary" }}>
+                  {t("common.loading")}
+                </Typography>
+              ) : formattedNotifications.length === 0 ? (
                 <Typography sx={{ px: 2, py: 2, color: "text.secondary" }}>
                   {t("header.notifications.empty")}
                 </Typography>
@@ -242,22 +340,27 @@ export default function Header() {
                 formattedNotifications.map((notification) => (
                   <MenuItem
                     key={notification.id}
-                    onClick={handleNotificationClose}
+                    onClick={() => handleNotificationSelect(notification.reportId)}
                     sx={{
                       alignItems: "flex-start",
                       whiteSpace: "normal",
                       py: 1.5,
+                      backgroundColor: notification.read
+                        ? "transparent"
+                        : "action.hover",
+                      borderLeft: 3,
+                      borderLeftColor: notification.accentColor,
                     }}
                   >
                     <Box>
                       <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
-                        {notification.title}
+                        {notification.displayTitle}
                       </Typography>
                       <Typography
                         variant="body2"
                         sx={{ color: "text.secondary", mt: 0.5 }}
                       >
-                        {notification.message}
+                        {notification.displayMessage}
                       </Typography>
                       <Typography
                         variant="caption"
