@@ -35,6 +35,8 @@
     "quoter": "Marie Nguemo",
     "quoterTitle": "Responsable communautaire, Dschang",
     "login-successful": "Connexion réussie",
+    "googleLoginFailed": "Échec de la connexion Google. Veuillez réessayer.",
+    "googleLocale": "fr",
     "invalid-email": "E-mail invalide",
     "email-required": "L'e-mail est requis",
     "password-min": "Le mot de passe doit contenir au moins 6 caractères",
@@ -70,7 +72,10 @@
     "accountExists": "Un compte avec cet email existe déjà. Veuillez vous connecter.",
     "invalidData": "Données d'inscription invalides. Vérifiez vos informations.",
     "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
-    "successRedirect": "Inscription réussie ! Redirection vers la connexion..."
+    "successRedirect": "Inscription réussie ! Redirection vers la connexion...",
+    "googleLoginFailed": "Échec de l’authentification avec Google. Veuillez réessayer.",
+    "googleLoading": "Connexion à Google en cours...",
+    "googleLocale": "fr"
   },
   "notFound": {
     "code": "404",

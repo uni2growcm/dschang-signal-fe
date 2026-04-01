@@ -35,6 +35,8 @@
     "quoter": "Marie Nguemo",
     "quoterTitle": "Leader della comunità, Dschang",
     "login-successful": "Accesso riuscito",
+    "googleLoginFailed": "Accesso con Google fallito. Per favore riprova.",
+    "googleLocale": "it",
     "invalid-email": "E-mail non valida",
     "email-required": "L'e-mail è obbligatoria",
     "password-min": "La password deve contenere almeno 6 caratteri",
@@ -70,7 +72,10 @@
     "accountExists": "Un account con questa email esiste già. Per favore accedi.",
     "invalidData": "Dati di registrazione non validi. Controlla le tue informazioni.",
     "registrationFailed": "Registrazione non riuscita. Per favore riprova.",
-    "successRedirect": "Registrazione riuscita! Reindirizzamento al login..."
+    "successRedirect": "Registrazione riuscita! Reindirizzamento al login...",
+    "googleLoginFailed": "Autenticazione con Google non riuscita. Riprova.",
+    "googleLoading": "Connessione a Google in corso...",
+    "googleLocale": "it"
   },
   "notFound": {
     "code": "404",
@@ -111,13 +116,13 @@
     "openMenu": "Apri il menu principale",
     "settings": "Impostazioni",
     "logout": "Esci",
-        "notifications": {
-            "title": "Notifiche",
-            "empty": "Nessuna notifica al momento.",
-            "reportRejectedTitle": "Segnalazione rifiutata",
-            "reportRejectedMessage": "La tua segnalazione \"{{reportTitle}}\" è stata rifiutata dalla moderazione.",
-            "rejectionReasonLabel": "Motivo"
-        }
+    "notifications": {
+      "title": "Notifiche",
+      "empty": "Nessuna notifica al momento.",
+      "reportRejectedTitle": "Segnalazione rifiutata",
+      "reportRejectedMessage": "La tua segnalazione \"{{reportTitle}}\" è stata rifiutata dalla moderazione.",
+      "rejectionReasonLabel": "Motivo"
+    }
   },
   "reportForm": {
     "headerDescription": "Descrivi il problema che hai osservato nella tua zona.",
@@ -148,18 +153,18 @@
     "categoryExists": "Questa categoria esiste già. Per favore selezionala dall'elenco.",
     "categoryExistsFull": "Questa categoria esiste già. Per favore selezionala dall'elenco o scegli un nome diverso.",
     "add": "Aggiungere \"",
-        "as-new-category": "\" come nuova categoria",
-        "quota": {
-            "title": "Limite giornaliero di segnalazioni",
-            "createdToday": "Create oggi",
-            "remainingToday": "Rimanenti oggi",
-            "unlimited": "Illimitato",
-            "reached": "Hai raggiunto il tuo limite giornaliero di segnalazioni."
-        },
-        "notifications": {
-            "dailyLimitReachedTitle": "Limite di segnalazioni raggiunto",
-            "dailyLimitReachedMessage": "Hai raggiunto il numero massimo di segnalazioni per oggi."
-        }
+    "as-new-category": "\" come nuova categoria",
+    "quota": {
+      "title": "Limite giornaliero di segnalazioni",
+      "createdToday": "Create oggi",
+      "remainingToday": "Rimanenti oggi",
+      "unlimited": "Illimitato",
+      "reached": "Hai raggiunto il tuo limite giornaliero di segnalazioni."
+    },
+    "notifications": {
+      "dailyLimitReachedTitle": "Limite di segnalazioni raggiunto",
+      "dailyLimitReachedMessage": "Hai raggiunto il numero massimo di segnalazioni per oggi."
+    }
   },
   "reportPage": {
     "title": "Crea una segnalazione",

@@ -35,6 +35,8 @@
     "quoter": "Marie Nguemo",
     "quoterTitle": "Community Leader, Dschang",
     "login-successful": "Login Successful",
+    "googleLoginFailed": "Google login failed. Please try again.",
+    "googleLocale": "en",
     "invalid-email": "Invalid email",
     "email-required": "Email is required",
     "password-min": "Password must be at least 6 characters",
@@ -70,7 +72,11 @@
     "accountExists": "An account with this email already exists. Please log in.",
     "invalidData": "Invalid registration data. Please check your information.",
     "registrationFailed": "Registration failed. Please try again.",
-    "successRedirect": "Registration successful! Redirecting to login..."
+    "successRedirect": "Registration successful! Redirecting to login...",
+    "googleRegisterFailed": "Google authentication failed. Please try again.",
+    "googleLoading": "Connecting with Google...",
+    "googleLoginFailed": "Google authentication failed. Please try again.",
+    "googleLocale": "en"
   },
   "notFound": {
     "code": "404",
@@ -111,15 +117,15 @@
     "openMenu": "Open main menu",
     "settings": "Settings",
     "logout": "Logout",
-        "notifications": {
-            "title": "Notifications",
-            "empty": "No notifications for now.",
-            "reportStatusChangedTitle": "Report status updated",
-            "reportStatusChangedMessage": "Your report \"{{reportTitle}}\" changed from {{previousStatus}} to {{currentStatus}}.",
-            "reportRejectedTitle": "Report rejected",
-            "reportRejectedMessage": "Your report \"{{reportTitle}}\" was rejected by moderation.",
-            "rejectionReasonLabel": "Reason"
-        }
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications for now.",
+      "reportStatusChangedTitle": "Report status updated",
+      "reportStatusChangedMessage": "Your report \"{{reportTitle}}\" changed from {{previousStatus}} to {{currentStatus}}.",
+      "reportRejectedTitle": "Report rejected",
+      "reportRejectedMessage": "Your report \"{{reportTitle}}\" was rejected by moderation.",
+      "rejectionReasonLabel": "Reason"
+    }
   },
   "reportForm": {
     "headerDescription": "Describe the issue you observed in your area.",
@@ -151,17 +157,17 @@
     "categoryExistsFull": "This category already exists. Please select it from the list or choose a different name.",
     "add": "+ Add \"",
     "as-new-category": "\" as new category",
-        "quota": {
-            "title": "Daily report limit",
-            "createdToday": "Created today",
-            "remainingToday": "Remaining today",
-            "unlimited": "Unlimited",
-            "reached": "You have reached your daily report limit."
-        },
-        "notifications": {
-            "dailyLimitReachedTitle": "Report limit reached",
-            "dailyLimitReachedMessage": "You have reached your maximum number of reports for today."
-        }
+    "quota": {
+      "title": "Daily report limit",
+      "createdToday": "Created today",
+      "remainingToday": "Remaining today",
+      "unlimited": "Unlimited",
+      "reached": "You have reached your daily report limit."
+    },
+    "notifications": {
+      "dailyLimitReachedTitle": "Report limit reached",
+      "dailyLimitReachedMessage": "You have reached your maximum number of reports for today."
+    }
   },
   "reportPage": {
     "title": "Create a Report",

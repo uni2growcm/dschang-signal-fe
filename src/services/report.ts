@@ -16,6 +16,7 @@ export interface PaginatedReports {
 export interface PublicReportsFilters {
   page?: number;
   size?: number;
+  enabled?: boolean;
 }
 
 export interface CategoriesFilters {
@@ -53,7 +54,8 @@ export const getAllAuthenticatedUserReportsAPI = async (
   return reports;
 };
 
-export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE) => {
+export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options: { enabled?: boolean } = {}) => {
+    const { enabled = true } = options;
   return useQuery<PaginatedReports>({
     queryKey: ["getAuthenticatedUserReports", page, size],
     queryFn: async () => {
@@ -73,12 +75,12 @@ export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE) => {
         totalPages,
       };
     },
-    enabled: isAuth(),
+    enabled: isAuth() && enabled,
   });
 };
 
 export const usePublicReports = (filters: PublicReportsFilters = {}) => {
-  const { page = 1, size = PAGE_SIZE } = filters;
+  const { page = 1, size = PAGE_SIZE, enabled = true  } = filters;
 
   return useQuery<PaginatedReports>({
     queryKey: ["getPublicReports", page, size],
@@ -99,6 +101,7 @@ export const usePublicReports = (filters: PublicReportsFilters = {}) => {
         totalPages,
       };
     },
+    enabled,
     placeholderData: (previousData) => previousData,
   });
 };
@@ -126,6 +129,22 @@ export const useAllReports = (page: number, enabled: boolean = true) => {
           const totalPages = Math.ceil(totalCount / PAGE_SIZE);
           return { reports, totalCount, totalPages };
         }),
+  });
+};
+
+
+export const usePublicReportById = (id: number | null) => {
+  return useQuery<Report & { medias?: any[] }>({
+    queryKey: ["getPublicReportById", id],
+    queryFn: async () => {
+      if (!id) throw new Error("Report ID is required");
+      
+      const report = await reportApi.getPublicReportById({ id });
+      
+      return { ...report, medias: [] };
+    },
+    enabled: !!id,
+    retry: false,
   });
 };
 
@@ -217,4 +236,7 @@ export const updateReportStatusAPI = async (
 export const deleteMediaAPI = async (mediaId: number): Promise<void> => {
   await mediaApi.deleteMedia({ mediaId });
 };
+
+
+
 

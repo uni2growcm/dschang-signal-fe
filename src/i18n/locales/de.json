@@ -35,6 +35,8 @@
     "quoter": "Marie Nguemo",
     "quoterTitle": "Gemeinschaftsleiterin, Dschang",
     "login-successful": "Anmeldung erfolgreich",
+    "googleLoginFailed": "Google-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "googleLocale": "de",
     "invalid-email": "Ungültige E-Mail",
     "email-required": "E-Mail ist erforderlich",
     "password-min": "Das Passwort muss mindestens 6 Zeichen lang sein",
@@ -70,7 +72,10 @@
     "accountExists": "Ein Konto mit dieser E-Mail-Adresse existiert bereits. Bitte melden Sie sich an.",
     "invalidData": "Ungültige Registrierungsdaten. Bitte überprüfen Sie Ihre Informationen.",
     "registrationFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "successRedirect": "Registrierung erfolgreich! Weiterleitung zur Anmeldung..."
+    "successRedirect": "Registrierung erfolgreich! Weiterleitung zur Anmeldung...",
+    "googleLoginFailed": "Google-Authentifizierung fehlgeschlagen. Bitte versuche es erneut.",
+    "googleLoading": "Verbindung zu Google wird hergestellt...",
+    "googleLocale": "de"
   },
   "notFound": {
     "code": "404",
@@ -110,14 +115,14 @@
     "logoutSuccess": "Erfolgreich abgemeldet!",
     "openMenu": "Hauptmenü öffnen",
     "settings": "Einstellungen",
-        "logout": "Abmelden",
-        "notifications": {
-            "title": "Benachrichtigungen",
-            "empty": "Zurzeit keine Benachrichtigungen.",
-            "reportRejectedTitle": "Bericht abgelehnt",
-            "reportRejectedMessage": "Ihr Bericht \"{{reportTitle}}\" wurde von der Moderation abgelehnt.",
-            "rejectionReasonLabel": "Grund"
-        }
+    "logout": "Abmelden",
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "empty": "Zurzeit keine Benachrichtigungen.",
+      "reportRejectedTitle": "Bericht abgelehnt",
+      "reportRejectedMessage": "Ihr Bericht \"{{reportTitle}}\" wurde von der Moderation abgelehnt.",
+      "rejectionReasonLabel": "Grund"
+    }
   },
   "reportForm": {
     "headerDescription": "Beschreiben Sie das Problem, das Sie in Ihrer Umgebung beobachtet haben.",
@@ -148,18 +153,18 @@
     "categoryExists": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus.",
     "categoryExistsFull": "Diese Kategorie existiert bereits. Bitte wählen Sie sie aus der Liste aus oder wählen Sie einen anderen Namen.",
     "add": "Hinzufügen \"",
-        "as-new-category": "\" als neue Kategorie",
-        "quota": {
-            "title": "Tägliches Meldelimit",
-            "createdToday": "Heute erstellt",
-            "remainingToday": "Heute verbleibend",
-            "unlimited": "Unbegrenzt",
-            "reached": "Sie haben Ihr tägliches Meldelimit erreicht."
-        },
-        "notifications": {
-            "dailyLimitReachedTitle": "Meldelimit erreicht",
-            "dailyLimitReachedMessage": "Sie haben Ihre maximale Anzahl von Meldungen für heute erreicht."
-        }
+    "as-new-category": "\" als neue Kategorie",
+    "quota": {
+      "title": "Tägliches Meldelimit",
+      "createdToday": "Heute erstellt",
+      "remainingToday": "Heute verbleibend",
+      "unlimited": "Unbegrenzt",
+      "reached": "Sie haben Ihr tägliches Meldelimit erreicht."
+    },
+    "notifications": {
+      "dailyLimitReachedTitle": "Meldelimit erreicht",
+      "dailyLimitReachedMessage": "Sie haben Ihre maximale Anzahl von Meldungen für heute erreicht."
+    }
   },
   "reportPage": {
     "title": "Einen Bericht erstellen",
