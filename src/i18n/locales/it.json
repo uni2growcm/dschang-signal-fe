@@ -292,18 +292,28 @@
     },
     "general": {
       "title": "Generale",
-      "description": "Informazioni e configurazione di base del progetto",
-      "projectName": "Nome progetto",
+      "description": "Informazioni del progetto e configurazione di base",
+      "projectName": "Nome del progetto",
       "userEmail": "Email utente",
       "fullName": "Nome completo",
       "password": "Password",
+      "changePassword": "Cambia password",
+      "currentPassword": "Password attuale",
+      "newPassword": "Nuova password",
+      "confirmNewPassword": "Conferma nuova password",
+      "passwordRequirements": "La password deve contenere almeno 6 caratteri",
+      "passwordMismatch": "Le password non corrispondono",
+      "passwordTooShort": "La password deve contenere almeno 6 caratteri",
+      "passwordSuccess": "Password aggiornata con successo",
+      "passwordError": "Impossibile aggiornare la password",
+      "passwordSameAsOld": "La nuova password deve essere diversa dalla precedente",
       "placeholders": {
-        "currentPassword": "Password attuale",
-        "newPassword": "Nuova password",
-        "confirmPassword": "Conferma password"
+        "currentPassword": "Inserisci la tua password attuale",
+        "newPassword": "Inserisci la tua nuova password",
+        "confirmPassword": "Conferma la tua nuova password"
       },
       "buttons": {
-        "updatePassword": "Aggiorna password",
+        "updatePassword": "Aggiorna",
         "cancel": "Annulla",
         "confirm": "Conferma",
         "saveChanges": "Salva modifiche",
@@ -311,9 +321,9 @@
       },
       "notifications": {
         "updateSuccess": "Profilo aggiornato con successo",
-        "updateError": "Errore durante l'aggiornamento del profilo",
+        "updateError": "Impossibile aggiornare il profilo",
         "passwordSuccess": "Password aggiornata con successo",
-        "passwordError": "Errore durante l'aggiornamento della password"
+        "passwordError": "Impossibile aggiornare la password"
       }
     },
     "notifications": {
@@ -391,5 +401,11 @@
     "password-required": "È richiesta la password",
     "confirm-password-required": "È richiesta la conferma della password",
     "password-match": "Le password devono essere identiche"
+  },
+  "reportCard": {
+    "share": "Condividi",
+    "shareCopied": "Link copiato negli appunti!",
+    "edit": "Modifica",
+    "delete": "Elimina"
   }
 }
