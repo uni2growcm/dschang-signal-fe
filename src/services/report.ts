@@ -28,14 +28,24 @@ const getTotalCount = (headerValue: string | null) => {
   return Number.isFinite(parsedValue) ? parsedValue : 0;
 };
 
-export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options: { enabled?: boolean } = {}) => {
-    const { enabled = true } = options;
+export interface MyReportsFilters {
+  page?: number;
+  size?: number;
+  status?: string;
+  category?: string;
+}
+
+export const useAuthenticatedUserReports = (filters: MyReportsFilters = {}) => {
+  const { page = 1, size = PAGE_SIZE, status, category } = filters;
+
   return useQuery<PaginatedReports>({
-    queryKey: ["getAuthenticatedUserReports", page, size],
+    queryKey: ["getAuthenticatedUserReports", page, size, status, category],
     queryFn: async () => {
       const response = await reportApi.getMyReportsRaw({
         page: Math.max(page - 1, 0),
         size,
+        ...(status ? { status: status as any } : {}),
+        ...(category ? { category } : {}),
       });
       const reports = await response.value();
       const totalCount = getTotalCount(
@@ -43,25 +53,30 @@ export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options:
       );
       const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
-      return {
-        reports,
-        totalCount,
-        totalPages,
-      };
+      return { reports, totalCount, totalPages };
     },
-    enabled: isAuth() && enabled,
+    enabled: isAuth(),
   });
 };
 
+export interface PublicReportsFilters {
+  page?: number;
+  size?: number;
+  status?: string;
+  category?: string;
+}
+
 export const usePublicReports = (filters: PublicReportsFilters = {}) => {
-  const { page = 1, size = PAGE_SIZE, enabled = true  } = filters;
+  const { page = 1, size = PAGE_SIZE, status, category } = filters;
 
   return useQuery<PaginatedReports>({
-    queryKey: ["getPublicReports", page, size],
+    queryKey: ["getPublicReports", page, size, status, category],
     queryFn: async () => {
       const response = await reportApi.getPublicReportsRaw({
         page: Math.max(page - 1, 0),
         size,
+        ...(status ? { status: status as any } : {}),
+        ...(category ? { category } : {}),
       });
       const reports = await response.value();
       const totalCount = getTotalCount(
@@ -69,13 +84,8 @@ export const usePublicReports = (filters: PublicReportsFilters = {}) => {
       );
       const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
-      return {
-        reports,
-        totalCount,
-        totalPages,
-      };
+      return { reports, totalCount, totalPages };
     },
-    enabled,
     placeholderData: (previousData) => previousData,
   });
 };
@@ -90,31 +100,60 @@ export const useCategories = (filters: CategoriesFilters = {}) => {
   });
 };
 
-export const useAllReports = (page: number, enabled: boolean = true) => {
+export interface AdminReportsFilters {
+  page?: number;
+  size?: number;
+  enabled?: boolean;
+  moderationStatus?: string;
+  reportStatus?: string;
+  category?: string;
+}
+
+export const useAllReports = (filters: AdminReportsFilters = {}) => {
+  const {
+    page = 1,
+    size = PAGE_SIZE,
+    enabled = true,
+    moderationStatus,
+    reportStatus,
+    category,
+  } = filters;
   return useQuery<PaginatedReports>({
-    queryKey: ["getAllReports", page],
+    queryKey: [
+      "getAllReports",
+      page,
+      size,
+      moderationStatus,
+      reportStatus,
+      category,
+    ],
     enabled,
-    queryFn: () =>
-      reportApi
-        .getAllReportsRaw({ page: page - 1, size: PAGE_SIZE })
-        .then(async (raw) => {
-          const reports = await raw.value();
-          const totalCount = Number(raw.raw.headers.get("X-Total-Count") ?? 0);
-          const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-          return { reports, totalCount, totalPages };
-        }),
+    queryFn: async () => {
+      const raw = await reportApi.getAllReportsRaw({
+        page: page - 1,
+        size,
+        ...(moderationStatus
+          ? { moderationStatus: moderationStatus as any }
+          : {}),
+        ...(reportStatus ? { reportStatus: reportStatus as any } : {}),
+        ...(category ? { category } : {}),
+      });
+      const reports = await raw.value();
+      const totalCount = Number(raw.raw.headers.get("X-Total-Count") ?? 0);
+      const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+      return { reports, totalCount, totalPages };
+    },
   });
 };
-
 
 export const usePublicReportById = (id: number | null) => {
   return useQuery<Report & { medias?: any[] }>({
     queryKey: ["getPublicReportById", id],
     queryFn: async () => {
       if (!id) throw new Error("Report ID is required");
-      
+
       const report = await reportApi.getPublicReportById({ id });
-      
+
       return { ...report, medias: [] };
     },
     enabled: !!id,
@@ -200,17 +239,12 @@ export const updateReportStatusAPI = async (
     status: "PENDING" | "IN_PROGRESS" | "RESOLVED";
   },
 ) => {
-    return await reportApi.updateReportStatus({
-      id,
-      updateReportStatusRequest: data,
-    });
+  return await reportApi.updateReportStatus({
+    id,
+    updateReportStatusRequest: data,
+  });
 };
-
 
 export const deleteMediaAPI = async (mediaId: number): Promise<void> => {
   await mediaApi.deleteMedia({ mediaId });
 };
-
-
-
-
