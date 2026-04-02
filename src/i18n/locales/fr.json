@@ -118,7 +118,12 @@
     "logout": "Déconnexion",
     "notifications": {
       "title": "Notifications",
-      "empty": "Aucune notification pour le moment."
+      "empty": "Aucune notification pour le moment.",
+      "reportStatusChangedTitle": "Statut du signalement mis à jour",
+      "reportStatusChangedMessage": "Votre signalement \"{{reportTitle}}\" est passé de {{previousStatus}} à {{currentStatus}}.",
+      "reportRejectedTitle": "Signalement rejeté",
+      "reportRejectedMessage": "Votre signalement \"{{reportTitle}}\" a été rejeté par la modération.",
+      "rejectionReasonLabel": "Motif"
     }
   },
   "reportForm": {

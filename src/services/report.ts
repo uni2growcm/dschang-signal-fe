@@ -28,16 +28,34 @@ const getTotalCount = (headerValue: string | null) => {
   return Number.isFinite(parsedValue) ? parsedValue : 0;
 };
 
-export interface MyReportsFilters {
-  page?: number;
-  size?: number;
-  status?: string;
-  category?: string;
-}
+export const getAllAuthenticatedUserReportsAPI = async (
+  size = 100,
+): Promise<Report[]> => {
+  const reports: Report[] = [];
+  let page = 0;
+  let totalPages = 1;
 
-export const useAuthenticatedUserReports = (filters: MyReportsFilters = {}) => {
-  const { page = 1, size = PAGE_SIZE, status, category } = filters;
+  while (page < totalPages) {
+    const response = await reportApi.getMyReportsRaw({
+      page,
+      size,
+    });
+    const pageReports = await response.value();
 
+    reports.push(...pageReports);
+
+    const totalCount = getTotalCount(
+      response.raw.headers.get("X-Total-Count"),
+    );
+    totalPages = Math.max(1, Math.ceil(totalCount / size));
+    page += 1;
+  }
+
+  return reports;
+};
+
+export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options: { enabled?: boolean } = {}) => {
+    const { enabled = true } = options;
   return useQuery<PaginatedReports>({
     queryKey: ["getAuthenticatedUserReports", page, size, status, category],
     queryFn: async () => {

@@ -3,6 +3,7 @@ import {
   CategoryApi,
   Configuration,
   MediaApi,
+  NotificationApi,
   ReportApi,
   UserApi,
   type Middleware,
@@ -63,6 +64,7 @@ export const userApi = new UserApi(apiConfig);
 export const reportApi = new ReportApi(apiConfig);
 export const categoryApi = new CategoryApi(apiConfig);
 export const mediaApi = new MediaApi(apiConfig);
+export const notificationApi = new NotificationApi(apiConfig);
 
 export const googleLogin = async (token: string) => {
   const response = await fetch(`${API_URL.dev}/auth/google`, {
@@ -84,6 +86,7 @@ export const googleLogin = async (token: string) => {
 export {
   createReportAPI as createReport,
   deleteMediaAPI as deleteMedia,
+  getAllAuthenticatedUserReportsAPI as getAllAuthenticatedUserReports,
   deleteReportAPI as deleteReport,
   getReportByIdAPI as getReportById,
   updateModerationStatusAPI as updateModerationStatus,

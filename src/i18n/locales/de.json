@@ -118,7 +118,10 @@
     "logout": "Abmelden",
     "notifications": {
       "title": "Benachrichtigungen",
-      "empty": "Zurzeit keine Benachrichtigungen."
+      "empty": "Zurzeit keine Benachrichtigungen.",
+      "reportRejectedTitle": "Bericht abgelehnt",
+      "reportRejectedMessage": "Ihr Bericht \"{{reportTitle}}\" wurde von der Moderation abgelehnt.",
+      "rejectionReasonLabel": "Grund"
     }
   },
   "reportForm": {

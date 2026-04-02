@@ -119,7 +119,12 @@
     "logout": "Logout",
     "notifications": {
       "title": "Notifications",
-      "empty": "No notifications for now."
+      "empty": "No notifications for now.",
+      "reportStatusChangedTitle": "Report status updated",
+      "reportStatusChangedMessage": "Your report \"{{reportTitle}}\" changed from {{previousStatus}} to {{currentStatus}}.",
+      "reportRejectedTitle": "Report rejected",
+      "reportRejectedMessage": "Your report \"{{reportTitle}}\" was rejected by moderation.",
+      "rejectionReasonLabel": "Reason"
     }
   },
   "reportForm": {
