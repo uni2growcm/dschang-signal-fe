@@ -38,6 +38,15 @@ type NotificationCenterValue = {
   notifications: AppNotification[];
   unreadCount: number;
   isLoading: boolean;
+  addNotification: (
+    notification: Pick<AppNotification, "title" | "message" | "type"> &
+      Partial<
+        Pick<
+          AppNotification,
+          "reportId" | "oldStatus" | "newStatus" | "rejectionReason"
+        >
+      >,
+  ) => void;
   markAllAsRead: () => void;
   clearNotifications: () => void;
 };
@@ -326,6 +335,25 @@ export function NotificationCenterProvider({ children }: PropsWithChildren) {
       notifications,
       unreadCount,
       isLoading: notificationsQuery.isLoading || unreadCountQuery.isLoading,
+      addNotification: (notification) => {
+        setLocalNotifications((current) =>
+          [
+            {
+              id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+              title: notification.title,
+              message: notification.message,
+              createdAt: new Date().toISOString(),
+              read: false,
+              type: notification.type,
+              reportId: notification.reportId,
+              oldStatus: notification.oldStatus,
+              newStatus: notification.newStatus,
+              rejectionReason: notification.rejectionReason,
+            },
+            ...current,
+          ].slice(0, MAX_NOTIFICATIONS),
+        );
+      },
       markAllAsRead: () => {
         setLocalNotifications((current) =>
           current.map((notification) =>
