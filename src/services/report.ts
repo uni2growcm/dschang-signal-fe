@@ -17,10 +17,20 @@ export interface PublicReportsFilters {
   page?: number;
   size?: number;
   enabled?: boolean;
+  status?: string;
+  category?: string;
 }
 
 export interface CategoriesFilters {
   enabled?: boolean;
+}
+
+export interface AuthenticatedReportsFilters {
+  page?: number;
+  size?: number;
+  enabled?: boolean;
+  status?: string;
+  category?: string;
 }
 
 const getTotalCount = (headerValue: string | null) => {
@@ -54,8 +64,17 @@ export const getAllAuthenticatedUserReportsAPI = async (
   return reports;
 };
 
-export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options: { enabled?: boolean } = {}) => {
-    const { enabled = true } = options;
+export const useAuthenticatedUserReports = (
+  filters: AuthenticatedReportsFilters = {},
+) => {
+  const {
+    page = 1,
+    size = PAGE_SIZE,
+    enabled = true,
+    status,
+    category,
+  } = filters;
+
   return useQuery<PaginatedReports>({
     queryKey: ["getAuthenticatedUserReports", page, size, status, category],
     queryFn: async () => {
@@ -73,16 +92,9 @@ export const useAuthenticatedUserReports = (page = 1, size = PAGE_SIZE, options:
 
       return { reports, totalCount, totalPages };
     },
-    enabled: isAuth(),
+    enabled: enabled && isAuth(),
   });
 };
-
-export interface PublicReportsFilters {
-  page?: number;
-  size?: number;
-  status?: string;
-  category?: string;
-}
 
 export const usePublicReports = (filters: PublicReportsFilters = {}) => {
   const { page = 1, size = PAGE_SIZE, status, category } = filters;
